@@ -92,6 +92,27 @@ the two conflict, the invoked skill's guidance wins for that specific piece of w
 was chosen on purpose for it. Don't invoke skills on your own initiative that the user hasn't
 called for — wait for them to trigger it.
 
+## CodeGraph (code intelligence)
+
+CodeGraph is initialized for this repo (`.codegraph/` — local to the machine, self-managing
+its own `.gitignore`, never committed). It indexes symbols, imports, and call relationships
+across the codebase and is queryable via the `codegraph` CLI: `codegraph query <term>`,
+`codegraph explore <query...>`, `codegraph context <task...>`, `codegraph node <name>`,
+`codegraph callers <symbol>`, `codegraph callees <symbol>`, `codegraph impact <symbol>`,
+`codegraph affected [files...]`, `codegraph status`.
+
+This site is small and mostly static data + presentational components, so for most
+single-page tasks reading the relevant files directly is enough — don't reach for CodeGraph
+reflexively. It's most useful once the component tree grows (task 2+): before renaming or
+changing the shape of something shared (`data/generators.ts` types, a `components/` prop
+API), use `codegraph impact <symbol>` or `codegraph callers <symbol>` to see what else
+depends on it before editing, rather than grepping by hand. If the index looks stale
+(`codegraph status` shows it out of sync with recent edits), run `codegraph sync`.
+
+The MCP server variant (`codegraph install`) has not been set up for this project — only the
+CLI is available, so invoke it via a shell tool rather than expecting `codegraph_*` MCP
+tools to be present.
+
 ## Session workflow — read this before doing anything
 
 Each feature is built in its own fresh conversation with no memory of prior sessions. Two
@@ -149,3 +170,13 @@ one away.
 - No console errors/warnings; `next build` succeeds.
 - Real business data only — no lorem ipsum, no placeholder phone numbers, no invented brands
   or models beyond what's in the catalog data.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

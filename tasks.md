@@ -3,11 +3,11 @@
 - [x] 1a. Project setup: organize source files, init Next.js (TS + Tailwind + App Router),
       convert the xlsx catalog into `data/generators.(json|ts)`, add logo to `public/`,
       extract brand palette into `design.md`
-- [ ] 1b. Base layout: shared nav + footer components (`components/nav.tsx`,
+- [x] 1b. Base layout: shared nav + footer components (`components/nav.tsx`,
       `components/footer.tsx`) wired into `app/layout.tsx`, using the brand palette and
       lucide-react icons
-- [ ] 2. Home page
-- [ ] 3. Products page: listing + brand/kVA-band filtering
+- [x] 2. Home page
+- [x] 3. Products page: listing + brand/kVA-band filtering
 - [ ] 4. About page
 - [ ] 5. Contact page
 - [ ] 6. Responsive/cross-browser polish, basic SEO metadata (titles, descriptions, favicon
