@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #14181b;
+
+  /* Brand orange — sampled from logo.png (#F07522) */
+  --color-brand-50: #fdf1e7;
+  --color-brand-100: #fbe1cb;
+  --color-brand-200: #f7c398;
+  --color-brand-300: #f5a465;
+  --color-brand-400: #f38b3e;
+  --color-brand-500: #f07522;
+  --color-brand-600: #d9600f;
+  --color-brand-700: #b14b0b;
+  --color-brand-800: #883a0c;
+  --color-brand-900: #602a0a;
+
+  /* Ink (navy-charcoal) — sampled from logo.png black + brochure dark panels */
+  --color-ink-50: #f5f5f6;
+  --color-ink-100: #e7e8e9;
+  --color-ink-200: #cdd0d2;
+  --color-ink-300: #a6abae;
+  --color-ink-400: #7d8489;
+  --color-ink-500: #5b6368;
+  --color-ink-600: #3f464c;
+  --color-ink-700: #2b3136;
+  --color-ink-800: #1e2327;
+  --color-ink-900: #14181b;
+  --color-ink-950: #0e1113;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  --color-brand-50: var(--color-brand-50);
+  --color-brand-100: var(--color-brand-100);
+  --color-brand-200: var(--color-brand-200);
+  --color-brand-300: var(--color-brand-300);
+  --color-brand-400: var(--color-brand-400);
+  --color-brand-500: var(--color-brand-500);
+  --color-brand-600: var(--color-brand-600);
+  --color-brand-700: var(--color-brand-700);
+  --color-brand-800: var(--color-brand-800);
+  --color-brand-900: var(--color-brand-900);
+
+  --color-ink-50: var(--color-ink-50);
+  --color-ink-100: var(--color-ink-100);
+  --color-ink-200: var(--color-ink-200);
+  --color-ink-300: var(--color-ink-300);
+  --color-ink-400: var(--color-ink-400);
+  --color-ink-500: var(--color-ink-500);
+  --color-ink-600: var(--color-ink-600);
+  --color-ink-700: var(--color-ink-700);
+  --color-ink-800: var(--color-ink-800);
+  --color-ink-900: var(--color-ink-900);
+  --color-ink-950: var(--color-ink-950);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
