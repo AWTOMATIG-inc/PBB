@@ -3,7 +3,7 @@ import Link from "next/link";
 import {
   ArrowRight,
   Award,
-  Factory,
+  Cog,
   Gauge,
   Handshake,
   MapPin,
@@ -16,6 +16,8 @@ import {
   Zap,
 } from "lucide-react";
 import { BRANDS, generators } from "@/data/generators";
+import ProductCard from "@/components/product-card";
+import NewProductsCarousel from "@/components/new-products-carousel";
 
 const BRAND_LOGOS: { name: string; file: string }[] = [
   ...BRANDS.map((brand) => ({ name: brand, file: brand })),
@@ -74,12 +76,22 @@ const SERVICES = [
     description:
       "Routine maintenance, repair, and genuine parts support to keep your generator running reliably.",
   },
+  {
+    icon: Cog,
+    title: "Spare Parts",
+    description:
+      "Genuine spare parts across all major brands, sourced and supplied to keep your generator running.",
+  },
 ];
 
 export default function Home() {
   const featuredModels = BRANDS.map((brand) =>
     generators.find((g) => g.brand === brand),
   ).filter((g): g is NonNullable<typeof g> => Boolean(g));
+
+  const newProducts = BRANDS.flatMap((brand) =>
+    generators.filter((g) => g.brand === brand).slice(0, 2),
+  );
 
   return (
     <div className="flex flex-1 flex-col">
@@ -125,6 +137,7 @@ export default function Home() {
                 src="/generator.png"
                 alt="Power Bank Bangladesh generator"
                 fill
+                sizes="(min-width: 1024px) 50vw, 100vw"
                 className="object-cover"
                 priority
               />
@@ -136,7 +149,7 @@ export default function Home() {
       {/* Brand strip */}
       <section className="border-b border-ink-100 bg-white">
         <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-          <p className="text-center text-sm font-semibold uppercase tracking-wide text-ink-400">
+          <p className="text-center text-lg font-semibold uppercase tracking-wide text-ink-400">
             Brands We Carry
           </p>
           <div className="mt-8 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
@@ -183,8 +196,33 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Featured models */}
+      {/* New products */}
       <section className="bg-white">
+        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+          <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
+            <div className="max-w-2xl">
+              <h2 className="text-3xl font-bold tracking-tight text-ink-900">
+                New Products
+              </h2>
+              <p className="mt-3 text-ink-500">
+                Two models from each brand, ready to browse — scroll through
+                or view the full catalog.
+              </p>
+            </div>
+            <Link
+              href="/products"
+              className="inline-flex shrink-0 items-center gap-2 text-sm font-semibold text-brand-600 hover:text-brand-700"
+            >
+              View All Models
+              <ArrowRight className="size-4" />
+            </Link>
+          </div>
+          <NewProductsCarousel models={newProducts} />
+        </div>
+      </section>
+
+      {/* Featured models */}
+      <section className="bg-ink-50">
         <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
           <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
             <div className="max-w-2xl">
@@ -206,55 +244,14 @@ export default function Home() {
           </div>
           <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {featuredModels.map((model) => (
-              <div
-                key={`${model.brand}-${model.model}`}
-                className="rounded-2xl border border-ink-100 p-6 transition-colors hover:border-brand-200"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-wide text-brand-600">
-                      {model.brand}
-                    </p>
-                    <h3 className="mt-1 text-lg font-semibold text-ink-900">
-                      {model.model}
-                    </h3>
-                  </div>
-                  <div className="rounded-xl bg-brand-50 p-2.5">
-                    <Factory className="size-5 text-brand-500" />
-                  </div>
-                </div>
-                <dl className="mt-4 flex flex-col gap-1.5 text-sm text-ink-500">
-                  {model.standbyKva !== null && (
-                    <div className="flex justify-between">
-                      <dt>Standby Output</dt>
-                      <dd className="font-medium text-ink-900">
-                        {model.standbyKva} kVA
-                      </dd>
-                    </div>
-                  )}
-                  {model.engineModel && (
-                    <div className="flex justify-between">
-                      <dt>Engine</dt>
-                      <dd className="font-medium text-ink-900">
-                        {model.engineModel}
-                      </dd>
-                    </div>
-                  )}
-                  <div className="flex justify-between">
-                    <dt>Power Band</dt>
-                    <dd className="font-medium text-ink-900">
-                      {model.kvaBand}
-                    </dd>
-                  </div>
-                </dl>
-              </div>
+              <ProductCard key={`${model.brand}-${model.model}`} model={model} />
             ))}
           </div>
         </div>
       </section>
 
       {/* Services */}
-      <section className="bg-ink-50">
+      <section className="bg-white">
         <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
           <div className="max-w-2xl">
             <h2 className="text-3xl font-bold tracking-tight text-ink-900">
@@ -282,6 +279,28 @@ export default function Home() {
                 </p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Our Clients — reusing the brand logos as a placeholder marquee until
+          real client logos are supplied */}
+      <section className="border-t border-ink-100 bg-white">
+        <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+          <p className="text-center text-lg font-semibold uppercase tracking-wide text-ink-400">
+            Our Clients
+          </p>
+          <div className="mt-8 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+            <div className="flex w-max animate-marquee items-center gap-16 hover:[animation-play-state:paused]">
+              {[...BRAND_LOGOS, ...BRAND_LOGOS].map((brand, index) => (
+                <img
+                  key={`client-${brand.name}-${index}`}
+                  src={`/brands/${brand.file}.png`}
+                  alt={brand.name}
+                  className="h-10 w-auto shrink-0 object-contain sm:h-12"
+                />
+              ))}
+            </div>
           </div>
         </div>
       </section>

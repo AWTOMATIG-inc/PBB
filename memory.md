@@ -306,3 +306,171 @@
   - If a future session builds a per-model detail view, the Ricardo `ratedOutputKwKva`/
     `fuelConsumption` fallback pattern in `products-browser.tsx` is a useful reference for
     how to handle that brand's differently-shaped `specs` object.
+
+## Session 7 — 2026-09-15 — Products page: sidebar filters + pagination
+
+- **What was done:** User flagged that Session 6's Products page (top pill-row filters,
+  all 98 models rendered unpaginated) looked awkward, and shared a screenshot of an
+  unrelated online laptop shop as a layout reference. That reference has e-commerce
+  features (Add to Cart, Compare, pricing, Availability filter) which are explicitly out of
+  scope per this CLAUDE.md's "not e-commerce" rule — asked the user via `AskUserQuestion`
+  to confirm which *structural* parts to borrow (left sidebar vs. top pills; multi-select
+  checkboxes vs. single-select pills; numbered pagination vs. "load more") before building,
+  rather than assuming or copying the cart/compare/pricing elements. Rewrote
+  `components/products-browser.tsx`:
+  - Left sidebar (`lg:w-72`, sticky on desktop) with two collapsible filter groups (Brand,
+    Power Band), each a checkbox list — multi-select within a group (OR), AND across groups.
+    Replaces the old single-select pill rows.
+  - Mobile: sidebar collapses behind a "Filters" toggle button (`SlidersHorizontal` icon +
+    active-filter-count badge) above the grid, `lg:hidden`; expands inline above the grid
+    when tapped rather than a modal/drawer overlay.
+  - Numbered pagination at the bottom of the grid, 12 models/page, with Prev/Next and
+    ellipsis-truncated page numbers (`getPageNumbers` helper) for when `totalPages > 7`.
+    Any filter change resets to page 1.
+  - Results text changed from "Showing X of Y models" to "Showing 1–12 of 98 models" (range
+    format) to match the paginated context.
+  - Did **not** add price range, availability, or any other filter from the reference image
+    — only brand and kVA band exist as real fields, per CLAUDE.md's filter spec.
+- **Key decisions made:**
+  - Multi-select checkboxes (not single-select pills) — confirmed with the user; matches the
+    reference's interaction model and lets a visitor compare e.g. "John Deere OR Cummins"
+    in one view, which the old radio-style pills couldn't do.
+  - Page size of 12 (not 9/24) — even 4-row grid at the existing 3-column breakpoint, no
+    other reasoning needed since the user had no preference.
+  - Kept the mobile filter panel as an inline expand/collapse (not a slide-over/modal) to
+    avoid adding new UI chrome (backdrop, focus trap, close button) beyond what the task
+    needed.
+- **Verification:** `next build` succeeds (static, no type errors). Since the Chrome-tool
+  mobile-viewport limitation noted in Sessions 3–6 was never actually retested, used
+  Playwright directly this session instead (`npx playwright install chromium`, then a
+  scratch `.mjs` script run from inside the project dir so it could resolve the
+  project-local `playwright` install — a script placed outside the project can't resolve
+  workspace `node_modules` under ESM). Confirmed via real screenshots at 1440px and 375px
+  against the already-running dev server (port 3000): desktop shows sidebar + 3-col grid +
+  working pagination ("Showing 1–12 of 98 models", pages "1 2 … 9"), mobile shows the
+  collapsed "Filters" toggle and, after a scripted click, the expanded checkbox panel
+  in-flow above the grid. Zero console errors on any of the three screenshots. This closes
+  the long-standing mobile-viewport verification gap for this page — Playwright (via
+  `npx`, no chromium-cli available in this environment) is now the proven method if the
+  gap resurfaces on other pages.
+- **Skills invoked this session:** `run` skill (to find the project's browser-driving
+  pattern — no project-specific skill existed yet, fell back to its `playwright.md` example
+  pattern, adapted since `chromium-cli` itself wasn't installed).
+- **Files touched:** `components/products-browser.tsx` (rewritten), `memory.md`.
+- **Deviations from tasks.md / this CLAUDE.md, and why:** none — task 3 was already checked
+  off in Session 6; this is a revision of its implementation, not new scope. The reference
+  screenshot's cart/compare/pricing/availability features were deliberately excluded as
+  out-of-scope, not missed.
+- **Open issues / TODOs for next session:**
+  - Consider running `/run-skill-generator` at some point to capture the Playwright dev-
+    server-screenshot pattern as a real project skill, since it's now been worked out by
+    hand twice (this session) and will likely be needed again for About/Contact page
+    verification.
+  - Move on to Task 4 (About page) or Task 5 (Contact page) next.
+
+## Session 8 — 2026-09-15 — Home page: "New Products" carousel section
+
+- **What was done:** Added a new "New Products" section to `app/page.tsx`, positioned above
+  the existing "Featured Models" section. Uses the same `ProductCard` component as Featured
+  Models, but in a single-row horizontal scroll-snap carousel instead of a 2-row grid.
+  - Built `components/new-products-carousel.tsx` (`"use client"`): a `flex` track with
+    `snap-x snap-mandatory` and hidden scrollbar, cards sized `w-[85%]` (mobile, showing a
+    peek of the next card) → `sm:w-[45%]` → `lg:w-[31%]` (~3 visible on desktop). Prev/Next
+    arrow buttons overlaid on the track (`ChevronLeft`/`ChevronRight`), scroll by exactly one
+    card width (measured via `getBoundingClientRect()` on a `data-card` element, not a fixed
+    pixel guess), and are hidden (`opacity-0`, `pointer-events-none`) rather than just
+    dimmed when already at the start/end — clamped, no wraparound.
+  - Model selection for this section: 2 models per brand in catalog order
+    (`BRANDS.flatMap(brand => generators.filter(g => g.brand === brand).slice(0, 2))`), 12
+    models total. Confirmed with the user first via `AskUserQuestion` since the catalog has
+    no "date added" field — "new" here just means "a different, larger sample than Featured
+    Models," not a real chronological claim, so this was worth confirming rather than
+    guessing.
+  - Rebalanced section background alternation since inserting a new white section shifted
+    the sequence: New Products (white) → Featured Models (now `ink-50`, was white) →
+    Services (now white, was `ink-50`) → CTA (`ink-900`, unchanged).
+- **Key decisions made:**
+  - Carousel mechanics confirmed with the user via `AskUserQuestion`: scroll-snap track,
+    step by one card at a time, clamped at both ends (no loop) — not the looping pattern
+    used by the existing-but-unused `components/brand-carousel.tsx` (a single-slide-per-view
+    background-image carousel built in an earlier, uncommitted session; kept as-is, not
+    reused here since its one-slide-per-view shape doesn't fit a multi-card row).
+  - Step distance is measured from an actual rendered card's width at scroll time (not a
+    hardcoded breakpoint pixel value), so it stays correct across the three responsive card
+    widths without three separate scroll-step constants.
+- **Verification:** `next build` succeeds (no type errors). Reused the already-running dev
+  server on port 3000 (a `next dev -p 3100` attempt found it and errored out cleanly rather
+  than binding a second server — no stray process left behind). Screenshotted via a
+  Playwright script placed temporarily inside the project directory (per Session 7's
+  resolved lesson: a script outside the project can't resolve the workspace's local
+  `playwright` install under ESM; deleted the scratch script after use). Confirmed at 1440px:
+  3 cards + a peek of a 4th, "Previous" arrow correctly hidden at the start, clicking "Next"
+  advances by exactly one card and reveals the "Previous" arrow. Confirmed at 390px: single
+  card with peek of the next, arrows overlaid correctly on the card image, no layout
+  breakage. Zero console errors on any screenshot.
+- **Skills invoked this session:** none.
+- **Files touched:** `components/new-products-carousel.tsx` (new), `app/page.tsx`
+  (new section + background rebalance), `memory.md`.
+- **Deviations from tasks.md / this CLAUDE.md, and why:** none — this is a Home page
+  content addition (task 2 was already checked off), not new task-list scope.
+- **Open issues / TODOs for next session:**
+  - `components/brand-carousel.tsx` and the `/generator.png`, `/brands/*.png` image assets
+    referenced in `app/page.tsx`/`product-card.tsx` are from uncommitted work predating this
+    session (not recorded in earlier memory entries, which say logo-only/no-images) — worth
+    reconciling with the user at some point that the "no images anywhere but the nav logo"
+    policy from Session 1 has since been superseded by real product/brand imagery, so a
+    future memory entry doesn't get confused by the apparent contradiction.
+  - Move on to Task 4 (About page) or Task 5 (Contact page) next.
+
+## Session 9 — 2026-09-15 — Home page: "Our Clients" logo marquee section
+
+- **What was done:** Added an "Our Clients" section to `app/page.tsx`, placed between "Our
+  Services" and the bottom CTA (i.e. before the final CTA band and footer). Per the user's
+  explicit instruction, this reuses the exact same marquee markup/animation as the existing
+  "Brands We Carry" strip near the top of the page (same `animate-marquee` flex track, same
+  edge-fade mask, same `h-10 sm:h-12` logo sizing) and the same `BRAND_LOGOS` array/`/brands/
+  *.png` files as a **placeholder** — the user does not have real client logos yet and will
+  swap them in later. Added a one-line code comment flagging this as a placeholder so a
+  future session doesn't mistake brand logos for actual client logos.
+  - Noticed (via the file-changed-on-disk notice, not something I edited) that the user had
+    independently added a 5th "Spare Parts" service card (with a `Cog` icon) to the
+    `SERVICES` array between the last session and this one — left as-is, this was the user's
+    own direct edit, not part of this session's task.
+- **Key decisions made:**
+  - Placement: put "Our Clients" between Services and the Bottom CTA (not after the CTA,
+    right before the footer) — the user said "between Our Services and Footer," and since a
+    CTA band already sits in that gap, either position technically satisfies that phrasing.
+    Chose Services → Clients → CTA → Footer since it reads as a natural marketing flow
+    (services, then trust/social-proof logos, then a final call-to-action, then footer).
+    Flag this to the user if they actually meant immediately-before-footer instead — trivial
+    to move if so.
+  - Duplicated the marquee JSX rather than extracting a shared `LogoMarquee` component — only
+    two instances of a small block, and per CLAUDE.md's anti-premature-abstraction guidance,
+    two similar ~15-line blocks don't yet justify a shared component, especially since this
+    section's logo array will diverge from `BRAND_LOGOS` once real client logos exist.
+  - Section wrapper uses `border-t border-ink-100 bg-white` (same treatment as the top brand
+    strip) rather than `bg-ink-50`, since it sits directly after the already-white "Our
+    Services" section — a hairline border separates the two white sections instead of an
+    alternating background, matching the pattern already used for Hero→Brand-strip at the
+    top of the page.
+- **Verification:** `next build` succeeds (no type errors). Reused the already-running dev
+  server on port 3000. Screenshotted via a temporary in-project Playwright script (same
+  resolved pattern as Session 7/8 — deleted after use). Confirmed at 1440px and 390px: "OUR
+  CLIENTS" label renders, the marquee scrolls through the brand logos (Cummins, Ricardo,
+  Perkins, Volvo Penta, Deutz, Caterpillar visible in the captured frame), section sits
+  correctly between Services and the dark CTA band, no layout breakage, zero console errors.
+- **Skills invoked this session:** none.
+- **Files touched:** `app/page.tsx` (new section only), `memory.md`.
+- **Deviations from tasks.md / this CLAUDE.md, and why:** none — Home page content addition,
+  not new task-list scope. Using brand logos as an explicit temporary stand-in for client
+  logos was directed by the user, so it isn't fabricated data — it's a real, current asset
+  used as a deliberate, disclosed placeholder.
+- **Open issues / TODOs for next session:**
+  - **Real client logos still needed** — when the user provides them, replace the `Our
+    Clients` section's `BRAND_LOGOS` reuse (`app/page.tsx`, the "Our Clients" section) with
+    the actual client logo files/array. Don't forget the code comment flagging this as
+    temporary is the marker to find it.
+  - Confirm with the user whether "Our Clients" should instead sit immediately before the
+    footer (after the CTA band) rather than before it — current placement was a judgment
+    call, not explicitly confirmed.
+  - Move on to Task 4 (About page) or Task 5 (Contact page) next.

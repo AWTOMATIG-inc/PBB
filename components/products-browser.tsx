@@ -1,58 +1,71 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Factory, SearchX } from "lucide-react";
+import { ChevronDown, SearchX, SlidersHorizontal, X } from "lucide-react";
 import { BRANDS, KVA_BANDS, type GeneratorModel } from "@/data/generators";
+import ProductCard from "@/components/product-card";
 
 const BAND_ORDER = KVA_BANDS.map((b) => b.value);
+const PAGE_SIZE = 12;
 
-function formatFuelTank(fuelTank: GeneratorModel["fuelTank"]) {
-  if (fuelTank === null || fuelTank === "") return null;
-  return `${fuelTank} L`;
-}
-
-/**
- * Ricardo's brochure sheet lists a single combined rated output (kW/kVA) and
- * a fuel consumption rate instead of separate standby/prime kVA and a fuel
- * tank capacity like every other brand — fall back to those real fields
- * rather than showing a card with no power/fuel info at all.
- */
-function getRatedOutputFallback(model: GeneratorModel) {
-  const rated = model.specs.ratedOutputKwKva;
-  return typeof rated === "string" || typeof rated === "number"
-    ? `${rated} kW/kVA`
-    : null;
-}
-
-function getFuelConsumptionFallback(model: GeneratorModel) {
-  const consumption = model.specs.fuelConsumption;
-  return typeof consumption === "string" || typeof consumption === "number"
-    ? consumption
-    : null;
-}
-
-function PillButton({
-  active,
-  onClick,
-  children,
+function FilterGroup({
+  title,
+  options,
+  selected,
+  onToggle,
 }: {
-  active: boolean;
-  onClick: () => void;
-  children: React.ReactNode;
+  title: string;
+  options: { value: string; label: string }[];
+  selected: string[];
+  onToggle: (value: string) => void;
 }) {
+  const [open, setOpen] = useState(true);
+
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
-        active
-          ? "bg-brand-500 text-white"
-          : "border border-ink-200 text-ink-700 hover:border-brand-300 hover:text-brand-600"
-      }`}
-    >
-      {children}
-    </button>
+    <div className="border-b border-ink-100 py-5 first:pt-0 last:border-b-0">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="flex w-full items-center justify-between text-left"
+        aria-expanded={open}
+      >
+        <span className="text-sm font-semibold text-ink-900">{title}</span>
+        <ChevronDown
+          className={`size-4 text-ink-400 transition-transform ${open ? "rotate-180" : ""}`}
+        />
+      </button>
+      {open && (
+        <div className="mt-4 flex flex-col gap-3">
+          {options.map((opt) => (
+            <label
+              key={opt.value}
+              className="flex cursor-pointer items-center gap-2.5 text-sm text-ink-700"
+            >
+              <input
+                type="checkbox"
+                checked={selected.includes(opt.value)}
+                onChange={() => onToggle(opt.value)}
+                className="size-4 shrink-0 rounded border-ink-300 text-brand-600 focus:ring-2 focus:ring-brand-300 focus:ring-offset-0"
+              />
+              {opt.label}
+            </label>
+          ))}
+        </div>
+      )}
+    </div>
   );
+}
+
+function getPageNumbers(current: number, total: number): (number | "...")[] {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+  const pages: (number | "...")[] = [1];
+  if (current > 3) pages.push("...");
+  for (let p = Math.max(2, current - 1); p <= Math.min(total - 1, current + 1); p++) {
+    pages.push(p);
+  }
+  if (current < total - 2) pages.push("...");
+  pages.push(total);
+  return pages;
 }
 
 export default function ProductsBrowser({
@@ -60,192 +73,198 @@ export default function ProductsBrowser({
 }: {
   generators: GeneratorModel[];
 }) {
-  const [brand, setBrand] = useState<string>("All");
-  const [band, setBand] = useState<string>("All");
+  const [brands, setBrands] = useState<string[]>([]);
+  const [bands, setBands] = useState<string[]>([]);
+  const [page, setPage] = useState(1);
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+
+  const toggleBrand = (value: string) => {
+    setBrands((prev) =>
+      prev.includes(value) ? prev.filter((b) => b !== value) : [...prev, value]
+    );
+    setPage(1);
+  };
+
+  const toggleBand = (value: string) => {
+    setBands((prev) =>
+      prev.includes(value) ? prev.filter((b) => b !== value) : [...prev, value]
+    );
+    setPage(1);
+  };
+
+  const clearAll = () => {
+    setBrands([]);
+    setBands([]);
+    setPage(1);
+  };
 
   const filtered = useMemo(() => {
     return generators
-      .filter((g) => brand === "All" || g.brand === brand)
-      .filter((g) => band === "All" || g.kvaBand === band)
+      .filter((g) => brands.length === 0 || brands.includes(g.brand))
+      .filter((g) => bands.length === 0 || bands.includes(g.kvaBand))
       .sort((a, b) => {
         const bandDiff =
           BAND_ORDER.indexOf(a.kvaBand) - BAND_ORDER.indexOf(b.kvaBand);
         if (bandDiff !== 0) return bandDiff;
         return (a.standbyKva ?? 0) - (b.standbyKva ?? 0);
       });
-  }, [generators, brand, band]);
+  }, [generators, brands, bands]);
 
-  const hasFilters = brand !== "All" || band !== "All";
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const currentPage = Math.min(page, totalPages);
+  const paged = filtered.slice(
+    (currentPage - 1) * PAGE_SIZE,
+    currentPage * PAGE_SIZE
+  );
 
-  return (
-    <div>
-      <div className="flex flex-col gap-6 rounded-2xl border border-ink-100 bg-ink-50 p-6">
-        <div>
-          <p className="text-sm font-semibold uppercase tracking-wide text-ink-400">
-            Brand
-          </p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            <PillButton active={brand === "All"} onClick={() => setBrand("All")}>
-              All Brands
-            </PillButton>
-            {BRANDS.map((b) => (
-              <PillButton
-                key={b}
-                active={brand === b}
-                onClick={() => setBrand(b)}
-              >
-                {b}
-              </PillButton>
-            ))}
-          </div>
-        </div>
+  const activeCount = brands.length + bands.length;
+  const hasFilters = activeCount > 0;
 
-        <div>
-          <p className="text-sm font-semibold uppercase tracking-wide text-ink-400">
-            Power Band
-          </p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            <PillButton active={band === "All"} onClick={() => setBand("All")}>
-              All Bands
-            </PillButton>
-            {KVA_BANDS.map((b) => (
-              <PillButton
-                key={b.value}
-                active={band === b.value}
-                onClick={() => setBand(b.value)}
-              >
-                {b.label}
-              </PillButton>
-            ))}
-          </div>
-        </div>
-      </div>
+  const goToPage = (p: number) => {
+    setPage(Math.min(Math.max(1, p), totalPages));
+  };
 
-      <div className="mt-8 flex items-center justify-between">
-        <p className="text-sm text-ink-500">
-          Showing <span className="font-semibold text-ink-900">{filtered.length}</span> of{" "}
-          {generators.length} models
-        </p>
+  const filtersPanel = (
+    <>
+      <div className="flex items-center justify-between">
+        <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-400">
+          Filters
+        </h2>
         {hasFilters && (
           <button
             type="button"
-            onClick={() => {
-              setBrand("All");
-              setBand("All");
-            }}
+            onClick={clearAll}
             className="text-sm font-semibold text-brand-600 hover:text-brand-700"
           >
-            Clear filters
+            Clear All
           </button>
         )}
       </div>
+      <FilterGroup
+        title="Brand"
+        options={BRANDS.map((b) => ({ value: b, label: b }))}
+        selected={brands}
+        onToggle={toggleBrand}
+      />
+      <FilterGroup
+        title="Power Band"
+        options={KVA_BANDS.map((b) => ({ value: b.value, label: b.label }))}
+        selected={bands}
+        onToggle={toggleBand}
+      />
+    </>
+  );
 
-      {filtered.length === 0 ? (
-        <div className="mt-8 flex flex-col items-center gap-3 rounded-2xl border border-dashed border-ink-200 py-16 text-center">
-          <SearchX className="size-8 text-ink-300" />
-          <p className="font-medium text-ink-700">
-            No models match this combination of filters.
-          </p>
-          <p className="text-sm text-ink-400">
-            Try a different brand or power band, or clear the filters above.
+  return (
+    <div className="lg:flex lg:items-start lg:gap-8">
+      <button
+        type="button"
+        onClick={() => setMobileFiltersOpen((o) => !o)}
+        className="flex w-full items-center justify-between rounded-xl border border-ink-200 px-4 py-3 text-sm font-semibold text-ink-900 lg:hidden"
+      >
+        <span className="flex items-center gap-2">
+          <SlidersHorizontal className="size-4" />
+          Filters
+          {hasFilters && (
+            <span className="rounded-full bg-brand-500 px-2 py-0.5 text-xs font-semibold text-white">
+              {activeCount}
+            </span>
+          )}
+        </span>
+        {mobileFiltersOpen ? (
+          <X className="size-4 text-ink-400" />
+        ) : (
+          <ChevronDown className="size-4 text-ink-400" />
+        )}
+      </button>
+
+      <aside
+        className={`${mobileFiltersOpen ? "block" : "hidden"} mt-4 rounded-2xl border border-ink-100 bg-ink-50 p-6 lg:sticky lg:top-24 lg:mt-0 lg:block lg:w-72 lg:flex-shrink-0`}
+      >
+        {filtersPanel}
+      </aside>
+
+      <div className="mt-8 min-w-0 flex-1 lg:mt-0">
+        <div className="flex items-center justify-between">
+          <p className="text-sm text-ink-500">
+            Showing{" "}
+            <span className="font-semibold text-ink-900">
+              {filtered.length === 0 ? 0 : (currentPage - 1) * PAGE_SIZE + 1}
+              &ndash;{Math.min(currentPage * PAGE_SIZE, filtered.length)}
+            </span>{" "}
+            of <span className="font-semibold text-ink-900">{filtered.length}</span>{" "}
+            models
           </p>
         </div>
-      ) : (
-        <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((model) => {
-            const fuelTank = formatFuelTank(model.fuelTank);
-            const hasOutput = model.standbyKva !== null || model.primeKva !== null;
-            const ratedOutputFallback = hasOutput
-              ? null
-              : getRatedOutputFallback(model);
-            const fuelConsumptionFallback = fuelTank
-              ? null
-              : getFuelConsumptionFallback(model);
-            return (
-              <div
-                key={`${model.brand}-${model.model}`}
-                className="rounded-2xl border border-ink-100 p-6 transition-colors hover:border-brand-200"
+
+        {filtered.length === 0 ? (
+          <div className="mt-8 flex flex-col items-center gap-3 rounded-2xl border border-dashed border-ink-200 py-16 text-center">
+            <SearchX className="size-8 text-ink-300" />
+            <p className="font-medium text-ink-700">
+              No models match this combination of filters.
+            </p>
+            <p className="text-sm text-ink-400">
+              Try a different brand or power band, or clear the filters.
+            </p>
+          </div>
+        ) : (
+          <>
+            <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {paged.map((model) => (
+                <ProductCard key={`${model.brand}-${model.model}`} model={model} />
+              ))}
+            </div>
+
+            {totalPages > 1 && (
+              <nav
+                className="mt-10 flex items-center justify-center gap-1.5"
+                aria-label="Pagination"
               >
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-wide text-brand-600">
-                      {model.brand}
-                    </p>
-                    <h3 className="mt-1 text-lg font-semibold text-ink-900">
-                      {model.model}
-                    </h3>
-                  </div>
-                  <div className="rounded-xl bg-brand-50 p-2.5">
-                    <Factory className="size-5 text-brand-500" />
-                  </div>
-                </div>
-                <dl className="mt-4 flex flex-col gap-1.5 text-sm text-ink-500">
-                  {model.standbyKva !== null && (
-                    <div className="flex justify-between">
-                      <dt>Standby Output</dt>
-                      <dd className="font-medium text-ink-900">
-                        {model.standbyKva} kVA
-                      </dd>
-                    </div>
-                  )}
-                  {model.primeKva !== null && (
-                    <div className="flex justify-between">
-                      <dt>Prime Output</dt>
-                      <dd className="font-medium text-ink-900">
-                        {model.primeKva} kVA
-                      </dd>
-                    </div>
-                  )}
-                  {ratedOutputFallback && (
-                    <div className="flex justify-between">
-                      <dt>Rated Output</dt>
-                      <dd className="font-medium text-ink-900">
-                        {ratedOutputFallback}
-                      </dd>
-                    </div>
-                  )}
-                  {model.engineModel && (
-                    <div className="flex justify-between">
-                      <dt>Engine</dt>
-                      <dd className="font-medium text-ink-900">
-                        {model.engineModel}
-                      </dd>
-                    </div>
-                  )}
-                  {model.weightKg !== null && (
-                    <div className="flex justify-between">
-                      <dt>Weight</dt>
-                      <dd className="font-medium text-ink-900">
-                        {model.weightKg} kg
-                      </dd>
-                    </div>
-                  )}
-                  {fuelTank && (
-                    <div className="flex justify-between">
-                      <dt>Fuel Tank</dt>
-                      <dd className="font-medium text-ink-900">{fuelTank}</dd>
-                    </div>
-                  )}
-                  {fuelConsumptionFallback && (
-                    <div className="flex justify-between">
-                      <dt>Fuel Consumption</dt>
-                      <dd className="font-medium text-ink-900">
-                        {fuelConsumptionFallback}
-                      </dd>
-                    </div>
-                  )}
-                  <div className="flex justify-between">
-                    <dt>Power Band</dt>
-                    <dd className="font-medium text-ink-900">
-                      {model.kvaBand}
-                    </dd>
-                  </div>
-                </dl>
-              </div>
-            );
-          })}
-        </div>
-      )}
+                <button
+                  type="button"
+                  onClick={() => goToPage(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="rounded-lg border border-ink-200 px-3 py-2 text-sm font-medium text-ink-700 hover:border-brand-300 hover:text-brand-600 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-ink-200 disabled:hover:text-ink-700"
+                >
+                  Prev
+                </button>
+                {getPageNumbers(currentPage, totalPages).map((p, i) =>
+                  p === "..." ? (
+                    <span
+                      key={`ellipsis-${i}`}
+                      className="px-2 text-sm text-ink-400"
+                    >
+                      &hellip;
+                    </span>
+                  ) : (
+                    <button
+                      key={p}
+                      type="button"
+                      onClick={() => goToPage(p)}
+                      aria-current={p === currentPage ? "page" : undefined}
+                      className={`size-9 rounded-lg text-sm font-medium transition-colors ${
+                        p === currentPage
+                          ? "bg-brand-500 text-white"
+                          : "text-ink-700 hover:bg-ink-100"
+                      }`}
+                    >
+                      {p}
+                    </button>
+                  )
+                )}
+                <button
+                  type="button"
+                  onClick={() => goToPage(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className="rounded-lg border border-ink-200 px-3 py-2 text-sm font-medium text-ink-700 hover:border-brand-300 hover:text-brand-600 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-ink-200 disabled:hover:text-ink-700"
+                >
+                  Next
+                </button>
+              </nav>
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 }

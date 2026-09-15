@@ -47,7 +47,7 @@ export default function Nav() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`text-sm font-medium transition-colors ${
+                className={`text-base font-medium transition-colors ${
                   active
                     ? "text-brand-600"
                     : "text-ink-700 hover:text-brand-600"
