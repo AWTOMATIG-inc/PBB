@@ -30,7 +30,7 @@ first-class fields since the Products page filters on both.
 
 ## Business facts to use verbatim in copy (do not invent contact details)
 
-- Business: All kinds of Generator — Sell, Buy, Rental & Service
+- Business: All kinds of Generator — Sell, Buy, Rental, Service & Spare Parts
 - Website: www.powerbankbangladesh.com
 - Email: powerbankbd23@gmail.com
 - Address (Dhaka): Kamalapur, Biruliya, Savar, Dhaka
@@ -59,16 +59,17 @@ first-class fields since the Products page filters on both.
 ## Site structure (4 pages — keep it this simple, don't add more without asking)
 
 1. **Home (`/`)** — hero with tagline, one-line summary of what PBB does, a strip of the
-   brand logos, a short "our services" section (Sell / Buy / Rental / Service, four items),
-   and CTAs into Products and Contact.
+   brand logos, a short "our services" section (Sell / Buy / Rental / Service / Spare Parts,
+   five items), and CTAs into Products and Contact.
 2. **Products (`/products`)** — the core content page. Every model from the catalog data,
    filterable by **brand** and by **kVA band** (Small <50 / Medium 50–149 / Large 150–299 /
    Industrial 300+ — this banding is already computed in the spreadsheet's `All Models`
    sheet, reuse it rather than recompute a different scheme). Each model shows key specs
    (brand, model, standby/prime kVA, engine, weight, fuel tank) as a card or table row.
    No "add to cart," no pricing, no checkout — this is a browsable spec sheet, not a store.
-3. **About (`/about`)** — company story/trust messaging, and the four services explained in
-   a bit more depth (what "sell," "buy," "rental," and "service" each mean for a customer).
+3. **About (`/about`)** — company story/trust messaging, and the five services explained in
+   a bit more depth (what "sell," "buy," "rental," "service," and "spare parts" each mean
+   for a customer).
 4. **Contact (`/contact`)** — **info only, no form.** Both addresses, all three phone
    numbers, the email, and (optional, nice-to-have) an embedded map for each location.
 

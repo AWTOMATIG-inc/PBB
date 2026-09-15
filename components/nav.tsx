@@ -28,12 +28,12 @@ export default function Nav() {
           className="flex shrink-0 items-center"
         >
           <Image
-            src="/logo.png"
+            src="/pbb-logo.png"
             alt="Power Bank Bangladesh"
             width={533}
             height={401}
             priority
-            className="h-12 w-auto"
+            className="h-16 w-auto"
           />
         </Link>
 

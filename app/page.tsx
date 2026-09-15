@@ -21,7 +21,6 @@ import NewProductsCarousel from "@/components/new-products-carousel";
 
 const BRAND_LOGOS: { name: string; file: string }[] = [
   ...BRANDS.map((brand) => ({ name: brand, file: brand })),
-  { name: "Caterpillar (CAT)", file: "Caterpillar" },
   { name: "Doosan", file: "Doosan" },
 ];
 

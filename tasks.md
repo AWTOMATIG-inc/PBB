@@ -8,8 +8,8 @@
       lucide-react icons
 - [x] 2. Home page
 - [x] 3. Products page: listing + brand/kVA-band filtering
-- [ ] 4. About page
-- [ ] 5. Contact page
+- [x] 4. About page
+- [x] 5. Contact page
 - [ ] 6. Responsive/cross-browser polish, basic SEO metadata (titles, descriptions, favicon
       generated from the logo)
 - [ ] 7. Deployment prep (build check, env/config for chosen host — see `/deploy` skill)

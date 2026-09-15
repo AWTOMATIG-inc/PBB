@@ -474,3 +474,371 @@
     footer (after the CTA band) rather than before it — current placement was a judgment
     call, not explicitly confirmed.
   - Move on to Task 4 (About page) or Task 5 (Contact page) next.
+
+## Session 10 — 2026-09-15 — Remove Caterpillar logo from both marquees
+
+- **What was done:** User asked to remove the Caterpillar logo from "both stacks" (Brands
+  We Carry + Our Clients marquees). Removed the `{ name: "Caterpillar (CAT)", file:
+  "Caterpillar" }` entry from the shared `BRAND_LOGOS` array in `app/page.tsx` — both
+  marquees read from that one array, so one edit fixed both. Doosan stays in the array (not
+  asked to remove).
+- **Key decisions made:** Left Caterpillar's *text* mention intact in the "Why Power Bank
+  Bangladesh" card copy ("John Deere, Cummins, Ricardo, Perkins, Volvo Penta, Deutz — plus
+  Caterpillar and Doosan, all under one roof.") — the user's ask was specifically about the
+  logo image in the marquees, not the brand name itself, and CLAUDE.md still lists
+  Caterpillar as a "logo/brand mention only" featured brand, so removing the text mention
+  too would have been scope creep beyond what was asked.
+- **Verification:** `next build` succeeds (no type errors). Screenshotted both marquees at
+  1440px via a temporary in-project Playwright script (deleted after use) — confirmed no
+  `<img>` on the page has a `src` containing "caterpillar", and both marquees now cycle
+  Cummins/Ricardo/Perkins/Volvo Penta/Deutz/Doosan. Zero console errors.
+- **Skills invoked this session:** none.
+- **Files touched:** `app/page.tsx` (removed one array entry), `memory.md`.
+- **Deviations from tasks.md / this CLAUDE.md, and why:** none.
+- **Open issues / TODOs for next session:** none new — same open items as Session 9 (real
+  client logos still needed; Our Clients placement not yet explicitly confirmed; Task 4/5
+  next).
+
+## Session 11 — 2026-09-15 — Reconcile stale memory before Task 4
+
+- **What was done:** No code changes. User pointed out that a lot of polish happened after
+  Task 3 (Sessions 7–10, plus direct manual edits) and asked whether `CLAUDE.md`/`memory.md`
+  needed updating so that context carries correctly into Tasks 4–7. Audited current code
+  against the memory log and corrected two stale/wrong notes:
+  - **Superseding Session 1's "logo-only, no images anywhere" resolution.** That policy is
+    no longer in effect and hasn't been for several sessions: `components/product-card.tsx`
+    renders `/generator.png` on every product card, the Home "Brands We Carry" and "Our
+    Clients" marquees render `public/brands/*.png` (8 files), and `components/
+    brand-carousel.tsx` renders `public/carousel/*.webp` (6 files, Products page only). **Task
+    4 (About) and Task 5 (Contact) are not restricted to typography/color/icons-only** — real
+    imagery consistent with the established pattern (product photography, brand logos) is
+    fair game if it fits the content, not something to avoid by default per the old rule.
+    This isn't a `CLAUDE.md` conflict — `CLAUDE.md` never mandated logo-only, that was purely
+    a memory-log interpretation from Session 1 that's now out of date.
+  - **Correcting Session 8's "`brand-carousel.tsx` appears unused" note** — it's actually
+    imported and rendered in `app/products/page.tsx` (confirmed via grep), not dead code.
+  - **Logo asset swap, currently uncommitted:** `components/nav.tsx` now points to a new
+    `public/pbb-logo.png` (was `public/logo.png`), sized `h-16` (was `h-12`). `public/
+    logo.png` is still on disk and is what `app/globals.css`'s palette-sourcing comments
+    reference, but nothing renders it anymore — footer still uses its own text lockup, not an
+    image. No other file references the old path, so this was a clean, isolated swap.
+  - Confirmed `CLAUDE.md` itself needs no edits — its design guidelines (palette, "not a
+    photo-collage," 4-page scope) aren't contradicted by any of the above; the drift was
+    entirely in `memory.md`'s narrative, not in the project's durable instructions.
+- **Key decisions made:** Corrected the stale notes via a new dated entry rather than editing
+  Sessions 1/8 in place, per this file's append-only convention.
+- **Files touched:** `memory.md` only.
+- **Open issues / TODOs for next session:**
+  - Uncommitted working tree as of this session: `app/page.tsx` (Caterpillar removal, see
+    Session 10), `components/nav.tsx` (logo swap above), `memory.md` (Sessions 10–11), plus
+    untracked `public/pbb-logo.png`. Not committed — user hasn't asked for a commit yet.
+  - Same content TODOs as Session 9/10: real client logos still needed for "Our Clients";
+    its placement (before vs. after the CTA band) not yet explicitly confirmed.
+  - Proceed to Task 4 (About page), now with the corrected understanding that imagery is
+    allowed, not just typography/icons.
+
+## Session 12 — 2026-09-15 — Task 4: About page
+
+- **What was done:** Built `app/about/page.tsx` (Server Component, static, real
+  `metadata`). Structure:
+  - Header/story section (`max-w-4xl`, white bg): "About Us" eyebrow, H1, tagline, two
+    paragraphs of company-story/trust copy (verbatim facts only — full lifecycle sell/buy/
+    rental/service, power range up to 300+ kVA, two locations, what the tagline means in
+    practice — no invented years-in-business or customer-count claims), a wrapped row of all
+    8 brand names as text chips (not logos — deliberately different treatment from the
+    marquees, see below), and a compact "Dhaka & Chattogram" line linking to `/contact` for
+    full address detail rather than repeating it here.
+  - "What We Do" section (`ink-50` bg, `max-w-4xl`): the 5 services (Sell/Buy/Rental/
+    Service/Spare Parts — matching the 5 already live on Home, not the 4 in CLAUDE.md's
+    original spec, see below) as a divided list of icon+title+2-3-sentence rows, distinct
+    from Home's compact one-line card grid, per CLAUDE.md's "explained in a bit more depth."
+  - Bottom `ink-900` CTA band, same visual pattern as Home's (View Products / Get in Touch).
+  - No image/photo reused from Home or the product cards — the header intentionally stays
+    typography + icon-led (brand chips, `ShieldCheck`/`MapPin` icons) rather than reusing
+    `/generator.png` again, since a second copy of the same stock photo right after Home's
+    hero would read as repetition, not intentional imagery. This was a judgment call, not a
+    reversion to the old logo-only rule corrected in Session 11 — About is real content, not
+    a decorative photo, and there's no second real photo asset to use instead.
+- **Key decisions made:**
+  - Kept all 5 services (including "Spare Parts," which the user added directly to Home's
+    `SERVICES` array between Sessions 8 and 9, per that entry) rather than the 4 named in
+    CLAUDE.md's original About spec — mirrors what's already live on the site instead of
+    contradicting it. Worth a one-line CLAUDE.md update if the user confirms Spare Parts is
+    a permanent 5th service rather than a placeholder.
+  - Brand list shown as text chips, not the logo images used in the Home marquees — avoids a
+    third repetition of the same 8 logo files on one more page and reads better inline with
+    body copy than small logo thumbnails would.
+- **Verification:** `next build` succeeds (`/about` prerendered as static content, no type
+  errors). Screenshotted via a temporary in-project Playwright script (`_shot.mjs`, deleted
+  after use, per the established Session 7+ pattern) at 1440px and 390px against the
+  already-running dev server (port 3000, PID 15288). Both confirmed: header/story renders
+  with wrapped brand chips, "What We Do" list renders as distinct rows (icon stacks above
+  title on mobile via a `sm:hidden`/`sm:block` swap, side-by-side on desktop), CTA band and
+  footer render correctly, nav shows "About" as the active link. Zero console errors on
+  either screenshot.
+- **Skills invoked this session:** none.
+- **Files touched:** `app/about/page.tsx` (new), `tasks.md` (task 4 checked off),
+  `memory.md`.
+- **Deviations from tasks.md / this CLAUDE.md, and why:** Showing 5 services instead of the
+  4 CLAUDE.md names — not a new deviation, just this page reflecting the Home page's
+  existing 5-service reality (see above); flagged for a possible CLAUDE.md update rather
+  than silently diverging.
+- **Open issues / TODOs for next session:**
+  - Confirm with the user whether CLAUDE.md's service count (currently says "four") should
+    be updated to five now that Spare Parts is a real, permanent service — low priority,
+    doesn't block anything.
+  - Move on to Task 5 (Contact page) next — per CLAUDE.md, info only, no form: both
+    addresses, all three phones, email, optional embedded maps.
+  - Working tree is still uncommitted (Sessions 10–12 plus the pre-existing logo swap) —
+    same note as Session 11, not committed since the user hasn't asked for it.
+
+## Session 13 — 2026-09-15 — Task 5: Contact page
+
+- **What was done:** Built `app/contact/page.tsx` (Server Component, static, real
+  `metadata`). Structure, per CLAUDE.md's "info only, no form" spec:
+  - Header section (matches About's visual pattern): "Contact Us" eyebrow, H1 "Get In
+    Touch", one-line intro emphasizing no forms/direct contact.
+  - "Call Us" / "Email Us" two-card section (`ink-50` bg): all three phone numbers as
+    `tel:` links, the email as a `mailto:` link, verbatim from CLAUDE.md's business facts.
+  - "Our Locations" section (white bg): Dhaka and Chattogram side by side, each with its
+    verbatim address and an embedded Google Maps iframe below it
+    (`https://www.google.com/maps?q=<encoded address>&output=embed`, no API key needed,
+    `loading="lazy"`) — the CLAUDE.md-flagged "optional, nice-to-have" map.
+  - Bottom `ink-900` CTA band pointing to `/products` only (single button, not the usual
+    Products+Contact pair, since we're already on the Contact page — a second "Get in
+    Touch" button would be redundant here).
+- **Key decisions made:**
+  - Used the no-API-key Google Maps embed URL format (`?q=...&output=embed`) rather than
+    the Maps Embed API (`/maps/embed/v1/place?key=...`) — no Google API key exists in this
+    project and CLAUDE.md says keep dependencies/config minimal; the query-based embed is
+    public and requires no account setup, matching "no backend, no API routes" static-site
+    approach.
+  - Did not add a contact form, business hours, or a unified single map with both pins —
+    none of those were asked for; CLAUDE.md is explicit ("info only, no form") and hours
+    aren't in the verbatim business facts, so inventing them would violate the
+    no-fabricated-data rule.
+- **Verification:** `next build` succeeds (`/contact` prerendered as static content, no
+  type errors). Screenshotted via a temporary in-project Playwright script (deleted after
+  use, per the established Session 7+ pattern) at 1440px and 390px against the
+  already-running dev server (port 3000, PID 15288) — phone/email cards, both location
+  blocks, CTA, and footer all render correctly, zero console errors on either width. The
+  first full-page screenshot pass showed both map iframes as blank white boxes; a follow-up
+  check (scroll-into-view + wait, no failed network requests logged) confirmed this was
+  purely a `loading="lazy"` timing artifact in a `fullPage` screenshot taken right after
+  `networkidle` before scrolling — both maps actually render correctly (verified via a
+  scrolled, delayed screenshot showing real map tiles and pins for both Dhaka/Birulia and
+  the Chattogram address).
+- **Skills invoked this session:** none.
+- **Files touched:** `app/contact/page.tsx` (new), `tasks.md` (task 5 checked off),
+  `memory.md`.
+- **Deviations from tasks.md / this CLAUDE.md, and why:** none.
+- **Open issues / TODOs for next session:**
+  - Move on to Task 6 (Responsive/cross-browser polish, basic SEO metadata including
+    favicon generated from the logo).
+  - Same longstanding open items as prior sessions: real client logos still needed for
+    Home's "Our Clients" section; its placement not yet explicitly confirmed; working tree
+    still uncommitted (Sessions 10–13) — not committed since the user hasn't asked for it.
+
+- **Follow-up fix (same session):** user flagged that the two location columns' maps
+  weren't top-aligned — Chattogram's address wraps to 2 lines vs. Dhaka's 1 line, so with
+  each location as one self-contained grid cell (address+map together), the extra line
+  pushed only Chattogram's map down relative to Dhaka's. Fixed by splitting the grid into
+  two separate `LOCATIONS.map()` passes (all address headers first, then all maps) inside
+  one `grid grid-cols-1 lg:grid-cols-2` container, so the headers form one grid row and the
+  maps form the next — CSS Grid sizes each row to its tallest cell, so both maps now start
+  at the same y-position regardless of address line count. Verified via a scrolled/delayed
+  Playwright screenshot at 1440px showing both maps' top edges aligned.
+
+## Session 14 — 2026-09-15 — About page design pass (`/frontend-design` + `/design-taste-frontend`)
+
+- **What was done:** User said the Task 4 About page (Session 12) was "okk, nothing fancy"
+  and asked to invoke `/frontend-design` and `/design-taste-frontend` to make it "less
+  blend[ed]." Per CLAUDE.md's "Manually-invoked skills" section, loaded and followed both
+  for this page. Treated it as **Redesign - Preserve** (skill's Section 11): audited the
+  existing page first rather than starting from scratch, kept the established brand tokens
+  (`design.md`'s brand/ink palette, Geist Sans), kept all real content and copy, and did not
+  touch other pages. Concretely rewrote `app/about/page.tsx`:
+  - **Hero:** replaced the centered "About Us" eyebrow-badge + stacked-paragraph layout
+    (which read as the generic templated pattern the user was reacting to) with an
+    asymmetric 7/5 split. Left: a much larger H1 (`text-5xl`→`text-7xl`, was capped at
+    `text-5xl`), the tagline as an italic accent instead of a separate colored line, the
+    same two story paragraphs (trimmed slightly, see below), brand chips, and the
+    location/contact link. Right: a new "By the Numbers" stat panel, real data pulled
+    from the page's own arrays/constants (`ALL_BRANDS.length` = 8 brands, 2 locations,
+    `SERVICES.length` = 5 services, 300+ kVA industrial ceiling), styled as large bold
+    figures in `font-mono` (Geist Mono, already loaded site-wide for `--font-geist-mono`,
+    so this didn't add a new font) over hairline-divided rows, no card/box chrome. This is
+    the page's one deliberate visual moment: grounded in the business's real numbers and in
+    an industrial/spec-sheet visual idiom appropriate to a generator dealer, not a generic
+    decorative graphic.
+  - **What We Do:** kept the divided-row list structure from Session 12 (already distinct
+    from Home's card grid) but removed the `rounded-xl bg-brand-50` icon-badge treatment,
+    the exact same icon-in-a-box language Home's cards use, since repeating it here was part
+    of why the page felt like a reskin rather than its own page. Icons are now bare
+    (`size-6 text-brand-500`) directly above a larger bold title (`text-xl font-bold`, was
+    `text-lg font-semibold`), with the icon+title as one label block and the description in
+    a wider adjacent column. No numbered markers added since the five services aren't a true
+    sequence (Sell/Buy are parallel, not sequential) per the skill's explicit "only number
+    real sequences" rule.
+  - **Bottom CTA:** replaced the centered icon+headline+paragraph+buttons band (identical in
+    structure to Home's own bottom CTA) with a left-aligned heading/paragraph and
+    right-aligned buttons on one row (stacked on mobile) so it doesn't read as a copy-pasted
+    section between the two pages. Dropped the standalone `ShieldCheck` icon since it was
+    pure decoration once the eyebrow badge was also gone.
+  - **Copy:** removed every em dash from this page's text (two in the story paragraphs, two
+    in service descriptions, one in the metadata description) per
+    `design-taste-frontend`'s zero-em-dash rule, rewriting with commas/parentheses instead.
+    Changed the "Full location details & contact info →" link from a literal `→` character
+    (a flagged AI tell) to the same `ArrowRight` lucide icon already used for this exact
+    pattern on Home ("View All Models →" equivalents), so it's now consistent with the
+    site's existing convention instead of introducing a new one.
+- **Key decisions made:**
+  - **Kept `lucide-react` and did not adopt the skill's icon-library preference** (Phosphor/
+    HugeIcons/Radix/Tabler over Lucide). `design-taste-frontend` discourages Lucide as a
+    default, but CLAUDE.md explicitly pins `lucide-react` as the project's one icon library
+    "so iconography stays consistent across pages" and says to keep dependencies minimal.
+    Swapping icon libraries is a site-wide stack decision, not a per-page design-taste
+    choice, and doing it only on About would fracture consistency with Nav/Footer/Home/
+    Products immediately. Treated CLAUDE.md's explicit, already-established convention as
+    the deciding instruction here, not the skill's general default guidance.
+  - **Did not add a graphical/gradient accent derived from the logo's orange arc/swoosh**,
+    even though it was considered (the frontend-design skill's "ground the design in the
+    subject's own visual vocabulary" principle pointed toward it) — `design.md` and
+    CLAUDE.md both explicitly and deliberately rule out gradients and the brochure's "busy"
+    graphic look for this brand's website (an intentional decision from Session 1). Chose
+    the mono-numeral stat panel as the page's one bold move instead, since it achieves the
+    same "distinctive, subject-grounded" goal (real business data, industrial spec-sheet
+    idiom) without contradicting that standing rule.
+  - **Did not touch Home, Products, or Contact.** The user's ask was specifically about the
+    About page ("the about page is okk... make the design less blend"). Flagging that Home's
+    bottom CTA and card-icon-badge treatment are the same patterns About just moved away
+    from, so if the user likes this direction, those may be worth revisiting too for
+    cross-page consistency, but that's their call, not assumed scope.
+  - **Declared dials informally rather than literally setting the skill's numeric dial
+    variables:** treated this as low-to-moderate `DESIGN_VARIANCE` (asymmetric split, not
+    chaotic), low `MOTION_INTENSITY` (no new animation added, none of the skill's motion
+    machinery like Motion/GSAP pulled in), moderate `VISUAL_DENSITY` (unchanged from the
+    rest of the site) — because CLAUDE.md's own design brief already says "trustworthy and
+    straightforward, not flashy," which the skill's own brief-inference step (Section 0)
+    says should override generic dial defaults.
+- **Verification:** `next build` succeeds (`/about` still prerendered as static content, no
+  type errors). Screenshotted via a temporary in-project Playwright script (deleted after
+  use) at 1440px and 390px against the running dev server (port 3000). Confirmed: stat panel
+  renders correctly with real numbers, hero reads as a clear asymmetric split on desktop and
+  collapses cleanly to a single stacked column on mobile, "What We Do" rows render with the
+  new bare-icon treatment, CTA band is left/right-split on desktop and stacks on mobile,
+  brand chips wrap correctly at both widths, zero console errors on either screenshot. Also
+  grepped the file for em dash/en dash characters after editing and confirmed zero remain.
+- **Skills invoked this session:** `frontend-design`, `design-taste-frontend` (user-invoked,
+  per CLAUDE.md's "Manually-invoked skills" section).
+- **Files touched:** `app/about/page.tsx` (rewritten), `memory.md`.
+- **Deviations from tasks.md / this CLAUDE.md, and why:** none — task 4 was already checked
+  off in Session 12; this is a visual revision of its implementation, not new scope. The two
+  deliberate departures from the invoked skills' general defaults (keeping `lucide-react`,
+  not adding gradient/graphic accents) are explained above and were resolved in favor of
+  this project's own explicit, pre-existing conventions.
+- **Open issues / TODOs for next session:**
+  - If the user likes this direction, Home's matching bottom-CTA and icon-badge-card
+    patterns are candidates for the same treatment, for cross-page consistency, not done
+    automatically.
+  - Same longstanding items as Session 13: Task 6 (responsive/cross-browser polish, SEO
+    metadata, favicon) is next in `tasks.md`; real client logos still needed for Home's "Our
+    Clients" section; working tree still uncommitted (Sessions 10-14), not committed since
+    the user hasn't asked for it.
+
+- **Follow-up (same session):** user pointed at the "By the Numbers" mono-stat panel
+  (screenshot with a circle drawn around it) and asked to replace it with
+  `public/generator.png` instead. Swapped the right-column content in `app/about/page.tsx`:
+  removed the `STATS` array and its hairline-divided rows entirely, replaced with the same
+  `next/image` hero-photo treatment Home's hero already uses (`relative aspect-[4/3]
+  overflow-hidden rounded-2xl`, `fill`, `object-cover`, `priority`, matching `sizes` pattern).
+  This reuses the exact same pre-existing `/generator.png` asset already shown on Home's hero
+  and every `ProductCard`, not a new image. Net effect: the stat-panel design experiment from
+  earlier in this session is gone; About's hero is now a standard asymmetric text-left/
+  photo-right split, matching Home's hero pattern instead of the spec-sheet numerals idea.
+  Verified via the same temporary in-project Playwright script (deleted after use) at 1440px
+  and 390px: image renders correctly at both widths, layout holds, zero console errors,
+  `next build` still succeeds. `design-taste-frontend`'s "hero needs a real visual, text +
+  gradient/data-only is a placeholder" guidance is arguably even better satisfied now than
+  by the numeral panel. Files touched: `app/about/page.tsx` only.
+
+## Session 15 — 2026-09-15 — Contact page design pass (`/frontend-design` + `/design-taste-frontend`)
+
+- **What was done:** User asked to invoke both skills on `app/contact/page.tsx`, calling out
+  the same generic tells Session 14 removed from About: the centered eyebrow badge and the
+  boxed-icon "SaaS card kit" treatment (identical rounded-2xl border cards for Call Us /
+  Email Us). Treated as **Redesign - Preserve**: kept `design.md`'s palette, `lucide-react`,
+  all real phone/email/address data untouched, and did not touch other pages. Rewrote
+  `app/contact/page.tsx`:
+  - **Header:** replaced the centered "Contact Us" eyebrow badge + H1 + paragraph block with
+    an asymmetric 7/5 split matching About's redesigned hero shape. Left: H1 "Get in touch"
+    + one intro paragraph, no eyebrow. Right: a "quick contact" list (Call / Email, bare
+    `Phone`/`Mail` icons at `size-4`, no icon-in-a-box) separated from the left column by a
+    single hairline border, used as the real-content visual anchor in place of a stock image
+    (there's no second product photo to reuse here, and the user's brief explicitly said to
+    lean on real content over decoration for this utility page).
+  - **Call Us / Email Us cards removed entirely** as a standalone section (the two identical
+    `rounded-2xl border bg-white p-8` cards with a `rounded-xl bg-brand-50` icon box each,
+    the exact pattern flagged as boring) and folded into the header's quick-contact list
+    above, cutting a redundant section rather than just restyling it. Also dropped the email
+    card's helper sentence ("For sales, rental, service...") since it was the page's only
+    non-essential copy and its removal was the cleanest way to kill one of the em dashes
+    without a forced rewrite.
+  - **Locations section kept and given more visual weight** per the brief ("lean on the maps
+    as the visual anchor"): widened the section container to `max-w-7xl` (was `max-w-6xl`,
+    now matching the header/CTA width) and grew the map iframes from `h-72` to `h-80 sm:h-96`.
+    The two-pass grid (all address headers in row 1, both maps in row 2) from Session 13's
+    alignment fix was kept as-is, since it already avoided the misalignment bug and needed no
+    further change.
+  - **Bottom CTA restyled** from the old centered icon+headline+paragraph+button stack to a
+    left-aligned heading/paragraph with a right-aligned single button on one row (stacked on
+    mobile), matching About's redesigned CTA shape instead of the generic centered band. Kept
+    only the one "View Products" button (no second "Get in Touch" button, since a contact
+    intent CTA on the Contact page itself would be a duplicate-intent violation).
+  - **Copy:** removed the two em dashes present before this pass (the header paragraph's
+    "...answer a question — no forms..." and the metadata description's "phone, email...
+    — no forms...") along with the iframe `title` attribute's em dash
+    ("Map to ... — {city}"), which the copy-audit in the prompt's example list hadn't
+    named but is equally user-visible (assistive-tech accessible name) and so was fixed too.
+    Metadata description now reads with a colon, matching About's own metadata style from
+    Session 14.
+- **Key decisions made:**
+  - **Kept `lucide-react`**, same reasoning as Session 14: CLAUDE.md pins the icon library
+    site-wide, and the skill's icon-library preference is a general default, not an override
+    of an explicit, already-established project convention.
+  - **No stats/number panel** was added anywhere on this page, per the user's explicit
+    constraint referencing About's already-rejected and removed stat panel (see Session 14's
+    two entries above) — the quick-contact list serves the "give the asymmetric layout a
+    right-column visual" job instead, using real content rather than invented numbers.
+  - Chose to delete the Call/Email cards section rather than de-box it in place, since
+    keeping it as its own section (even bare-icon) would have duplicated the header's need
+    to show the same phone/email info and produced a redundant second "here's how to reach
+    us" block on a single-purpose contact page.
+- **Verification:** `next build` succeeds (`/contact` still prerendered as static content, no
+  type errors). Screenshotted via a temporary in-project Playwright script (deleted after
+  use) at 1440px and 390px against the running dev server (port 3000, PID 15288): asymmetric
+  header renders with the quick-contact list correctly aligned via the hairline divider,
+  locations section shows both address blocks and larger maps, CTA band shows the
+  left-text/right-button asymmetric layout and stacks cleanly on mobile, zero console errors
+  on either screenshot. Re-ran the maps specifically with a scrolled/delayed follow-up
+  screenshot (same lazy-loading timing artifact as Session 13's full-page capture) and
+  confirmed both render correctly at the new larger size on both desktop and mobile widths.
+  Grepped the finished file for em dash/en dash characters and confirmed zero remain.
+- **Skills invoked this session:** `frontend-design`, `design-taste-frontend` (user-invoked,
+  per CLAUDE.md's "Manually-invoked skills" section).
+- **Files touched:** `app/contact/page.tsx` (rewritten), `memory.md`.
+- **Deviations from tasks.md / this CLAUDE.md, and why:** none — task 5 was already checked
+  off in Session 13; this is a visual revision of its implementation, not new scope.
+- **Open issues / TODOs for next session:**
+  - `components/footer.tsx` still has one em dash in its tagline copy ("All kinds of
+    Generator — Sell, Buy, Rental & Service.") — out of scope for this session since the
+    user's ask was specifically about `app/contact/page.tsx` and the footer is shared
+    site-wide, not contact-specific, but worth a heads-up since it's the same class of issue
+    just fixed here. Not touched without being asked.
+  - If the user likes this direction, Home's own bottom-CTA and icon-badge-card patterns
+    (flagged as similar candidates back in Session 14) are still open for the same treatment
+    across the rest of the site, not assumed scope.
+  - Same longstanding items as Sessions 13-14: Task 6 (responsive/cross-browser polish, SEO
+    metadata, favicon) is next in `tasks.md`; real client logos still needed for Home's "Our
+    Clients" section; working tree still uncommitted (Sessions 10-15), not committed since
+    the user hasn't asked for it.
