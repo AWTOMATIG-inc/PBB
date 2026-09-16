@@ -79,12 +79,11 @@ export default function AboutPage() {
 
               <div className="mt-8 max-w-prose space-y-5 text-lg leading-8 text-ink-500">
                 <p>
-                  Power Bank Bangladesh is a diesel generator dealer covering
-                  the complete lifecycle of generator ownership (sell, buy,
-                  rental, and service) for homes, businesses, and industrial
-                  sites across Bangladesh. We carry models across the full
-                  power range, from compact standby units to industrial
-                  installations above 300 kVA.
+                  From compact standby units to industrial installations
+                  above 300 kVA, Power Bank Bangladesh covers the complete
+                  lifecycle of generator ownership: sell, buy, rental, and
+                  service, for homes, businesses, and industrial sites across
+                  Bangladesh.
                 </p>
                 <p>
                   &ldquo;Bringing Energy to Your Doorstep&rdquo; is more than
@@ -179,8 +178,9 @@ export default function AboutPage() {
                 Ready to work with us?
               </h2>
               <p className="mt-3 text-ink-300">
-                Browse our full catalog of generator models, or reach out
-                directly and our team will help you find the right fit.
+                Tell us your power requirement and site conditions, and
+                we&apos;ll match you to a model. No contact form, just a call
+                or email straight to our team.
               </p>
             </div>
             <div className="flex flex-col gap-4 sm:flex-row lg:shrink-0">

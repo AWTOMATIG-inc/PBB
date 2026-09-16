@@ -61,7 +61,7 @@ export default function Footer() {
               You Believe, We Assure Trust
             </p>
             <p className="mt-4 text-sm text-ink-300">
-              All kinds of Generator — Sell, Buy, Rental &amp; Service.
+              All kinds of Generator: Sell, Buy, Rental &amp; Service.
             </p>
           </div>
 
@@ -122,7 +122,7 @@ export default function Footer() {
                 <MapPin className="mt-0.5 size-4 shrink-0 text-brand-400" />
                 <p className="text-sm text-ink-100">
                   Shop: 8, Subashati Chawk Arcade, 174/A, Nawab Siraj Ud
-                  Daulah Road, Chawkbazar, Chattagram
+                  Daulah Road, Chawkbazar, Chattogram
                 </p>
               </div>
               <div className="flex items-center gap-3">

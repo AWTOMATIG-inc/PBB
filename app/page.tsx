@@ -29,24 +29,25 @@ const WHY_US = [
     icon: Award,
     title: "All Major Brands",
     description:
-      "John Deere, Cummins, Ricardo, Perkins, Volvo Penta, Deutz — plus Caterpillar and Doosan, all under one roof.",
+      "One supplier for every major brand: John Deere, Cummins, Ricardo, Perkins, Volvo Penta, Deutz, Caterpillar, and Doosan.",
   },
   {
     icon: Gauge,
     title: "Full Power Range",
     description:
-      "98+ models spanning small standby units to 300+ kVA industrial generators.",
+      "Never outgrow your supplier: 98+ models from small standby units to 300+ kVA industrial generators.",
   },
   {
     icon: MapPin,
     title: "Two Locations",
-    description: "Serving customers from both Dhaka and Chattogram.",
+    description:
+      "Local sales and service whether you're based in Dhaka or Chattogram.",
   },
   {
     icon: Workflow,
     title: "Full Lifecycle, One Partner",
     description:
-      "Sell, buy, rental & service — no need to juggle multiple vendors.",
+      "No need to juggle multiple vendors: we sell, buy, rent, and service every unit ourselves.",
   },
 ];
 
@@ -61,7 +62,7 @@ const SERVICES = [
     icon: Handshake,
     title: "Buy",
     description:
-      "We purchase used generators in working condition — fair valuation, straightforward process.",
+      "We purchase used generators in working condition: fair valuation, straightforward process.",
   },
   {
     icon: Repeat,
@@ -108,10 +109,9 @@ export default function Home() {
                 <span className="text-brand-500">We Assure Trust</span>
               </h1>
               <p className="mt-6 max-w-2xl text-lg leading-8 text-ink-500">
-                Power Bank Bangladesh is a trusted diesel generator dealer
-                serving Dhaka and Chattogram — sell, buy, rental &amp; service
-                across every major generator brand, from small standby units
-                to industrial-scale power.
+                From small standby units to industrial-scale power, we sell,
+                buy, rent, and service every major generator brand out of
+                Dhaka and Chattogram.
               </p>
               <div className="mt-10 flex flex-col gap-4 sm:flex-row">
                 <Link
@@ -171,7 +171,7 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
           <div className="max-w-2xl">
             <h2 className="text-3xl font-bold tracking-tight text-ink-900">
-              Why Power Bank Bangladesh
+              One Partner for Every Generator Need
             </h2>
           </div>
           <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -204,7 +204,7 @@ export default function Home() {
                 New Products
               </h2>
               <p className="mt-3 text-ink-500">
-                Two models from each brand, ready to browse — scroll through
+                Two models from each brand, ready to browse: scroll through
                 or view the full catalog.
               </p>
             </div>
@@ -229,7 +229,7 @@ export default function Home() {
                 Featured Models
               </h2>
               <p className="mt-3 text-ink-500">
-                A sample from each brand — the full catalog has 98+ models to
+                A sample from each brand. The full catalog has 98+ models to
                 compare by brand and power output.
               </p>
             </div>
@@ -257,8 +257,8 @@ export default function Home() {
               Our Services
             </h2>
             <p className="mt-3 text-ink-500">
-              Whatever stage you&apos;re at with generator power, we handle
-              it — start to finish.
+              From first purchase to years of upkeep, one team handles it
+              all.
             </p>
           </div>
           <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -282,18 +282,22 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Our Clients — reusing the brand logos as a placeholder marquee until
-          real client logos are supplied */}
+      {/* Brand Partners: same BRAND_LOGOS marquee as "Brands We Carry" above.
+          Previously labeled "Our Clients", which misrepresented these brands
+          (manufacturers PBB resells/services) as PBB's own customers. Renamed
+          to something accurate; if the user ever supplies real customer
+          logos, that's a genuine "Our Clients" section with different
+          content, not just a relabel of this one. */}
       <section className="border-t border-ink-100 bg-white">
         <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
           <p className="text-center text-lg font-semibold uppercase tracking-wide text-ink-400">
-            Our Clients
+            Our Brand Partners
           </p>
           <div className="mt-8 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
             <div className="flex w-max animate-marquee items-center gap-16 hover:[animation-play-state:paused]">
               {[...BRAND_LOGOS, ...BRAND_LOGOS].map((brand, index) => (
                 <img
-                  key={`client-${brand.name}-${index}`}
+                  key={`partner-${brand.name}-${index}`}
                   src={`/brands/${brand.file}.png`}
                   alt={brand.name}
                   className="h-10 w-auto shrink-0 object-contain sm:h-12"
@@ -313,7 +317,8 @@ export default function Home() {
           </h2>
           <p className="max-w-xl text-ink-300">
             Browse our full catalog of 98+ models, or reach out directly and
-            our team will help you find the right fit.
+            our team will help you find the right fit. No contact form, just
+            a call or email straight to us.
           </p>
           <div className="flex flex-col gap-4 sm:flex-row">
             <Link

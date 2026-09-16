@@ -4,17 +4,17 @@
   --background: #ffffff;
   --foreground: #14181b;
 
-  /* Brand orange — sampled from logo.png (#F07522) */
-  --color-brand-50: #fdf1e7;
-  --color-brand-100: #fbe1cb;
-  --color-brand-200: #f7c398;
-  --color-brand-300: #f5a465;
-  --color-brand-400: #f38b3e;
-  --color-brand-500: #f07522;
-  --color-brand-600: #d9600f;
-  --color-brand-700: #b14b0b;
-  --color-brand-800: #883a0c;
-  --color-brand-900: #602a0a;
+  /* Brand orange — company color code #ED7423 */
+  --color-brand-50: #fdf0e7;
+  --color-brand-100: #fbdecb;
+  --color-brand-200: #f7bd97;
+  --color-brand-300: #f3a068;
+  --color-brand-400: #f08842;
+  --color-brand-500: #ed7423;
+  --color-brand-600: #d45f11;
+  --color-brand-700: #af4e0e;
+  --color-brand-800: #893d0b;
+  --color-brand-900: #632c08;
 
   /* Ink (navy-charcoal) — sampled from logo.png black + brochure dark panels */
   --color-ink-50: #f5f5f6;

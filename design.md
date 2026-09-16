@@ -7,21 +7,21 @@ theme tokens — use the utility classes shown below rather than hardcoding hex 
 ## Brand colors
 
 ### Orange — `brand`
-Sampled directly from the logo's infinity mark: **#F07522**. This is the primary accent —
+Company color code: **#ED7423**. This is the primary accent —
 CTAs, links, active states, highlight text, the brand strip.
 
 | Token | Hex | Utility classes | Use |
 |---|---|---|---|
-| `brand-50` | `#FDF1E7` | `bg-brand-50` | subtle tinted backgrounds |
-| `brand-100` | `#FBE1CB` | `bg-brand-100` | hover backgrounds on light surfaces |
-| `brand-200` | `#F7C398` | `border-brand-200` | light borders/dividers |
-| `brand-300` | `#F5A465` | | |
-| `brand-400` | `#F38B3E` | | |
-| `brand-500` | `#F07522` | `bg-brand-500` `text-brand-500` | **primary accent** — CTAs, active nav, icons |
-| `brand-600` | `#D9600F` | `bg-brand-600` `hover:bg-brand-600` | hover/pressed state for primary buttons |
-| `brand-700` | `#B14B0B` | | text on light backgrounds needing AA contrast |
-| `brand-800` | `#883A0C` | | |
-| `brand-900` | `#602A0A` | | |
+| `brand-50` | `#FDF0E7` | `bg-brand-50` | subtle tinted backgrounds |
+| `brand-100` | `#FBDECB` | `bg-brand-100` | hover backgrounds on light surfaces |
+| `brand-200` | `#F7BD97` | `border-brand-200` | light borders/dividers |
+| `brand-300` | `#F3A068` | | |
+| `brand-400` | `#F08842` | | |
+| `brand-500` | `#ED7423` | `bg-brand-500` `text-brand-500` | **primary accent** — CTAs, active nav, icons |
+| `brand-600` | `#D45F11` | `bg-brand-600` `hover:bg-brand-600` | hover/pressed state for primary buttons |
+| `brand-700` | `#AF4E0E` | | text on light backgrounds needing AA contrast |
+| `brand-800` | `#893D0B` | | |
+| `brand-900` | `#632C08` | | |
 
 ### Ink (navy-charcoal) — `ink`
 The logo's wordmark is pure black (`#000000`), but the brochure's dark panels
@@ -87,7 +87,9 @@ collage). Mobile-first; test at ~375px minimum width.
 
 Pixel color histogram of `public/logo.png` (Python/Pillow) surfaced three dominant opaque
 colors: white background, `rgb(0,0,0)` (wordmark + one half of the infinity mark), and
-`rgb(240,117,34)` / `#F07522` (the other half of the infinity mark). Tonal scales (50–900)
-around `#F07522` and around a navy-tinted charcoal (informed by sampling
-`reference/Work-07-07.png` and `reference/1.png` background panels) were built by hand to
-give the UI room for hover/active/muted states without introducing off-brand hues.
+`rgb(240,117,34)` / `#F07522` (the other half of the infinity mark). The orange scale was
+later re-based on the company's official color code, **#ED7423**, superseding the
+logo-sampled value. Tonal scales (50–900) around `#ED7423` and around a navy-tinted
+charcoal (informed by sampling `reference/Work-07-07.png` and `reference/1.png` background
+panels) were built by hand to give the UI room for hover/active/muted states without
+introducing off-brand hues.

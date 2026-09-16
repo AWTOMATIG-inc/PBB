@@ -22,7 +22,7 @@ const LOCATIONS = [
   {
     city: "Chattogram",
     address:
-      "Shop: 8, Subashati Chawk Arcade, 174/A, Nawab Siraj Ud Daulah Road, Chawkbazar, Chattagram",
+      "Shop: 8, Subashati Chawk Arcade, 174/A, Nawab Siraj Ud Daulah Road, Chawkbazar, Chattogram",
   },
 ];
 

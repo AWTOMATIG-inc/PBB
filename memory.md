@@ -842,3 +842,204 @@
     metadata, favicon) is next in `tasks.md`; real client logos still needed for Home's "Our
     Clients" section; working tree still uncommitted (Sessions 10-15), not committed since
     the user hasn't asked for it.
+
+## Session 16 — 2026-09-16 — Task 6: responsive polish + SEO metadata + favicon
+
+- **What was done:**
+  - **Favicon generated from the logo** (the one concrete open item from Session 1): the
+    `app/favicon.ico` on disk was still the Next.js scaffold default. Used Python/Pillow to
+    isolate just the "pbb" infinity mark from `public/logo.png` (bounding-box crop at
+    rows 70–312, cols 44–497, excluding the "POWER BANK BANGLADESH" wordmark row below it —
+    confirmed via a row-content-density scan, since the glyph's descender stem meant a naive
+    "find the first big vertical gap" approach didn't cleanly separate mark from text), padded
+    ~12% onto a square canvas, and generated three files per Next.js's file-based icon
+    convention (confirmed current in `node_modules/next/dist/docs/.../app-icons.md` — no
+    breaking change here): `app/favicon.ico` (multi-size ICO: 16/32/48, transparent bg,
+    replacing the old default), `app/icon.png` (192×192, transparent, modern browser tabs),
+    `app/apple-icon.png` (180×180, opaque white bg since iOS composites its own rounded mask
+    over whatever background exists — transparent would look wrong on a home screen). `next
+    build` picks up all three as their own static routes automatically, no manual `metadata`
+    icon config needed.
+  - **Responsive audit across all 4 pages** (Home, Products, About, Contact) at three
+    viewports (375/mobile, 768/tablet, 1440/desktop) via a temporary in-project Playwright
+    script (`_polish_check.mjs`, deleted after use, per the established Session 7+ pattern):
+    checked `document.documentElement.scrollWidth` vs `clientWidth` for horizontal overflow,
+    captured console errors/pageerrors, and took full-page screenshots at every combination
+    (12 total). **Zero horizontal overflow and zero console errors on any page/viewport
+    combination.** Visually reviewed every screenshot (sliced into segments via Pillow where
+    full-page height made a single downscaled image illegible): hero, brand/client marquees,
+    "Why Us" cards, New Products carousel (arrow clamping, card peek), Featured Models grid,
+    Services, footer all reflow correctly at every width. Products page: sidebar correctly
+    collapses to a "Filters" dropdown below `lg` (confirmed still collapsed at 768/tablet, not
+    just 375/mobile — this exact width hadn't been explicitly checked in prior sessions),
+    2-column card grid at tablet, pagination/prev-next controls fit without wrapping at 375.
+    About/Contact: asymmetric hero splits collapse cleanly to single-column stacks, map
+    iframes and address blocks hold alignment. **This closes out the longstanding
+    "mobile-viewport gap" thread from Sessions 3–6** with a full explicit pass across every
+    page and a tablet-width check that hadn't been done before, not just Home/Products.
+  - **Noted, not a bug:** a small black circle badge (with a white "N") appears at a fixed
+    screen position in several screenshots, overlapping content. Confirmed this is the
+    Next.js dev-mode build-activity indicator (only renders under `next dev`, stripped from
+    the production build) — same category as the `bis_skin_checked` hydration artifact noted
+    in Sessions 4–6, not app code. No action taken.
+  - **SEO metadata: audited, no changes needed.** Every page (`layout.tsx`, `about`,
+    `contact`, `products`) already has a real, distinct `title`/`description` (set in Sessions
+    4–13) — no lorem ipsum, no missing pages. `<html lang="en">` already set. Did not add
+    `robots.txt`, `sitemap.ts`, a web manifest, `metadataBase`, or Open Graph images —
+    `tasks.md`'s task 6 line explicitly scopes "basic SEO metadata" to "(titles, descriptions,
+    favicon generated from the logo)" only; those three items are what's asked for and CLAUDE.md
+    says not to add scope beyond what a task requires.
+  - **Considered and reverted a footer copy edit.** While auditing, noticed
+    `components/footer.tsx`'s tagline still has one em dash ("All kinds of Generator — Sell,
+    Buy, Rental & Service."), flagged as a known pending item back in Session 15. Initially
+    changed it to a colon, then reverted: em-dash removal is a `design-taste-frontend` skill
+    rule, and that skill is explicitly user-invoked per-page (About in Session 14, Contact in
+    Session 15) per CLAUDE.md's "Manually-invoked skills" section — Task 6 is scoped to
+    responsive polish and SEO metadata, not copy editing, and two prior sessions had already
+    deliberately left this exact line alone for the same reason ("not touched without being
+    asked"). Left the footer file unchanged; `git status` confirms it's back to the pre-session
+    committed state.
+- **Key decisions made:**
+  - Favicon source: `public/logo.png` (the original, simpler mark — no swoosh graphic), not
+    `public/pbb-logo.png` (the newer file `nav.tsx` renders, which has the same "pbb" mark plus
+    an extra bottom swoosh + full wordmark) — favicons render at 16–48px, so only the compact
+    icon-only glyph matters and `logo.png`'s tighter crop was cleaner to isolate.
+  - Kept the favicon crop to icon-only (no wordmark text) — legible at 16×16, matches how
+    every other real-world favicon in a browser tab looks next to text-heavy alternatives.
+- **Verification:** `next build` succeeds twice (once after generating the icon files, once
+  after the footer revert) with no type errors; all three icon routes
+  (`/icon.png`, `/apple-icon.png`, `favicon.ico`) appear in the build route list. Full
+  responsive/console audit described above. Confirmed final `git status` shows only the
+  intended new/changed files: `app/favicon.ico` (replaced), `app/icon.png` (new),
+  `app/apple-icon.png` (new) — `app/globals.css` and `design.md`'s pre-existing uncommitted
+  brand-color change (re-basing `brand` scale from the logo-sampled `#F07522` to the
+  company's official `#ED7423`, made before this session, not by me) was left untouched.
+- **Skills invoked this session:** none (user did not invoke `design-taste-frontend` or
+  `frontend-design` this session; the footer copy question above was resolved by *not*
+  invoking either, on purpose).
+- **Files touched:** `app/favicon.ico` (regenerated), `app/icon.png` (new), `app/apple-icon.png`
+  (new), `tasks.md` (task 6 checked off), `memory.md`.
+- **Deviations from tasks.md / this CLAUDE.md, and why:** none.
+- **Open issues / TODOs for next session:**
+  - Move on to Task 7 (Deployment prep — build check already passing; env/config for the
+    chosen host, see the `/deploy` skill) — the last item in `tasks.md`.
+  - Same longstanding items as prior sessions: real client logos still needed for Home's "Our
+    Clients" section (currently a disclosed brand-logo placeholder); its placement not yet
+    explicitly confirmed; the footer em dash is still there, unfixed, pending either an
+    explicit ask or a future `design-taste-frontend` pass that covers the footer.
+  - Working tree has an uncommitted, pre-existing brand-color rebase (`app/globals.css`,
+    `design.md`, orange scale `#F07522` → `#ED7423`) plus this session's new favicon files —
+    none of this has been committed since the user hasn't asked for a commit.
+
+## Session 17 — 2026-09-16 — Site-wide copy audit + fixes (user-supplied copywriting rubric)
+
+- **What was done:** User supplied an explicit external copywriting rubric ("Human Copywriter
+  & Anti-Robotic Copy Skill" — 6 categories: audience/perspective, structure/layout, tone/
+  phrasing, trust/proof/conversion, execution) and asked to check the site's copy against it,
+  then fix everything found. This was a direct user-given rubric for this session, not an
+  invocation of `design-taste-frontend` or `frontend-design` — treated as its own one-off
+  audit standard, not a standing project rule to keep applying unprompted in future sessions.
+  - **Audited** every page's copy (`app/page.tsx`, `app/about/page.tsx`,
+    `app/contact/page.tsx`, `app/products/page.tsx` + `components/products-browser.tsx`,
+    `components/nav.tsx`, `components/footer.tsx`) by reading full file contents and grepping
+    for em dashes site-wide, then reported findings before making any changes (see the
+    conversation turn immediately before this one for the full write-up). Findings, all
+    fixed this session:
+    1. **Products page had zero on-page headline/intro copy** — `app/products/page.tsx`
+       rendered straight into `<BrandCarousel />` + `<ProductsBrowser />` with no `<h1>`.
+       Fixed: added a header section with `<h1>Generator Models</h1>` + a one-line intro
+       ("98+ diesel generators across eight major brands. Filter by brand and power band to
+       find the right fit.") above the carousel, styled to match other pages' section headers.
+    2. **9 em dashes in copy that never got the Session 14/15 `design-taste-frontend`
+       cleanup** (that pass only ever touched About/Contact, never Home/layout/footer):
+       `app/page.tsx` (7 instances: `WHY_US`/`SERVICES` array descriptions, the hero
+       paragraph, the New Products and Featured Models section intros, the Services section
+       intro), `app/layout.tsx`'s root meta description, and `components/footer.tsx`'s
+       tagline. All rewritten with colons/commas/periods per the same convention already
+       used on About/Contact. (Note: Session 16 had explicitly *declined* to touch the
+       footer em dash on the grounds that copy-style edits were out of scope for a
+       responsive/SEO polish task — that reasoning doesn't apply here, since the user gave
+       an explicit, direct copy-fix instruction this session.)
+    3. **Generic "[Company] is a [category] that/serving..." opener** on both the Home hero
+       paragraph and About's first story paragraph — the exact templated-AI pattern the
+       rubric targets. Rewrote both to lead with the power-range/lifecycle clause instead of
+       opening with the company-descriptor sentence, keeping every underlying fact
+       (Dhaka/Chattogram, sell/buy/rental/service, 300+ kVA) unchanged.
+    4. **"Why Power Bank Bangladesh" section heading and its 4 card descriptions
+       (`WHY_US` in `app/page.tsx`) were feature-first, not benefit-first**, and the heading
+       itself was a generic category label. Renamed the heading to "One Partner for Every
+       Generator Need" and rewrote all 4 descriptions to state the payoff before the fact
+       (e.g. "Never outgrow your supplier: 98+ models from small standby units to 300+ kVA
+       industrial generators" instead of leading with the model count).
+    5. **Filler/cliché closer** — "Whatever stage you're at with generator power, we handle
+       it — start to finish" (Home Services intro) rewritten to "From first purchase to years
+       of upkeep, one team handles it all," which is also shorter and drops the em dash.
+    6. **Near-duplicate CTA paragraph on Home and About** — About's bottom-CTA paragraph was
+       reworded to be distinct from Home's (referencing "power requirement and site
+       conditions" instead of repeating "browse our full catalog... reach out directly...
+       help you find the right fit" verbatim).
+    7. **"Our Clients" section was a mislabeled trust signal** (`app/page.tsx`) — it reused
+       the same `BRAND_LOGOS` marquee as "Brands We Carry" above it, under a heading that
+       implied these manufacturers (John Deere, Cummins, etc.) are PBB's customers, when
+       they're actually the brands PBB resells/services. **Renamed the section and heading to
+       "Our Brand Partners"** (also renamed the `key` prefix from `client-` to `partner-` for
+       clarity) rather than deleting the section — it's still a legitimate, accurate
+       marquee (PBB genuinely is a dealer/partner for these brands), it just needed an honest
+       label. Left a code comment explaining that if the user later supplies real customer
+       logos, that would be a *new*, separately-populated "Our Clients" section, not just a
+       relabel of this one back to its old name.
+    8. **No pre-CTA objection handling anywhere.** Added one real, already-established fact
+       (the "no contact form, just call/email direct" point already stated on the Contact
+       page) as a second sentence on both Home's and About's bottom-CTA paragraphs, so the
+       CTA addresses "will I get stuck in a form/callback queue" immediately before the
+       button, without inventing any new claim.
+    9. **Actual spelling inconsistency, not just a style nitpick**: `CLAUDE.md`'s verbatim
+       Chattogram address (line 37) ends in "...Chawkbazar, Chattogram," but the app rendered
+       that same address as "...Chawkbazar, **Chattagram**" (wrong vowel) in two places:
+       `components/footer.tsx` and `app/contact/page.tsx`'s `LOCATIONS` array. Both corrected
+       to match `CLAUDE.md` exactly. Grepped the whole codebase afterward to confirm zero
+       remaining "Chattagram" instances.
+  - **Deliberately not changed**, and said so in the review: the hero tagline "You Believe,
+    We Assure Trust" is a two-beat antithesis by the rubric's own definition, but it's the
+    client's fixed, pre-existing brand tagline per `CLAUDE.md` — not something a copy pass
+    can rewrite. Also left most other section headings as-is (e.g. "Our Services," "New
+    Products," "Our locations," "Not sure which generator you need?") since only the two
+    clearest violations (Products' missing H1, "Why Power Bank Bangladesh") were treated as
+    committed fixes in the review; rewriting every heading site-wide would have been
+    unrequested scope beyond what was flagged.
+- **Key decisions made:**
+  - Fixed the footer's em dash this session despite Session 16 explicitly declining to touch
+    it — the difference is that Session 16 was self-directed ("should I clean this up while
+    I'm here?") during an unrelated polish task, whereas this session's user message was a
+    direct, explicit instruction to fix copy issues including em dashes. Scope boundaries
+    around skill-invocation don't apply to explicit direct instructions.
+  - Renamed rather than deleted the "Our Clients" section — preserves Session 9's marquee
+    mechanic and the user's stated intent to eventually populate it with real content, while
+    fixing the actual accuracy problem (the label, not the logos, was wrong).
+- **Verification:** `next build` succeeds with no type errors after all edits; route list
+  unchanged. Re-ran a Playwright console-error check against the running dev server (port
+  3000) on all 4 pages at 1440px — zero console errors. Visually confirmed via screenshots:
+  Home hero/Why-Us/Brand-Partners sections and Products' new H1 render correctly with the
+  new copy, no layout breakage from the (slightly longer/shorter) rewritten strings. Grepped
+  the full `app/` and `components/` trees afterward and confirmed zero remaining em dashes in
+  JSX-rendered text (the only two remaining `—` characters are in code comments in
+  `app/globals.css` and `components/product-card.tsx`, which aren't user-facing copy) and
+  zero remaining "Chattagram" typos.
+- **Skills invoked this session:** none — the rubric was supplied directly by the user in
+  their message, not loaded via the `Skill` tool.
+- **Files touched:** `app/page.tsx`, `app/about/page.tsx`, `app/contact/page.tsx`,
+  `app/products/page.tsx`, `components/footer.tsx`, `app/layout.tsx`, `memory.md`.
+- **Deviations from tasks.md / this CLAUDE.md, and why:** none — this was a content/copy
+  quality pass across already-built pages, not new page scope. Not tied to a `tasks.md` line
+  item (tasks 1–6 are all already checked off; this falls under ongoing polish, same bucket
+  as Sessions 7–16).
+- **Open issues / TODOs for next session:**
+  - Move on to Task 7 (Deployment prep) if not already started — still the only unchecked
+    item in `tasks.md`.
+  - Real client logos are still needed if the user wants an actual "Our Clients" section in
+    the future (separate from the now-accurately-labeled "Our Brand Partners" marquee).
+  - This session deliberately left most section headings unrewritten (see above) — if the
+    user wants a full headline pass across every section, that's a larger, separate ask.
+  - Working tree still has the same uncommitted, pre-existing brand-color rebase noted in
+    Session 16, plus all of this session's copy edits and Session 16's favicon files — none
+    committed since the user hasn't asked for a commit.
