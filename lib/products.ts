@@ -5,6 +5,15 @@
 
 const POCKETBASE_URL = process.env.POCKETBASE_URL || "http://127.0.0.1:8090";
 
+// Separate from POCKETBASE_URL: that one is server-to-server only (e.g.
+// http://127.0.0.1:8091 on the VPS) and unreachable from a visitor's
+// browser. File URLs end up in <img src>, so they need a publicly
+// reachable base — proxied through Nginx in production, same host as
+// POCKETBASE_URL in local dev where the browser and PocketBase share a
+// machine.
+const PB_FILES_URL =
+  process.env.NEXT_PUBLIC_PB_FILES_URL || `${POCKETBASE_URL}/api/files`;
+
 export type BrandRecord = {
   id: string;
   name: string;
@@ -74,12 +83,12 @@ function pbAuthedFetch(token: string, path: string, init: RequestInit = {}) {
 
 export function productImageUrl(product: Pick<ProductRecord, "id" | "image">) {
   if (!product.image) return null;
-  return `${POCKETBASE_URL}/api/files/products/${product.id}/${product.image}`;
+  return `${PB_FILES_URL}/products/${product.id}/${product.image}`;
 }
 
 export function brandLogoUrl(brand: Pick<BrandRecord, "id" | "logo">) {
   if (!brand.logo) return null;
-  return `${POCKETBASE_URL}/api/files/brands/${brand.id}/${brand.logo}`;
+  return `${PB_FILES_URL}/brands/${brand.id}/${brand.logo}`;
 }
 
 export async function listBrands(token: string): Promise<BrandRecord[]> {
