@@ -44,3 +44,23 @@ next-env.d.ts
 # ppb.xlsx is fully captured in data/generators.json / data/generators.ts
 /ppb.xlsx
 /reference/
+
+# PocketBase local install — binary, runtime data, and logs stay untracked;
+# only pocketbase/pb_migrations/ (schema-as-code) is committed
+/pocketbase/pocketbase.exe
+/pocketbase/pb_data/
+/pocketbase/*.log
+
+# one-off client deliverable, not part of the built app
+/client-review.html
+
+# local Claude Code settings (machine-specific)
+.claude/settings.local.json
+
+# VPS-only deploy tooling — lives inside the cloned repo on the server,
+# never part of the app, never committed
+/deploy.sh
+
+# VPS-only PocketBase install (mirrors the local /pocketbase ignores above,
+# but on the server the whole binary/data pair is server-specific)
+/pocketbase/pocketbase

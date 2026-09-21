@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import ProductsBrowser from "@/components/products-browser";
 import BrandCarousel from "@/components/brand-carousel";
-import { generators } from "@/data/generators";
+import { getPublicGenerators } from "@/lib/public-data";
 
 export const metadata: Metadata = {
   title: "Generator Models | Power Bank Bangladesh",
@@ -9,7 +9,11 @@ export const metadata: Metadata = {
     "Browse 98+ diesel generator models from John Deere, Cummins, Ricardo, Perkins, Volvo Penta, and Deutz. Filter by brand and power output to find the right fit.",
 };
 
-export default function ProductsPage() {
+export const revalidate = 300;
+
+export default async function ProductsPage() {
+  const generators = await getPublicGenerators();
+
   return (
     <div className="flex flex-1 flex-col bg-white">
       <section className="bg-white">

@@ -1,0 +1,125 @@
+"use server";
+
+import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
+import { getAdminSessionToken } from "@/lib/session";
+import { createProduct, deleteProduct, updateProduct } from "@/lib/products";
+import { describePbError } from "@/lib/pb-error";
+import { parseFuelTank, parseOptionalNumber } from "@/lib/validation";
+
+export type ProductFormState = { error: string } | undefined;
+
+const TEXT_FIELDS = ["engineModel", "alternator", "notes"] as const;
+const NUMBER_FIELDS = [
+  { name: "standbyKva", label: "Standby kVA" },
+  { name: "primeKva", label: "Prime kVA" },
+  { name: "weightKg", label: "Weight" },
+] as const;
+
+function buildProductPayload(formData: FormData): { payload: FormData; error?: string } {
+  const payload = new FormData();
+
+  const brand = String(formData.get("brand") ?? "").trim();
+  const model = String(formData.get("model") ?? "").trim();
+  const powerBand = String(formData.get("powerBand") ?? "").trim();
+  if (!brand || !model || !powerBand) {
+    return { payload, error: "Brand, model, and power band are required." };
+  }
+  payload.set("brand", brand);
+  payload.set("model", model);
+  payload.set("powerBand", powerBand);
+
+  const errors: string[] = [];
+
+  for (const { name, label } of NUMBER_FIELDS) {
+    const raw = String(formData.get(name) ?? "").trim();
+    const { value, error } = parseOptionalNumber(raw, label);
+    if (error) errors.push(error);
+    else if (value) payload.set(name, value);
+  }
+
+  const { value: fuelTank, error: fuelTankError } = parseFuelTank(
+    String(formData.get("fuelTank") ?? "").trim()
+  );
+  if (fuelTankError) errors.push(fuelTankError);
+  else payload.set("fuelTank", fuelTank ?? "");
+
+  if (errors.length) return { payload, error: errors.join(" ") };
+
+  for (const field of TEXT_FIELDS) {
+    payload.set(field, String(formData.get(field) ?? "").trim());
+  }
+
+  const specsRaw = String(formData.get("specs") ?? "").trim();
+  if (specsRaw) {
+    try {
+      payload.set("specs", JSON.stringify(JSON.parse(specsRaw)));
+    } catch {
+      return { payload, error: "Specs must be valid JSON." };
+    }
+  } else {
+    payload.set("specs", "{}");
+  }
+
+  payload.set("isActive", formData.get("isActive") ? "true" : "false");
+
+  const image = formData.get("image");
+  if (image instanceof File && image.size > 0) {
+    payload.set("image", image);
+  } else if (formData.get("removeImage")) {
+    payload.set("image", "");
+  }
+
+  return { payload };
+}
+
+export async function createProductAction(
+  _prevState: ProductFormState,
+  formData: FormData
+): Promise<ProductFormState> {
+  const token = await getAdminSessionToken();
+  if (!token) redirect("/admin/login");
+
+  const { payload, error } = buildProductPayload(formData);
+  if (error) return { error };
+
+  const res = await createProduct(token, payload);
+  if (!res.ok) {
+    return { error: describePbError(res.status, await res.json().catch(() => null)) };
+  }
+
+  revalidatePath("/");
+  revalidatePath("/products");
+  redirect("/admin/products");
+}
+
+export async function updateProductAction(
+  id: string,
+  _prevState: ProductFormState,
+  formData: FormData
+): Promise<ProductFormState> {
+  const token = await getAdminSessionToken();
+  if (!token) redirect("/admin/login");
+
+  const { payload, error } = buildProductPayload(formData);
+  if (error) return { error };
+
+  const res = await updateProduct(token, id, payload);
+  if (!res.ok) {
+    return { error: describePbError(res.status, await res.json().catch(() => null)) };
+  }
+
+  revalidatePath("/");
+  revalidatePath("/products");
+  redirect("/admin/products");
+}
+
+export async function deleteProductAction(id: string) {
+  const token = await getAdminSessionToken();
+  if (!token) redirect("/admin/login");
+
+  await deleteProduct(token, id);
+  revalidatePath("/admin/products");
+  revalidatePath("/");
+  revalidatePath("/products");
+}

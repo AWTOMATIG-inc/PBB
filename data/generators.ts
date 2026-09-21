@@ -1,5 +1,3 @@
-import raw from "./generators.json";
-
 export type Brand =
   | "John Deere"
   | "Cummins"
@@ -46,5 +44,3 @@ export interface GeneratorModel {
   specs: GeneratorSpecs;
   notes?: string;
 }
-
-export const generators = raw as unknown as GeneratorModel[];

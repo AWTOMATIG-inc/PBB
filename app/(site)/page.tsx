@@ -15,7 +15,8 @@ import {
   Wrench,
   Zap,
 } from "lucide-react";
-import { BRANDS, generators } from "@/data/generators";
+import { BRANDS } from "@/data/generators";
+import { getPublicGenerators, getHomeSections } from "@/lib/public-data";
 import ProductCard from "@/components/product-card";
 import NewProductsCarousel from "@/components/new-products-carousel";
 
@@ -84,14 +85,11 @@ const SERVICES = [
   },
 ];
 
-export default function Home() {
-  const featuredModels = BRANDS.map((brand) =>
-    generators.find((g) => g.brand === brand),
-  ).filter((g): g is NonNullable<typeof g> => Boolean(g));
+export const revalidate = 300;
 
-  const newProducts = BRANDS.flatMap((brand) =>
-    generators.filter((g) => g.brand === brand).slice(0, 2),
-  );
+export default async function Home() {
+  const generators = await getPublicGenerators();
+  const { featuredModels, newProducts } = await getHomeSections(generators);
 
   return (
     <div className="flex flex-1 flex-col">
@@ -148,10 +146,7 @@ export default function Home() {
       {/* Brand strip */}
       <section className="border-b border-ink-100 bg-white">
         <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-          <p className="text-center text-lg font-semibold uppercase tracking-wide text-ink-400">
-            Brands We Carry
-          </p>
-          <div className="mt-8 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+          <div className="overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
             <div className="flex w-max animate-marquee items-center gap-16 hover:[animation-play-state:paused]">
               {[...BRAND_LOGOS, ...BRAND_LOGOS].map((brand, index) => (
                 <img
@@ -282,18 +277,13 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Brand Partners: same BRAND_LOGOS marquee as "Brands We Carry" above.
-          Previously labeled "Our Clients", which misrepresented these brands
-          (manufacturers PBB resells/services) as PBB's own customers. Renamed
-          to something accurate; if the user ever supplies real customer
-          logos, that's a genuine "Our Clients" section with different
-          content, not just a relabel of this one. */}
+      {/* Brand Partners: same BRAND_LOGOS marquee as "Brands We Carry" above. */}
       <section className="border-t border-ink-100 bg-white">
         <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-          <p className="text-center text-lg font-semibold uppercase tracking-wide text-ink-400">
-            Our Brand Partners
+          <p className="text-center text-2xl font-semibold uppercase tracking-wide text-ink-400">
+            Our Clients
           </p>
-          <div className="mt-8 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+          <div className="mt-14 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
             <div className="flex w-max animate-marquee items-center gap-16 hover:[animation-play-state:paused]">
               {[...BRAND_LOGOS, ...BRAND_LOGOS].map((brand, index) => (
                 <img
