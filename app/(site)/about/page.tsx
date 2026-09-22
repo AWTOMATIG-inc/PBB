@@ -74,7 +74,7 @@ export default function AboutPage() {
                 Power Bank Bangladesh
               </h1>
               <p className="mt-4 text-lg font-medium italic text-brand-600">
-                You Believe, We Assure Trust.
+                You Believe, We Assure Trust
               </p>
 
               <div className="mt-8 max-w-prose space-y-5 text-lg leading-8 text-ink-500">

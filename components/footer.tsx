@@ -58,7 +58,7 @@ export default function Footer() {
               Power Bank Bangladesh
             </p>
             <p className="mt-2 text-sm font-medium text-brand-400">
-              You Believe, We Assure Trust.
+              You Believe, We Assure Trust
             </p>
             <p className="mt-4 text-sm text-ink-300">
               All kinds of Generator: Sell, Buy, Rental &amp; Service.
