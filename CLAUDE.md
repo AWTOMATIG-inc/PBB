@@ -27,10 +27,16 @@ later migrated into PocketBase, which is now the source of truth for the live ca
 - Email: powerbankbd23@gmail.com
 - Address (Dhaka): Kamalapur, Biruliya, Savar, Dhaka
 - Address (Chattogram): Shop: 8, Subashati Chawk Arcade, 174/A, Nawab Siraj Ud Daulah Road, Chawkbazar, Chattagram
-- Phones: +88 (0) 1989 474 447, +88 (0) 1625 181 403, +88 (0) 1515 675401
+- Phones (approved, use only these two — see `rework-tasks.md` PBB-04/PBB-05): +88 (0) 1989
+  474 447 (WhatsApp Business) and +88 (0) 1625 181 403 (office). A third number,
+  +88 (0) 1515 675401, previously appeared on the live site and in this file — it is
+  **deprecated** per the 2026-09 feedback round, do not use it in new copy, and remove any
+  remaining reference to it when working on PBB-04.
 - Brands featured: John Deere, Cummins Power Generation, Ricardo, Perkins, Volvo Penta, Deutz
   (full spec tables) plus Caterpillar (CAT) and Doosan (logo/brand mention only — no model
-  data exists for these two, do not fabricate model tables for them)
+  data exists for these two, do not fabricate model tables for them). May expand per the
+  GRAND POWER LTD brochure import (`rework-tasks.md` PBB-08) — check that task before
+  assuming this list is final.
 
 ## Tech stack & conventions
 
@@ -52,22 +58,31 @@ later migrated into PocketBase, which is now the source of truth for the live ca
 
 This describes the public-facing site only. An authenticated `/admin` CMS section
 (PocketBase-backed product/filter/home-curation CRUD) was added later, with its own chrome
-— see `memory.md`'s "CMS backend" notes.
+— see `memory.md`'s "CMS backend" notes. A post-launch feedback round (2026-09) is extending
+this further with customers/quotations/invoices — see `rework-tasks.md`, which supersedes
+the "no pricing" and "Buy" language below where the two disagree.
 
 1. **Home (`/`)** — hero with tagline, one-line summary of what PBB does, a strip of the
-   brand logos, a short "our services" section (Sell / Buy / Rental / Service / Spare Parts,
-   five items), and CTAs into Products and Contact.
+   brand logos, a short "our services" section (Sell / **Exchange** / Rental / Service /
+   Spare Parts, five items — "Buy" was renamed to "Exchange" per `rework-tasks.md` PBB-06;
+   treat "Exchange" as the correct term in all new copy even before that task ships), and
+   CTAs into Products and Contact.
 2. **Products (`/products`)** — the core content page. Every model from the catalog data,
-   filterable by **brand** and by **kVA band** (Small <50 / Medium 50–149 / Large 150–299 /
-   Industrial 300+ — this banding is already computed in the spreadsheet's `All Models`
-   sheet, reuse it rather than recompute a different scheme). Each model shows key specs
-   (brand, model, standby/prime kVA, engine, weight, fuel tank) as a card or table row.
-   No "add to cart," no pricing, no checkout — this is a browsable spec sheet, not a store.
+   filterable by **brand** and by **kVA band**. Target banding per `rework-tasks.md`
+   PBB-01/02 is Small <50 / Medium 50–149 / Large 150–299 / Industrial 300–749 / Heavy
+   Industrial 750–1500 (expanded from the original 4-band, 300+-cap scheme to support the
+   full 0–1500 kVA range — see that task before assuming the old 4-band scheme is current).
+   Each model shows key specs (brand, model, standby/prime kVA, engine, weight, fuel tank) as
+   a card or table row. Still no "add to cart" or checkout. Pricing, however, is going from
+   "never" to **optional per product**: admin can set a price, and the UI shows it when set
+   or falls back to a "Request Quotation" CTA when not — see `rework-tasks.md` PBB-09/10
+   before assuming pricing is entirely absent.
 3. **About (`/about`)** — company story/trust messaging, and the five services explained in
-   a bit more depth (what "sell," "buy," "rental," "service," and "spare parts" each mean
-   for a customer).
-4. **Contact (`/contact`)** — **info only, no form.** Both addresses, all three phone
-   numbers, the email, and (optional, nice-to-have) an embedded map for each location.
+   a bit more depth (what "sell," "exchange," "rental," "service," and "spare parts" each
+   mean for a customer).
+4. **Contact (`/contact`)** — **info only, no form.** Both addresses, the two approved phone
+   numbers (see "Business facts" above — not three), the email, and (optional, nice-to-have)
+   an embedded map for each location.
 
 ## Design guidelines
 
@@ -114,10 +129,12 @@ tools to be present.
 
 Each feature is built in its own fresh conversation with no memory of prior sessions.
 `tasks.md` and `memory.md` carry context forward for the core build; `design-task.md` does
-the same for the motion/visual-polish pass (see below) once that work is under way. **At
-the start of every session, read `memory.md`, `tasks.md`, and `design-task.md` in full
-before writing any code.** At the end of every session, update whichever of these the
-session's work applies to.
+the same for the motion/visual-polish pass (now complete — see below), and `rework-tasks.md`
+does the same for the 2026-09 post-launch feedback round (catalogue expansion, pricing,
+quotations/invoices — currently the active work). **At the start of every session, read
+`memory.md`, `tasks.md`, `rework-tasks.md`, and (if touching motion/visual polish)
+`design-task.md` in full before writing any code.** At the end of every session, update
+whichever of these the session's work applies to.
 
 ### `tasks.md`
 
@@ -169,9 +186,21 @@ summary in the "Status"/durable-facts sections at the top, same as this file alr
 ### `design-task.md`
 
 A third tracking file, same checklist convention as `tasks.md`, scoped to the motion and
-visual-polish pass (see `cube-motion.md` and the `/craft-design-engineering` skill). Check
-items off in priority order as they're built; log decisions from this work in `memory.md`'s
-normal session-entry format, same as any other task.
+visual-polish pass (see `cube-motion.md` and the `/craft-design-engineering` skill). All 12
+items are complete as of 2026-09-22 — nothing currently active here, kept for reference.
+
+### `rework-tasks.md`
+
+The active work as of 2026-09-22. Covers the post-launch feedback round: expanded kVA range,
+catalogue redesign and brochure import, optional pricing, and a new
+customers/quotations/invoices layer. Two owners, Khalid and his junior dev Ashikul — the file
+states the split (backend/schema/financial-calculation logic stays with Khalid; content
+edits, admin-UI data entry, and visual-only work go to Ashikul) and, critically, the
+**sequencing**: Ashikul's half of a task starts only after Khalid's half for that same area
+is merged to `main` and deployed, never off an unmerged branch. When working from this file,
+check which owner a task belongs to before starting it, and check any "Depends on" note
+against what's actually merged, not just what's checked off — a checked box that hasn't been
+deployed yet still blocks the dependent task.
 
 ## Definition of done (per page/feature)
 

@@ -37,7 +37,7 @@ const WHY_US = [
     icon: Gauge,
     title: "Full Power Range",
     description:
-      "Never outgrow your supplier: 98+ models from small standby units to 300+ kVA industrial generators.",
+      "Never outgrow your supplier: 98+ models from small standby units up to 1500 kVA heavy industrial generators.",
   },
   {
     icon: MapPin,

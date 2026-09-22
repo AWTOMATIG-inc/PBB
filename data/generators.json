@@ -1921,7 +1921,7 @@
     "alternator": "HCI6G",
     "fuelTank": 1780,
     "weightKg": 7900,
-    "kvaBand": "Industrial",
+    "kvaBand": "Heavy Industrial",
     "specs": {
       "prpKva": 750,
       "ltpKva": 750,
@@ -1946,7 +1946,7 @@
     "alternator": "HCI6C",
     "fuelTank": 1780,
     "weightKg": 8200,
-    "kvaBand": "Industrial",
+    "kvaBand": "Heavy Industrial",
     "specs": {
       "prpKva": 800,
       "ltpKva": 800,
