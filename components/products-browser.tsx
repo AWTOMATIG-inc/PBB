@@ -1,12 +1,62 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { ChevronDown, SearchX, SlidersHorizontal, X } from "lucide-react";
+import { morph } from "cube-motion";
+import { Rise } from "cube-motion/react";
 import { BRANDS, KVA_BANDS, type GeneratorModel } from "@/data/generators";
 import ProductCard from "@/components/product-card";
 
 const BAND_ORDER = KVA_BANDS.map((b) => b.value);
 const PAGE_SIZE = 12;
+
+function faceStyle(shown: boolean): CSSProperties {
+  return {
+    display: "inline-flex",
+    whiteSpace: "nowrap",
+    willChange: "opacity, filter, scale",
+    ...(shown
+      ? { position: "relative" }
+      : { position: "absolute", inset: 0, opacity: 0 }),
+  };
+}
+
+/**
+ * Morphs a count between arbitrary values (not just two fixed states, so the
+ * `Morph` component's boolean `active` doesn't fit). Ping-pongs the core
+ * `morph()` call across two stacked faces, same layout convention the React
+ * adapter uses internally for its own boolean Morph.
+ */
+function MorphCount({ value }: { value: number }) {
+  const faceARef = useRef<HTMLSpanElement>(null);
+  const faceBRef = useRef<HTMLSpanElement>(null);
+  const [activeFace, setActiveFace] = useState<"a" | "b">("a");
+  const previousValue = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (previousValue.current === null) {
+      if (faceARef.current) faceARef.current.textContent = String(value);
+      previousValue.current = value;
+      return;
+    }
+    if (value === previousValue.current) return;
+    previousValue.current = value;
+    const outgoing = activeFace === "a" ? faceARef.current : faceBRef.current;
+    const incoming = activeFace === "a" ? faceBRef.current : faceARef.current;
+    if (outgoing && incoming) {
+      incoming.textContent = String(value);
+      morph(outgoing, incoming);
+    }
+    setActiveFace((f) => (f === "a" ? "b" : "a"));
+  }, [value, activeFace]);
+
+  return (
+    <span style={{ position: "relative", display: "inline-flex" }}>
+      <span ref={faceARef} aria-hidden={activeFace !== "a"} style={faceStyle(activeFace === "a")} />
+      <span ref={faceBRef} aria-hidden={activeFace !== "b"} style={faceStyle(activeFace === "b")} />
+    </span>
+  );
+}
 
 function FilterGroup({
   title,
@@ -34,24 +84,22 @@ function FilterGroup({
           className={`size-4 text-ink-400 transition-transform ${open ? "rotate-180" : ""}`}
         />
       </button>
-      {open && (
-        <div className="mt-4 flex flex-col gap-3">
-          {options.map((opt) => (
-            <label
-              key={opt.value}
-              className="flex cursor-pointer items-center gap-2.5 text-sm text-ink-700"
-            >
-              <input
-                type="checkbox"
-                checked={selected.includes(opt.value)}
-                onChange={() => onToggle(opt.value)}
-                className="size-4 shrink-0 rounded border-ink-300 text-brand-600 focus:ring-2 focus:ring-brand-300 focus:ring-offset-0"
-              />
-              {opt.label}
-            </label>
-          ))}
-        </div>
-      )}
+      <Rise show={open} targets="children" className="mt-4 flex flex-col gap-3">
+        {options.map((opt) => (
+          <label
+            key={opt.value}
+            className="flex cursor-pointer items-center gap-2.5 text-sm text-ink-700"
+          >
+            <input
+              type="checkbox"
+              checked={selected.includes(opt.value)}
+              onChange={() => onToggle(opt.value)}
+              className="size-4 shrink-0 rounded border-ink-300 text-brand-600 focus:ring-2 focus:ring-brand-300 focus:ring-offset-0"
+            />
+            {opt.label}
+          </label>
+        ))}
+      </Rise>
     </div>
   );
 }
@@ -167,7 +215,7 @@ export default function ProductsBrowser({
           Filters
           {hasFilters && (
             <span className="rounded-full bg-brand-500 px-2 py-0.5 text-xs font-semibold text-white">
-              {activeCount}
+              <MorphCount value={activeCount} />
             </span>
           )}
         </span>
@@ -178,9 +226,16 @@ export default function ProductsBrowser({
         )}
       </button>
 
-      <aside
-        className={`${mobileFiltersOpen ? "block" : "hidden"} mt-4 rounded-2xl border border-ink-100 bg-ink-50 p-6 lg:sticky lg:top-24 lg:mt-0 lg:block lg:w-72 lg:flex-shrink-0`}
+      <Rise
+        as="aside"
+        show={mobileFiltersOpen}
+        targets="children"
+        className="mt-4 rounded-2xl border border-ink-100 bg-ink-50 p-6 lg:hidden"
       >
+        {filtersPanel}
+      </Rise>
+
+      <aside className="hidden rounded-2xl border border-ink-100 bg-ink-50 p-6 lg:sticky lg:top-24 lg:block lg:w-72 lg:flex-shrink-0">
         {filtersPanel}
       </aside>
 
@@ -209,11 +264,15 @@ export default function ProductsBrowser({
           </div>
         ) : (
           <>
-            <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <Rise
+              key={`${brands.join(",")}|${bands.join(",")}`}
+              targets="children"
+              className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+            >
               {paged.map((model) => (
                 <ProductCard key={`${model.brand}-${model.model}`} model={model} />
               ))}
-            </div>
+            </Rise>
 
             {totalPages > 1 && (
               <nav

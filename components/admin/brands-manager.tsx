@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Plus, SquarePen } from "lucide-react";
+import { Rise } from "cube-motion/react";
 import type { BrandRecord } from "@/lib/products";
 import {
   createBrandAction,
@@ -39,19 +40,17 @@ export default function BrandsManager({
         </button>
       </div>
 
-      {showAdd && (
-        <div className="mt-4 rounded-lg border border-ink-100 bg-white p-4">
-          <BrandForm
-            key={addKey}
-            action={createBrandAction}
-            submitLabel="Add brand"
-            onSuccess={() => {
-              setAddKey((k) => k + 1);
-              setShowAdd(false);
-            }}
-          />
-        </div>
-      )}
+      <Rise show={showAdd} className="mt-4 rounded-lg border border-ink-100 bg-white p-4">
+        <BrandForm
+          key={addKey}
+          action={createBrandAction}
+          submitLabel="Add brand"
+          onSuccess={() => {
+            setAddKey((k) => k + 1);
+            setShowAdd(false);
+          }}
+        />
+      </Rise>
 
       <div className="mt-4 overflow-x-auto rounded-lg border border-ink-100 bg-white">
         <table className="w-full min-w-[560px] text-left text-sm">
@@ -66,7 +65,12 @@ export default function BrandsManager({
           <tbody>
             {brands.map((brand) =>
               editingId === brand.id ? (
-                <tr key={brand.id} className="border-b border-ink-100 last:border-0">
+                <Rise
+                  as="tr"
+                  key={`${brand.id}-edit`}
+                  targets="children"
+                  className="border-b border-ink-100 last:border-0"
+                >
                   <td colSpan={4} className="px-4 py-4">
                     <BrandForm
                       brand={brand}
@@ -77,9 +81,14 @@ export default function BrandsManager({
                       onCancel={() => setEditingId(null)}
                     />
                   </td>
-                </tr>
+                </Rise>
               ) : (
-                <tr key={brand.id} className="border-b border-ink-100 last:border-0">
+                <Rise
+                  as="tr"
+                  key={`${brand.id}-view`}
+                  targets="children"
+                  className="border-b border-ink-100 last:border-0"
+                >
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
                       {logoUrls[brand.id] ? (
@@ -113,7 +122,7 @@ export default function BrandsManager({
                       />
                     </div>
                   </td>
-                </tr>
+                </Rise>
               )
             )}
             {brands.length === 0 && (

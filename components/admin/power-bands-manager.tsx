@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Plus, SquarePen } from "lucide-react";
+import { Rise } from "cube-motion/react";
 import type { PowerBandRecord } from "@/lib/products";
 import {
   createPowerBandAction,
@@ -33,19 +34,17 @@ export default function PowerBandsManager({ powerBands }: { powerBands: PowerBan
         </button>
       </div>
 
-      {showAdd && (
-        <div className="mt-4 rounded-lg border border-ink-100 bg-white p-4">
-          <PowerBandForm
-            key={addKey}
-            action={createPowerBandAction}
-            submitLabel="Add power band"
-            onSuccess={() => {
-              setAddKey((k) => k + 1);
-              setShowAdd(false);
-            }}
-          />
-        </div>
-      )}
+      <Rise show={showAdd} className="mt-4 rounded-lg border border-ink-100 bg-white p-4">
+        <PowerBandForm
+          key={addKey}
+          action={createPowerBandAction}
+          submitLabel="Add power band"
+          onSuccess={() => {
+            setAddKey((k) => k + 1);
+            setShowAdd(false);
+          }}
+        />
+      </Rise>
 
       <div className="mt-4 overflow-x-auto rounded-lg border border-ink-100 bg-white">
         <table className="w-full min-w-[640px] text-left text-sm">
@@ -62,7 +61,12 @@ export default function PowerBandsManager({ powerBands }: { powerBands: PowerBan
           <tbody>
             {powerBands.map((band) =>
               editingId === band.id ? (
-                <tr key={band.id} className="border-b border-ink-100 last:border-0">
+                <Rise
+                  as="tr"
+                  key={`${band.id}-edit`}
+                  targets="children"
+                  className="border-b border-ink-100 last:border-0"
+                >
                   <td colSpan={6} className="px-4 py-4">
                     <PowerBandForm
                       powerBand={band}
@@ -72,9 +76,14 @@ export default function PowerBandsManager({ powerBands }: { powerBands: PowerBan
                       onCancel={() => setEditingId(null)}
                     />
                   </td>
-                </tr>
+                </Rise>
               ) : (
-                <tr key={band.id} className="border-b border-ink-100 last:border-0">
+                <Rise
+                  as="tr"
+                  key={`${band.id}-view`}
+                  targets="children"
+                  className="border-b border-ink-100 last:border-0"
+                >
                   <td className="px-4 py-3 font-medium text-ink-900">{band.label}</td>
                   <td className="px-4 py-3 text-ink-600">{band.value}</td>
                   <td className="px-4 py-3 text-ink-600">{band.minKva ?? "—"}</td>
@@ -96,7 +105,7 @@ export default function PowerBandsManager({ powerBands }: { powerBands: PowerBan
                       />
                     </div>
                   </td>
-                </tr>
+                </Rise>
               )
             )}
             {powerBands.length === 0 && (
