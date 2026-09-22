@@ -1,5 +1,9 @@
 # PBB Website — Tasks
 
+Original build + CMS list below. Active work as of 2026-09-22 is `rework-tasks.md` (the
+post-launch feedback round) — check that file first unless you're specifically picking up
+task 7, 15, or 16 from this list.
+
 - [x] 1a. Project setup: organize source files, init Next.js (TS + Tailwind + App Router),
       convert the xlsx catalog into `data/generators.(json|ts)`, add logo to `public/`,
       extract brand palette into `design.md`

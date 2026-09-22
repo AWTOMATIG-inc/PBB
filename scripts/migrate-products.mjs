@@ -33,7 +33,8 @@ const POWER_BAND_DEFS = [
   { value: "Small", label: "Small (<50 kVA)", minKva: 0, maxKva: 49 },
   { value: "Medium", label: "Medium (50-149 kVA)", minKva: 50, maxKva: 149 },
   { value: "Large", label: "Large (150-299 kVA)", minKva: 150, maxKva: 299 },
-  { value: "Industrial", label: "Industrial (300+ kVA)", minKva: 300, maxKva: null },
+  { value: "Industrial", label: "Industrial (300-749 kVA)", minKva: 300, maxKva: 749 },
+  { value: "Heavy Industrial", label: "Heavy Industrial (750-1500 kVA)", minKva: 750, maxKva: 1500 },
 ];
 
 function slugify(name) {
@@ -119,20 +120,38 @@ async function upsertPowerBands(token) {
   const byValue = new Map(existing.map((b) => [b.value, b]));
 
   let created = 0;
+  let updated = 0;
   for (let i = 0; i < POWER_BAND_DEFS.length; i++) {
     const def = POWER_BAND_DEFS[i];
-    if (byValue.has(def.value)) continue;
     const payload = { value: def.value, label: def.label, minKva: def.minKva, sortOrder: i };
     if (def.maxKva !== null) payload.maxKva = def.maxKva;
-    const record = await pbFetch(token, "/api/collections/power_bands/records", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
-    byValue.set(def.value, record);
-    created += 1;
+
+    const current = byValue.get(def.value);
+    if (!current) {
+      const record = await pbFetch(token, "/api/collections/power_bands/records", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
+      byValue.set(def.value, record);
+      created += 1;
+      continue;
+    }
+
+    const changed =
+      current.label !== def.label ||
+      current.minKva !== def.minKva ||
+      (current.maxKva ?? null) !== def.maxKva;
+    if (changed) {
+      const record = await pbFetch(token, `/api/collections/power_bands/records/${current.id}`, {
+        method: "PATCH",
+        body: JSON.stringify(payload),
+      });
+      byValue.set(def.value, record);
+      updated += 1;
+    }
   }
 
-  console.log(`Power bands: ${created} created, ${byValue.size - created} already existed.`);
+  console.log(`Power bands: ${created} created, ${updated} updated, ${byValue.size - created - updated} unchanged.`);
   return byValue;
 }
 

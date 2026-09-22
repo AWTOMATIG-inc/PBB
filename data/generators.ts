@@ -6,7 +6,12 @@ export type Brand =
   | "Volvo Penta"
   | "Deutz";
 
-export type KvaBand = "Small" | "Medium" | "Large" | "Industrial";
+export type KvaBand =
+  | "Small"
+  | "Medium"
+  | "Large"
+  | "Industrial"
+  | "Heavy Industrial";
 
 export const BRANDS: Brand[] = [
   "John Deere",
@@ -21,7 +26,8 @@ export const KVA_BANDS: { value: KvaBand; label: string }[] = [
   { value: "Small", label: "Small (<50 kVA)" },
   { value: "Medium", label: "Medium (50-149 kVA)" },
   { value: "Large", label: "Large (150-299 kVA)" },
-  { value: "Industrial", label: "Industrial (300+ kVA)" },
+  { value: "Industrial", label: "Industrial (300-749 kVA)" },
+  { value: "Heavy Industrial", label: "Heavy Industrial (750-1500 kVA)" },
 ];
 
 /**
