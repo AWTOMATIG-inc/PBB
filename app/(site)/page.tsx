@@ -15,6 +15,7 @@ import {
   Wrench,
   Zap,
 } from "lucide-react";
+import { Reveal, Rise } from "cube-motion/react";
 import { BRANDS } from "@/data/generators";
 import { getPublicGenerators, getHomeSections } from "@/lib/public-data";
 import ProductCard from "@/components/product-card";
@@ -97,7 +98,7 @@ export default async function Home() {
       <section className="border-b border-ink-100 bg-white">
         <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
           <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16">
-            <div>
+            <Rise as="div" targets="children">
               <div className="inline-flex items-center gap-2 rounded-full bg-brand-50 px-4 py-1.5 text-sm font-semibold text-brand-700">
                 <Zap className="size-4" />
                 Bringing Energy to Your Doorstep
@@ -127,9 +128,9 @@ export default async function Home() {
                   Contact Us
                 </Link>
               </div>
-            </div>
+            </Rise>
 
-            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl ring-1 ring-inset ring-ink-950/5">
               <Image
                 src="/generator.png"
                 alt="Power Bank Bangladesh generator"
@@ -169,7 +170,11 @@ export default async function Home() {
               One Partner for Every Generator Need
             </h2>
           </div>
-          <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <Reveal
+            as="div"
+            targets="children"
+            className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4"
+          >
             {WHY_US.map(({ icon: Icon, title, description }) => (
               <div
                 key={title}
@@ -186,7 +191,7 @@ export default async function Home() {
                 </p>
               </div>
             ))}
-          </div>
+          </Reveal>
         </div>
       </section>
 
@@ -236,11 +241,15 @@ export default async function Home() {
               <ArrowRight className="size-4" />
             </Link>
           </div>
-          <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <Reveal
+            as="div"
+            targets="children"
+            className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+          >
             {featuredModels.map((model) => (
               <ProductCard key={`${model.brand}-${model.model}`} model={model} />
             ))}
-          </div>
+          </Reveal>
         </div>
       </section>
 
@@ -256,7 +265,11 @@ export default async function Home() {
               all.
             </p>
           </div>
-          <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <Reveal
+            as="div"
+            targets="children"
+            className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4"
+          >
             {SERVICES.map(({ icon: Icon, title, description }) => (
               <div
                 key={title}
@@ -273,7 +286,7 @@ export default async function Home() {
                 </p>
               </div>
             ))}
-          </div>
+          </Reveal>
         </div>
       </section>
 

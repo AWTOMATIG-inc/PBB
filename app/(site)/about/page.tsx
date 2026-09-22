@@ -122,7 +122,7 @@ export default function AboutPage() {
             </div>
 
             <div className="lg:col-span-5">
-              <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
+              <div className="relative aspect-[4/3] overflow-hidden rounded-2xl ring-1 ring-inset ring-ink-950/5">
                 <Image
                   src="/generator.png"
                   alt="Power Bank Bangladesh diesel generator"

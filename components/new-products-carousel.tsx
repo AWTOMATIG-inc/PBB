@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Reveal } from "cube-motion/react";
 import type { GeneratorModel } from "@/data/generators";
 import ProductCard from "@/components/product-card";
 
@@ -40,7 +41,9 @@ export default function NewProductsCarousel({
 
   return (
     <div className="relative mt-12">
-      <div
+      <Reveal
+        as="div"
+        targets="children"
         ref={trackRef}
         onScroll={updateScrollState}
         className="flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-smooth pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
@@ -54,7 +57,7 @@ export default function NewProductsCarousel({
             <ProductCard model={model} />
           </div>
         ))}
-      </div>
+      </Reveal>
 
       <button
         type="button"

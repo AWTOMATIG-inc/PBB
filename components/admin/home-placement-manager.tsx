@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, useRef, useState, useTransition } from "react";
 import { ArrowDown, ArrowUp, Plus } from "lucide-react";
+import { Rise } from "cube-motion/react";
 import type { HomePlacementRecord, HomeSection, ProductRecord } from "@/lib/products";
 import { HOME_SECTION_LIMITS } from "@/lib/home-section-limits";
 import {
@@ -140,52 +141,51 @@ export default function HomePlacementManager({
       </div>
       {moveError && <p className="mt-2 text-sm text-red-600">{moveError}</p>}
 
-      {atLimit ? (
+      {atLimit && (
         <p className="mt-4 text-sm text-ink-400">
           This section is limited to {limit} products. Remove one below to add another.
         </p>
-      ) : (
-        <>
-          <form key={addKey} action={formAction} className="mt-4 flex flex-wrap items-end gap-3">
-            <div className="flex flex-col gap-1.5">
-              <label htmlFor={`add-${section}`} className="text-sm font-medium text-ink-700">
-                Add a product
-              </label>
-              <select
-                id={`add-${section}`}
-                name="product"
-                required
-                defaultValue=""
-                disabled={availableProducts.length === 0}
-                className="min-w-[280px] rounded-md border border-ink-200 px-3 py-2.5 text-sm text-ink-900 outline-none focus:border-brand-500 disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                <option value="" disabled>
-                  Choose a product…
-                </option>
-                {availableProducts.map((product) => (
-                  <option key={product.id} value={product.id}>
-                    {product.expand?.brand?.name ?? "—"} — {product.model}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <button
-              type="submit"
-              disabled={pending || availableProducts.length === 0}
-              className="flex items-center gap-2 rounded-full bg-brand-500 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              <Plus className="size-4" />
-              {pending ? "Adding..." : "Add"}
-            </button>
-          </form>
-          {state?.error && <p className="mt-2 text-sm text-red-600">{state.error}</p>}
-          {availableProducts.length === 0 && (
-            <p className="mt-2 text-sm text-ink-400">
-              All active products are already placed in this section.
-            </p>
-          )}
-        </>
       )}
+      <Rise show={!atLimit} className="mt-4">
+        <form key={addKey} action={formAction} className="flex flex-wrap items-end gap-3">
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor={`add-${section}`} className="text-sm font-medium text-ink-700">
+              Add a product
+            </label>
+            <select
+              id={`add-${section}`}
+              name="product"
+              required
+              defaultValue=""
+              disabled={availableProducts.length === 0}
+              className="min-w-[280px] rounded-md border border-ink-200 px-3 py-2.5 text-sm text-ink-900 outline-none focus:border-brand-500 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              <option value="" disabled>
+                Choose a product…
+              </option>
+              {availableProducts.map((product) => (
+                <option key={product.id} value={product.id}>
+                  {product.expand?.brand?.name ?? "—"} — {product.model}
+                </option>
+              ))}
+            </select>
+          </div>
+          <button
+            type="submit"
+            disabled={pending || availableProducts.length === 0}
+            className="flex items-center gap-2 rounded-full bg-brand-500 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-600 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            <Plus className="size-4" />
+            {pending ? "Adding..." : "Add"}
+          </button>
+        </form>
+        {state?.error && <p className="mt-2 text-sm text-red-600">{state.error}</p>}
+        {availableProducts.length === 0 && (
+          <p className="mt-2 text-sm text-ink-400">
+            All active products are already placed in this section.
+          </p>
+        )}
+      </Rise>
     </section>
   );
 }

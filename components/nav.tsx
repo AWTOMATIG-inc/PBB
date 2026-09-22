@@ -5,6 +5,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Menu, Phone, X } from "lucide-react";
+import { Rise, Morph } from "cube-motion/react";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
@@ -74,43 +75,48 @@ export default function Nav() {
           aria-expanded={open}
           className="inline-flex items-center justify-center rounded-md p-2 text-ink-900 md:hidden"
         >
-          {open ? <X className="size-6" /> : <Menu className="size-6" />}
+          <Morph
+            active={open}
+            off={<Menu className="size-6" />}
+            on={<X className="size-6" />}
+          />
         </button>
       </div>
 
-      {open && (
-        <nav className="border-t border-ink-100 bg-white px-4 pb-4 pt-2 md:hidden">
-          <div className="flex flex-col gap-1">
-            {NAV_LINKS.map((link) => {
-              const active =
-                link.href === "/"
-                  ? pathname === "/"
-                  : pathname.startsWith(link.href);
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setOpen(false)}
-                  className={`rounded-md px-3 py-2.5 text-base font-medium ${
-                    active
-                      ? "bg-brand-50 text-brand-600"
-                      : "text-ink-700 hover:bg-ink-50"
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              );
-            })}
-            <a
-              href={`tel:${PRIMARY_PHONE.replace(/[^+\d]/g, "")}`}
-              className="mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-brand-500 px-5 py-2.5 text-sm font-semibold text-white"
+      <Rise
+        as="nav"
+        show={open}
+        targets="children"
+        className="flex flex-col gap-1 border-t border-ink-100 bg-white px-4 pb-4 pt-2 md:hidden"
+      >
+        {NAV_LINKS.map((link) => {
+          const active =
+            link.href === "/"
+              ? pathname === "/"
+              : pathname.startsWith(link.href);
+          return (
+            <Link
+              key={link.href}
+              href={link.href}
+              onClick={() => setOpen(false)}
+              className={`rounded-md px-3 py-2.5 text-base font-medium ${
+                active
+                  ? "bg-brand-50 text-brand-600"
+                  : "text-ink-700 hover:bg-ink-50"
+              }`}
             >
-              <Phone className="size-4" />
-              Call Us
-            </a>
-          </div>
-        </nav>
-      )}
+              {link.label}
+            </Link>
+          );
+        })}
+        <a
+          href={`tel:${PRIMARY_PHONE.replace(/[^+\d]/g, "")}`}
+          className="mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-brand-500 px-5 py-2.5 text-sm font-semibold text-white"
+        >
+          <Phone className="size-4" />
+          Call Us
+        </a>
+      </Rise>
     </header>
   );
 }

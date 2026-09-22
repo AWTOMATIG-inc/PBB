@@ -37,7 +37,7 @@ export default function ProductCard({ model }: { model: GeneratorModel }) {
 
   return (
     <div className="flex flex-col overflow-hidden rounded-2xl border border-ink-100 bg-white transition-colors hover:border-brand-200 hover:shadow-sm">
-      <div className="relative aspect-[4/3] w-full bg-ink-50">
+      <div className="relative aspect-[4/3] w-full rounded-t-2xl bg-ink-50 ring-1 ring-inset ring-ink-950/5">
         <Image
           src="/generator.png"
           alt={`${model.brand} ${model.model} diesel generator`}
@@ -55,7 +55,7 @@ export default function ProductCard({ model }: { model: GeneratorModel }) {
         </h3>
         {highlight ? (
           <>
-            <p className="mt-2 text-2xl font-bold leading-none text-brand-600">
+            <p className="mt-2 text-2xl font-bold leading-none tabular-nums text-brand-600">
               {highlight.number}
               <span className="ml-1 text-sm font-medium text-ink-400">
                 {highlight.unit}
@@ -71,7 +71,7 @@ export default function ProductCard({ model }: { model: GeneratorModel }) {
             {specChips.map((chip) => (
               <div key={chip.label} className="flex flex-col gap-0.5 text-xs last:items-end last:text-right">
                 <dt className="text-ink-400">{chip.label}</dt>
-                <dd className="font-medium text-ink-800">{chip.value}</dd>
+                <dd className="font-medium tabular-nums text-ink-800">{chip.value}</dd>
               </div>
             ))}
           </dl>

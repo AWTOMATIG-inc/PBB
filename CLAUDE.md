@@ -13,20 +13,12 @@ content around portable power banks — always generators.
 
 Tagline: *"You Believe, We Assure Trust"* — *"Bringing Energy to Your Doorstep"*
 
-## Source material (provided by the user, not in this repo by default)
+## Source material
 
-- **`Power Bank Bangladesh - Generator Catalog.xlsx`** — the full product data: 98 generator
-  models across 6 brands, extracted from the company's brochure. Sheets: `Overview`,
-  `All Models` (combined, filterable), and one sheet per brand (`John Deere`, `Cummins`,
-  `Ricardo`, `Perkins`, `Volvo Penta`, `Deutz`) with full original spec columns (engine,
-  alternator, fuel consumption, fuel tank, dimensions, weight).
-- **Company logo** (image file) — provided separately by the user for `/public`.
-
-**First-session task:** convert the xlsx into a structured data file the app can import
-directly (e.g. `data/generators.json` or `data/generators.ts`), rather than reading the
-spreadsheet at runtime. Preserve every field from the `All Models` sheet plus enough from
-each brand sheet to show full specs on a model's detail view. Keep brand and kVA-band as
-first-class fields since the Products page filters on both.
+The original catalog data came from `Power Bank Bangladesh - Generator Catalog.xlsx` (98
+generator models, 6 brands). It was converted once into `data/generators.ts`/`.json` and
+later migrated into PocketBase, which is now the source of truth for the live catalog — see
+`memory.md`'s "CMS backend" notes for the schema and local run command.
 
 ## Business facts to use verbatim in copy (do not invent contact details)
 
@@ -56,7 +48,11 @@ first-class fields since the Products page filters on both.
   - `public/` — logo and any images
 - Mobile-first responsive design. Test at ~375px width minimum.
 
-## Site structure (4 pages — keep it this simple, don't add more without asking)
+## Site structure (4 public pages — keep it this simple, don't add more without asking)
+
+This describes the public-facing site only. An authenticated `/admin` CMS section
+(PocketBase-backed product/filter/home-curation CRUD) was added later, with its own chrome
+— see `memory.md`'s "CMS backend" notes.
 
 1. **Home (`/`)** — hero with tagline, one-line summary of what PBB does, a strip of the
    brand logos, a short "our services" section (Sell / Buy / Rental / Service / Spare Parts,
@@ -116,9 +112,12 @@ tools to be present.
 
 ## Session workflow — read this before doing anything
 
-Each feature is built in its own fresh conversation with no memory of prior sessions. Two
-files carry context forward. **At the start of every session, read `memory.md` and
-`tasks.md` in full before writing any code.** At the end of every session, update both.
+Each feature is built in its own fresh conversation with no memory of prior sessions.
+`tasks.md` and `memory.md` carry context forward for the core build; `design-task.md` does
+the same for the motion/visual-polish pass (see below) once that work is under way. **At
+the start of every session, read `memory.md`, `tasks.md`, and `design-task.md` in full
+before writing any code.** At the end of every session, update whichever of these the
+session's work applies to.
 
 ### `tasks.md`
 
@@ -162,7 +161,17 @@ session, append an entry:
 
 Never delete prior entries — this file is an append-only project history. If a decision
 recorded earlier turns out wrong, add a new entry correcting it rather than editing the old
-one away.
+one away. Exception: once a whole phase of work (e.g. the original frontend build, or the
+CMS build) is complete and stable, it's fine to compact that phase's entries into a short
+summary in the "Status"/durable-facts sections at the top, same as this file already does —
+`git log` remains the source of truth for exact history if it's ever needed.
+
+### `design-task.md`
+
+A third tracking file, same checklist convention as `tasks.md`, scoped to the motion and
+visual-polish pass (see `cube-motion.md` and the `/craft-design-engineering` skill). Check
+items off in priority order as they're built; log decisions from this work in `memory.md`'s
+normal session-entry format, same as any other task.
 
 ## Definition of done (per page/feature)
 
