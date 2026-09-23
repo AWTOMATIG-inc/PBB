@@ -16,6 +16,11 @@ call; check whether they exist under different names on the tracker.
 - **Sequencing is mandatory, not just nice-to-have**: where a task says "Depends on", that
   Khalid task must be merged to `main` and deployed before Ashikul starts his half. Ashikul
   should not work off Khalid's branch — wait for the merge.
+- **Branching**: one persistent branch per person, both cut from `main`, never from each
+  other. Khalid works on `khalid`, Ashikul on `ashikul` (created 2026-09-23 off `main` @
+  `56a9a7e`). Flow for each cycle: push/PR your branch into `main` → Khalid merges → the
+  *other* person pulls `main` and rebases/recreates their branch from it before starting the
+  next slice — don't keep piling commits on a branch that's drifted behind a merged `main`.
 - Same conventions as `tasks.md` / `design-task.md`: check items off as completed, split a
   task further if a session runs out of room, log decisions in `memory.md`.
 - Sprint grouping follows the feedback doc's section 8 recommendation. Work sprints in
@@ -77,6 +82,20 @@ this log is the timeline, the checkboxes are the current state.
   regardless. Once Ashikul reports PBB-04/05/06 done and no Khalid slice has landed yet, there
   is genuinely nothing else on Sprint 1/2 for him to pick up — flag that rather than starting
   PBB-11 early, since 11 depends on 9+10 for its pricing-adjacent layout.
+
+### Cycle 2 — 2026-09-23
+
+- Khalid pushed/merged: PBB-01/PBB-02 merge confirmed live (PR #2, `24235ed`) plus a docs-only
+  PR #3 (`56a9a7e`) correcting the Cycle 1 "Next up" note and `memory.md`. `main` is now the
+  sync point for both branches.
+- Handed to Ashikul: same three tasks as Cycle 1 — **PBB-04, PBB-05, PBB-06** (no dependency,
+  see their task entries above for exact files). New this cycle: a dedicated `ashikul` branch
+  was cut from `main` @ `56a9a7e` and pushed to `origin/ashikul` — work there, not on
+  `khalid`. Open a PR from `ashikul` into `main` when ready; Khalid merges it.
+- Ashikul reported back: waiting.
+- Next up: once Ashikul's PR merges, pull `main` on both sides before starting the next slice
+  (Khalid: PBB-03a or PBB-09+10; Ashikul: whatever's newly unblocked, per the "Next up" note
+  above — nothing beyond 04/05/06 yet).
 
 ---
 
