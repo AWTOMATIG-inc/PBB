@@ -223,3 +223,12 @@ session-by-session detail if ever needed. Summary of what shipped:
   Cycle 1 "Next up" note (corrected in this session — it previously overstated what PBB-01/02
   alone would unblock).
 
+## Session — 2026-09-23 — PBB-04/05/06 (contact cleanup, WhatsApp, Buy→Exchange)
+
+- What was done: completed the three Sprint 1 content/correction tasks assigned to Ashikul. Dropped the deprecated third phone number `+88 (0) 1515 675401` from `components/footer.tsx` and `app/(site)/contact/page.tsx`, leaving strictly the two approved numbers (`+88 (0) 1989 474 447` for WhatsApp Business, `+88 (0) 1625 181 403` for office); confirmed `components/nav.tsx`'s `PRIMARY_PHONE` and all `tel:` links site-wide adhere strictly to approved numbers; confirmed `footer.tsx`'s WhatsApp link targets `https://wa.me/8801989474447` and no other WhatsApp number exists; replaced "Buy" with "Exchange" / "Generator Exchange" across `app/(site)/page.tsx` (`WHY_US`, `SERVICES`, and hero copy), `app/(site)/about/page.tsx` (metadata, `SERVICES`, and lifecycle copy), `components/footer.tsx` (tagline), and `app/layout.tsx` (metadata).
+- Key decisions made: kept the "Exchange" service presentation aligned with feedback doc section 3.4 ("Generator Exchange: existing generator assessed and exchanged toward another available unit, subject to inspection and valuation"); also aligned About page's lifecycle copy to "up to 1500 kVA" to match Khalid's PBB-01/02 power range expansion.
+- Skills invoked this session (if any): none.
+- Files touched: `components/footer.tsx`, `app/(site)/contact/page.tsx`, `app/(site)/page.tsx`, `app/(site)/about/page.tsx`, `app/layout.tsx`, `rework-tasks.md` (checked off PBB-04/05/06, updated Cycle 2 log), `memory.md` (this entry).
+- Deviations from tasks.md / CLAUDE.md: none.
+- Open issues / TODOs for next session: Ashikul's PR from branch `ashikul` into `main` needs to be reviewed and merged by Khalid. Ashikul has completed all unblocked tasks in Sprint 1 and cannot start Sprint 2/3 items until Khalid delivers the prerequisite backend/schema slices (PBB-03a for clients, PBB-08a for brochure models, or PBB-09+10 for pricing).
+

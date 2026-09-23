@@ -11,7 +11,6 @@ export const metadata: Metadata = {
 const PHONES = [
   "+88 (0) 1989 474 447",
   "+88 (0) 1625 181 403",
-  "+88 (0) 1515 675401",
 ];
 
 const LOCATIONS = [

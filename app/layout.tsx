@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Power Bank Bangladesh",
   description:
-    "Power Bank Bangladesh: generator sell, buy, rental & service across all major brands.",
+    "Power Bank Bangladesh: generator sell, exchange, rental & service across all major brands.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

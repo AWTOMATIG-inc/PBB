@@ -4,7 +4,6 @@ import { Mail, MapPin, Phone } from "lucide-react";
 const PHONES = [
   "+88 (0) 1989 474 447",
   "+88 (0) 1625 181 403",
-  "+88 (0) 1515 675401",
 ];
 
 const SOCIAL_LINKS = [
@@ -61,7 +60,7 @@ export default function Footer() {
               You Believe, We Assure Trust
             </p>
             <p className="mt-4 text-sm text-ink-300">
-              All kinds of Generator: Sell, Buy, Rental &amp; Service.
+              All kinds of Generator: Sell, Exchange, Rental &amp; Service.
             </p>
           </div>
 

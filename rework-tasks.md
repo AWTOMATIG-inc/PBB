@@ -92,10 +92,8 @@ this log is the timeline, the checkboxes are the current state.
   see their task entries above for exact files). New this cycle: a dedicated `ashikul` branch
   was cut from `main` @ `56a9a7e` and pushed to `origin/ashikul` — work there, not on
   `khalid`. Open a PR from `ashikul` into `main` when ready; Khalid merges it.
-- Ashikul reported back: waiting.
-- Next up: once Ashikul's PR merges, pull `main` on both sides before starting the next slice
-  (Khalid: PBB-03a or PBB-09+10; Ashikul: whatever's newly unblocked, per the "Next up" note
-  above — nothing beyond 04/05/06 yet).
+- Ashikul reported back: 2026-09-23 — completed PBB-04 (dropped deprecated third phone number from footer and contact page), PBB-05 (verified WhatsApp link uses approved business number), and PBB-06 (replaced Buy with Exchange across Home, About, Footer, and layout metadata); build and typecheck pass clean. Ready for PR review and merge by Khalid.
+- Next up: once Ashikul's PR merges into `main`, pull `main` on both sides before starting the next slice (Khalid: PBB-03a or PBB-09+10; Ashikul: waiting for Khalid's next backend slice to unblock dependent tasks).
 
 ---
 
@@ -135,17 +133,17 @@ this log is the timeline, the checkboxes are the current state.
         `memory.md`'s durable-decisions note on this) onto the real collection.
   - [ ] **3b** `ashikul` — *depends on 3a merged + real client logos supplied.* Add the 7
         approved clients through the new admin screen.
-- [ ] **PBB-04-Contact** — `ashikul`. Remove every phone number except the two approved:
+- [x] **PBB-04-Contact** — `ashikul`. Remove every phone number except the two approved:
       `+88 (0) 1989 474 447` (WhatsApp Business) and `+88 (0) 1625 181 403` (office). Known
       locations: `components/footer.tsx` (has all 3 in its `PHONE` array — drop
       `1515 675401`), `app/(site)/contact/page.tsx`, `components/nav.tsx` (`PRIMARY_PHONE`
       already correct, double check nothing else references the third number), plus any
       structured data/JSON-LD, metadata, and CTA `tel:`/`wa.me` links site-wide. Grep the
       whole repo for `1515` and `675401` before calling this done.
-- [ ] **PBB-05-WhatsApp** *(not on tracker — added per feedback doc; bundle with PBB-04)* —
+- [x] **PBB-05-WhatsApp** *(not on tracker — added per feedback doc; bundle with PBB-04)* —
       `ashikul`. Confirm the WhatsApp CTA(s) use `wa.me/8801989474447` specifically (already
       correct in `footer.tsx`) and that no other number is used for WhatsApp anywhere.
-- [ ] **PBB-06-Services** — `ashikul`. Replace "Buy" with "Exchange" (presented as "Generator
+- [x] **PBB-06-Services** — `ashikul`. Replace "Buy" with "Exchange" (presented as "Generator
       Exchange": existing generator assessed and exchanged toward another unit, subject to
       inspection/valuation). Locations: `SERVICES` array in `app/(site)/page.tsx` (line ~65)
       and the matching services-in-depth copy in `app/(site)/about/page.tsx`. Content-only,
