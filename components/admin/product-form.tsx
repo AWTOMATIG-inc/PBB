@@ -194,6 +194,56 @@ export default function ProductForm({
 
       </div>
 
+      <fieldset className="flex flex-col gap-4 rounded-md border border-ink-100 p-4">
+        <legend className="px-1 text-sm font-semibold text-ink-900">Pricing (optional)</legend>
+        <div className="grid gap-4 sm:grid-cols-[1fr_8rem]">
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="price" className={LABEL_CLASS}>
+              Price
+            </label>
+            <input
+              id="price"
+              name="price"
+              type="number"
+              step="any"
+              min={0}
+              defaultValue={product?.price || ""}
+              className={INPUT_CLASS}
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="currency" className={LABEL_CLASS}>
+              Currency
+            </label>
+            <select
+              id="currency"
+              name="currency"
+              defaultValue={product?.currency || "BDT"}
+              className={INPUT_CLASS}
+            >
+              <option value="BDT">BDT</option>
+              <option value="USD">USD</option>
+            </select>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <input
+            id="showPrice"
+            name="showPrice"
+            type="checkbox"
+            defaultChecked={product?.showPrice ?? false}
+            className="size-4 accent-brand-500"
+          />
+          <label htmlFor="showPrice" className={LABEL_CLASS}>
+            Show price on the public site
+          </label>
+        </div>
+        <p className="text-xs text-ink-400">
+          When unchecked or empty, the price is hidden and visitors see &quot;Request
+          Quotation&quot; instead.
+        </p>
+      </fieldset>
+
       <div className="flex flex-col gap-1.5">
         <label htmlFor="notes" className={LABEL_CLASS}>
           Notes

@@ -95,6 +95,28 @@ this log is the timeline, the checkboxes are the current state.
 - Ashikul reported back: 2026-09-23 — completed PBB-04 (dropped deprecated third phone number from footer and contact page), PBB-05 (verified WhatsApp link uses approved business number), and PBB-06 (replaced Buy with Exchange across Home, About, Footer, and layout metadata); build and typecheck pass clean. Ready for PR review and merge by Khalid.
 - Next up: once Ashikul's PR merges into `main`, pull `main` on both sides before starting the next slice (Khalid: PBB-03a or PBB-09+10; Ashikul: waiting for Khalid's next backend slice to unblock dependent tasks).
 
+### Cycle 3 — 2026-09-23
+
+- Ashikul's PBB-04/05/06 merged to `main` (PR #5, `3964d5f`) and confirmed live via auto-deploy.
+- Khalid pushed: **PBB-09+10** (optional pricing). New migration
+  `pocketbase/pb_migrations/1789554845_add_products_pricing_fields.js` adds `price` (number,
+  min 0), `currency` (select BDT/USD, empty = BDT) and `showPrice` (bool) to `products`. All
+  98 existing products stay price-less. Admin product form has a "Pricing (optional)"
+  fieldset; saving with "Show price" on but no price is rejected. Public cards show the
+  formatted price plus a secondary "Enquire" button only when `showPrice` is on **and** price
+  > 0; otherwise no price block at all and a full-width **Request Quotation** CTA (WhatsApp
+  `wa.me/8801989474447` with the model name prefilled). No product detail page exists, so the
+  card is the only place this shows. **Deploy note:** PocketBase applies pending
+  `pb_migrations/` automatically on `serve` start, so the VPS PocketBase service has to be
+  restarted after pulling for the fields to exist. Until then, the site renders exactly as
+  before because every price is treated as unset.
+- Handed to Ashikul (once this PR is merged and deployed): **PBB-11** (replace placeholder
+  product images with real photos through the admin image upload). Ashikul can also enter
+  prices through the new admin fields if PBB supplies any, but that's content, not a task.
+- Ashikul reported back: waiting.
+- Next up: Khalid picks PBB-03a (clients) or PBB-08a (needs the GRAND POWER brochure).
+  PBB-07 (catalogue redesign) still waits on the Condition/Availability filters from 8a/12.
+
 ---
 
 ## Blockers — need from Khalid before certain tasks can start
@@ -174,7 +196,7 @@ this log is the timeline, the checkboxes are the current state.
         brochure/datasheet, add price if supplied, publish. Track a running count against
         the brochure's model list as you go (feeds PBB-18).
 - [ ] **PBB-09+10+11** — split:
-  - [ ] **9+10** `khalid`. Add optional pricing: `price` (number, nullable), `currency`
+  - [x] **9+10** `khalid`. Add optional pricing: `price` (number, nullable), `currency`
         (default BDT), `showPrice` (bool) fields on `products`; admin form fields for them;
         and conditional rendering on `components/product-card.tsx` and the product detail
         view so the price block is fully hidden (not just blank/zero) when `showPrice` is
@@ -185,6 +207,7 @@ this log is the timeline, the checkboxes are the current state.
 - [ ] **PBB-12-Product Admin** — `khalid`. Same PR as 8a/9+10 in practice: make sure every
       new field (specs, images/gallery, pricing) is editable from `/admin`'s existing
       Products CRUD (`components/admin/` product form), not just storable in PocketBase.
+      *Pricing half done with 9+10 (Cycle 3); the specs/gallery half ships with 8a.*
 
 ## Sprint 3 — Customers, quotations, invoices, PDFs (PBB-13 to PBB-16)
 

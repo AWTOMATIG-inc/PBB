@@ -49,4 +49,6 @@ export interface GeneratorModel {
   kvaBand: KvaBand;
   specs: GeneratorSpecs;
   notes?: string;
+  // Set only when an admin has entered a price and enabled "Show price".
+  price?: { amount: number; currency: string };
 }

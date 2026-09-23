@@ -46,6 +46,11 @@ export type ProductRecord = {
   notes: string;
   image: string;
   isActive: boolean;
+  // Optional pricing (PBB-09/10). Unset price comes back as 0, unset
+  // currency as "" (treated as BDT).
+  price: number;
+  currency: "" | "BDT" | "USD";
+  showPrice: boolean;
   // Legacy manual ordering from the original catalog import — no longer
   // editable in the admin (see ProductSort), kept only as a tie-breaker for
   // records that predate the `created` field below.

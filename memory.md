@@ -232,3 +232,33 @@ session-by-session detail if ever needed. Summary of what shipped:
 - Deviations from tasks.md / CLAUDE.md: none.
 - Open issues / TODOs for next session: Ashikul's PR from branch `ashikul` into `main` needs to be reviewed and merged by Khalid. Ashikul has completed all unblocked tasks in Sprint 1 and cannot start Sprint 2/3 items until Khalid delivers the prerequisite backend/schema slices (PBB-03a for clients, PBB-08a for brochure models, or PBB-09+10 for pricing).
 
+## Session — 2026-09-23 — PBB-09+10 (optional product pricing)
+
+- What was done: added `price`/`currency`/`showPrice` to `products` via migration
+  `1789554845_add_products_pricing_fields.js`; `ProductRecord` (`lib/products.ts`) and
+  `GeneratorModel` (`data/generators.ts`, new optional `price: { amount, currency }`) carry
+  them; `lib/public-data.ts`'s `toPublicPrice` only exposes a price when `showPrice` is on and
+  price > 0; admin form gained a "Pricing (optional)" fieldset and `actions.ts` validates it
+  (always sends `price` so clearing it works, which the other number fields don't do);
+  `components/product-card.tsx` shows the price plus an "Enquire" button, or a full-width
+  "Request Quotation" WhatsApp CTA with the model prefilled when no price.
+- Key decisions made: the CTA goes to WhatsApp (approved number) because Contact has no form
+  and there's no product detail page. Currency is a BDT/USD select, and empty means BDT.
+  Price is grouped by hand instead of `Intl.NumberFormat` to avoid SSR/browser ICU hydration
+  mismatches.
+- Skills invoked this session: none.
+- Files touched: `pocketbase/pb_migrations/1789554845_add_products_pricing_fields.js` (new),
+  `lib/products.ts`, `lib/public-data.ts`, `data/generators.ts`,
+  `app/admin/(protected)/products/actions.ts`, `components/admin/product-form.tsx`,
+  `components/product-card.tsx`, `rework-tasks.md`, `memory.md`.
+- Verification: `tsc`/eslint clean, `next build` passes. The migration auto-applied on local
+  `pocketbase serve`. Set a test price through the API with a temporary local superuser,
+  which was deleted afterwards, and the product was reset. The built `/products` rendered
+  exactly 1 priced card and 11 "Request Quotation" cards. The admin form submit wasn't
+  click-tested in a browser.
+- Gotcha: `next build` reuses `.next/cache/fetch-cache` (5-minute revalidate) across builds,
+  so a local rebuild can show stale PocketBase data. Delete that folder when verifying data
+  changes locally.
+- Open issues / TODOs: the VPS PocketBase service needs a restart after deploying so the
+  migration applies. PBB-11 is now unblocked for Ashikul.
+
