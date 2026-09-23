@@ -15,7 +15,7 @@ import {
 export const metadata: Metadata = {
   title: "About Us | Power Bank Bangladesh",
   description:
-    "Power Bank Bangladesh is a diesel generator dealer serving Dhaka and Chattogram: sell, buy, rental and service across every major generator brand.",
+    "Power Bank Bangladesh is a diesel generator dealer serving Dhaka and Chattogram: sell, exchange, rental and service across every major generator brand.",
 };
 
 const ALL_BRANDS = [
@@ -38,9 +38,9 @@ const SERVICES = [
   },
   {
     icon: Handshake,
-    title: "Buy",
+    title: "Exchange",
     description:
-      "Already have a generator you no longer need? We buy used units in working condition. Our team inspects the machine, gives a fair valuation based on its condition and hours run, and handles the transaction directly.",
+      "Looking to trade in or upgrade your equipment? Through our Generator Exchange service, an existing generator can be assessed and exchanged toward another available unit, subject to inspection and valuation.",
   },
   {
     icon: Repeat,
@@ -80,8 +80,8 @@ export default function AboutPage() {
               <div className="mt-8 max-w-prose space-y-5 text-lg leading-8 text-ink-500">
                 <p>
                   From compact standby units to industrial installations
-                  above 300 kVA, Power Bank Bangladesh covers the complete
-                  lifecycle of generator ownership: sell, buy, rental, and
+                  up to 1500 kVA, Power Bank Bangladesh covers the complete
+                  lifecycle of generator ownership: sell, exchange, rental, and
                   service, for homes, businesses, and industrial sites across
                   Bangladesh.
                 </p>

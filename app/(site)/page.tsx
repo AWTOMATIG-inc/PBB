@@ -49,7 +49,7 @@ const WHY_US = [
     icon: Workflow,
     title: "Full Lifecycle, One Partner",
     description:
-      "No need to juggle multiple vendors: we sell, buy, rent, and service every unit ourselves.",
+      "No need to juggle multiple vendors: we sell, exchange, rent, and service every unit ourselves.",
   },
 ];
 
@@ -62,9 +62,9 @@ const SERVICES = [
   },
   {
     icon: Handshake,
-    title: "Buy",
+    title: "Exchange",
     description:
-      "We purchase used generators in working condition: fair valuation, straightforward process.",
+      "Existing generator assessed and exchanged toward another unit, subject to inspection and valuation.",
   },
   {
     icon: Repeat,
@@ -109,7 +109,7 @@ export default async function Home() {
               </h1>
               <p className="mt-6 max-w-2xl text-lg leading-8 text-ink-500">
                 From small standby units to industrial-scale power, we sell,
-                buy, rent, and service every major generator brand out of
+                exchange, rent, and service every major generator brand out of
                 Dhaka and Chattogram.
               </p>
               <div className="mt-10 flex flex-col gap-4 sm:flex-row">
