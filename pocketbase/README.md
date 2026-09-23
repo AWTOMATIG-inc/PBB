@@ -72,6 +72,20 @@ Port convention — increment per project, track it here as projects are added:
 |---------|:--:|
 | PPB (this project) | 8091 |
 
+### Applying migrations on the VPS
+
+PocketBase runs as the systemd service `pocketbase-PBB`. It applies pending
+`pb_migrations/` only when it starts, and the auto-deploy does **not** restart it — so after
+any deploy that adds a migration, run:
+
+```
+sudo systemctl restart pocketbase-PBB
+sudo journalctl -u pocketbase-PBB -n 30 --no-pager
+```
+
+Until then, PocketBase silently drops writes to the new fields (see PBB-09/10 in
+`rework-tasks.md`).
+
 ## Adding a new migration
 
 Create a new timestamped file in `pb_migrations/` (`<unix-seconds>_<description>.js`, higher
