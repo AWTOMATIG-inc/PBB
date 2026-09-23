@@ -59,18 +59,24 @@ this log is the timeline, the checkboxes are the current state.
   Range" feature) that would otherwise have undersold the new 1500 kVA ceiling.
   `next build`/`tsc --noEmit` both pass; verified live in the dev server that `/products`
   renders the new "Heavy Industrial (750-1500 kVA)" filter option and both reclassified
-  Perkins models. **Not yet pushed to a remote/PR — still on the local `khalid` branch.**
+  Perkins models. **Merged to `main` and deployed** — PR #2 (manually merged by Khalid on
+  GitHub, merge commit `24235ed`), confirmed live on the production site. PBB-01/02 is fully
+  done. Note this does **not** by itself unblock PBB-03b/07/08b/11 — those each have their
+  own separate Khalid prerequisite that hasn't shipped yet (3a for 3b, 8a for 8b, 9+10/12 for
+  07, 9+10 for 11's pricing-adjacent layout) — see Sprint 2/3 below. The earlier "Next up"
+  note undersold that; corrected here.
 - Handed to Ashikul (can start immediately, no dependency on the above): **PBB-04-Contact**
   (remove the deprecated third phone number), **PBB-05-WhatsApp** (confirm the WhatsApp CTA
   number), **PBB-06-Services** (replace "Buy" with "Exchange" site-wide). All three are
   content-only edits — see each task's description above for exact file locations.
 - Ashikul reported back: waiting.
-- Next up: PBB-01/02 needs to be merged to `main` and deployed before Ashikul can start
-  anything gated on it (PBB-03b, PBB-07, PBB-08b, PBB-11 per their "Depends on" notes).
-  Khalid's next slice candidates: PBB-03a (clients collection + admin CRUD) or PBB-09+10
-  (pricing schema) — pick whichever unblocks Ashikul's next batch fastest. Once Ashikul
-  reports PBB-04/05/06 done, next for him is PBB-11 (real product photos) if photos are
-  available, since it needs no schema work either.
+- Next up: PBB-01/02 merged + deployed (see above) — Ashikul is still capped at PBB-04/05/06
+  until Khalid ships one of PBB-03a, PBB-08a, or PBB-09+10/12. Khalid's next slice candidates:
+  PBB-03a (clients collection + admin CRUD) or PBB-09+10 (pricing schema) — pick whichever
+  unblocks Ashikul's next batch fastest; PBB-08a is blocked on the GRAND POWER brochure file
+  regardless. Once Ashikul reports PBB-04/05/06 done and no Khalid slice has landed yet, there
+  is genuinely nothing else on Sprint 1/2 for him to pick up — flag that rather than starting
+  PBB-11 early, since 11 depends on 9+10 for its pricing-adjacent layout.
 
 ---
 
