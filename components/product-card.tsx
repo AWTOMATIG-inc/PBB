@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { MessageCircle } from "lucide-react";
 import type { GeneratorModel } from "@/data/generators";
 
 /**
@@ -23,6 +24,26 @@ function getHighlight(model: GeneratorModel) {
 function formatFuelTank(fuelTank: GeneratorModel["fuelTank"]) {
   if (fuelTank === null || fuelTank === "") return null;
   return `${fuelTank} L`;
+}
+
+// Approved WhatsApp Business number (CLAUDE.md "Business facts", PBB-05).
+const WHATSAPP_URL = "https://wa.me/8801989474447";
+
+/**
+ * Grouped by hand rather than Intl.NumberFormat: this card renders on both
+ * the server and inside client components, and ICU data can differ between
+ * Node and the browser, which would cause a hydration mismatch.
+ */
+function formatPrice({ amount, currency }: NonNullable<GeneratorModel["price"]>) {
+  const grouped = Math.round(amount)
+    .toString()
+    .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return `${currency} ${grouped}`;
+}
+
+function quotationUrl(model: GeneratorModel) {
+  const text = `Hi, I'd like a quotation for the ${model.brand} ${model.model} generator.`;
+  return `${WHATSAPP_URL}?text=${encodeURIComponent(text)}`;
 }
 
 export default function ProductCard({ model }: { model: GeneratorModel }) {
@@ -76,6 +97,26 @@ export default function ProductCard({ model }: { model: GeneratorModel }) {
             ))}
           </dl>
         )}
+        <div className="mt-auto flex items-center justify-between gap-3 pt-4">
+          {model.price ? (
+            <p className="text-sm font-semibold tabular-nums text-ink-900">
+              {formatPrice(model.price)}
+            </p>
+          ) : null}
+          <a
+            href={quotationUrl(model)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+              model.price
+                ? "border border-ink-200 text-ink-700 hover:border-brand-300 hover:text-brand-600"
+                : "w-full bg-brand-500 text-white hover:bg-brand-600"
+            }`}
+          >
+            <MessageCircle className="size-4" aria-hidden />
+            {model.price ? "Enquire" : "Request Quotation"}
+          </a>
+        </div>
       </div>
     </div>
   );

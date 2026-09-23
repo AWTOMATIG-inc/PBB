@@ -24,6 +24,10 @@ type PBProduct = {
   specs: Record<string, string | number | null>;
   notes: string;
   isActive: boolean;
+  // Absent until the pricing migration (1789554845) has run on this instance.
+  price?: number;
+  currency?: string;
+  showPrice?: boolean;
   expand?: {
     brand?: { name: string };
     powerBand?: { value: string };
@@ -49,6 +53,16 @@ function zeroToNull(n: number): number | null {
   return n || null;
 }
 
+/**
+ * Price is public only when an admin enabled "Show price" AND entered a
+ * non-zero amount (unset numbers come back as 0, see zeroToNull). Anything
+ * else hides the price block entirely and the card shows "Request Quotation".
+ */
+function toPublicPrice(p: PBProduct): GeneratorModel["price"] {
+  if (!p.showPrice || !p.price) return undefined;
+  return { amount: p.price, currency: p.currency || "BDT" };
+}
+
 function toGeneratorModel(p: PBProduct): GeneratorModel | null {
   const brand = p.expand?.brand?.name;
   const kvaBand = p.expand?.powerBand?.value;
@@ -65,6 +79,7 @@ function toGeneratorModel(p: PBProduct): GeneratorModel | null {
     kvaBand: kvaBand as KvaBand,
     specs: p.specs ?? {},
     notes: p.notes || undefined,
+    price: toPublicPrice(p),
   };
 }
 

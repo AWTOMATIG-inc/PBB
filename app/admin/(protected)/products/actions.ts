@@ -15,6 +15,7 @@ const NUMBER_FIELDS = [
   { name: "primeKva", label: "Prime kVA" },
   { name: "weightKg", label: "Weight" },
 ] as const;
+const CURRENCIES = ["BDT", "USD"] as const;
 
 function buildProductPayload(formData: FormData): { payload: FormData; error?: string } {
   const payload = new FormData();
@@ -43,6 +44,24 @@ function buildProductPayload(formData: FormData): { payload: FormData; error?: s
   );
   if (fuelTankError) errors.push(fuelTankError);
   else payload.set("fuelTank", fuelTank ?? "");
+
+  // Pricing (PBB-09/10). Unlike the fields above, price is always sent so
+  // clearing it in the form actually clears it (PocketBase stores "" as 0,
+  // which the public site treats as "no price").
+  const { value: price, error: priceError } = parseOptionalNumber(
+    String(formData.get("price") ?? "").trim(),
+    "Price"
+  );
+  const showPrice = Boolean(formData.get("showPrice"));
+  const currency = String(formData.get("currency") ?? "BDT");
+  if (priceError) errors.push(priceError);
+  else if (showPrice && !Number(price)) errors.push("Enter a price above 0 to show it.");
+  if (!CURRENCIES.includes(currency as (typeof CURRENCIES)[number])) {
+    errors.push("Currency must be BDT or USD.");
+  }
+  payload.set("price", price ?? "");
+  payload.set("currency", currency);
+  payload.set("showPrice", showPrice ? "true" : "false");
 
   if (errors.length) return { payload, error: errors.join(" ") };
 
