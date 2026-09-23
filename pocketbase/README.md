@@ -74,17 +74,26 @@ Port convention — increment per project, track it here as projects are added:
 
 ### Applying migrations on the VPS
 
-PocketBase runs as the systemd service `pocketbase-PBB`. It applies pending
-`pb_migrations/` only when it starts, and the auto-deploy does **not** restart it — so after
-any deploy that adds a migration, run:
+PocketBase runs as the systemd service `pocketbase-PBB` (port 8091, reading this folder's
+`pb_migrations/`). It applies pending migrations only when it starts, and silently drops
+writes to fields that don't exist yet (see the PBB-09/10 bug in `memory.md`).
+
+The server's deploy script (`/home/khalidh/PBB/deploy.sh`, not tracked in git) handles this:
+if a deploy's `git pull` brings in any `pocketbase/pb_migrations/` file, it runs
+`sudo -n systemctl restart pocketbase-PBB` and waits for `/api/health` **before**
+`npm run build`. It fails the deploy if the restart fails. That relies on the sudoers rule in
+`/etc/sudoers.d/pocketbase-PBB`:
+
+```
+khalidh ALL=(root) NOPASSWD: /usr/bin/systemctl restart pocketbase-PBB
+```
+
+Manual fallback, if needed:
 
 ```
 sudo systemctl restart pocketbase-PBB
-sudo journalctl -u pocketbase-PBB -n 30 --no-pager
+curl -s "http://127.0.0.1:8091/api/collections/<collection>/records?perPage=1"
 ```
-
-Until then, PocketBase silently drops writes to the new fields (see PBB-09/10 in
-`rework-tasks.md`).
 
 ## Adding a new migration
 

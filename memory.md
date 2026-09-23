@@ -275,4 +275,8 @@ session-by-session detail if ever needed. Summary of what shipped:
   `pocketbase/README.md`. The admin save action now returns an error if the saved record lacks
   the pricing fields (PR #7).
 - Rule going forward: any PR that adds a `pb_migrations/` file needs a PocketBase restart on
-  the VPS after deploy. The auto-deploy doesn't do it.
+  the VPS. The server's `deploy.sh` now does this automatically when a pull includes
+  migration files (sudoers rule in `/etc/sudoers.d/pocketbase-PBB`, see
+  `pocketbase/README.md`). Khalid applied the script change by hand on the server, and the
+  restart path is first exercised by the next migration PR (likely PBB-03a). Check that deploy's
+  log for the "New PocketBase migrations" line.
