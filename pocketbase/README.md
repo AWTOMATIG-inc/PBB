@@ -29,8 +29,9 @@ API: http://127.0.0.1:8090/api/
 | `products`         | Generator models (replaces `data/generators.json` — task 14)    | yes |
 | `home_placements`  | Which products appear in Home's "New Products" / "Featured Models" sections, and in what order | yes |
 | `invoices`         | Generated invoices + their stored PDFs                          | **no** (admin/superuser only — customer data) |
+| `clients`          | Approved client names/logos for Home's "Our Clients" strip (PBB-03a) | active only (`isActive = true`) |
 
-All five collections have `createRule`/`updateRule`/`deleteRule` left unset (`null`), which
+All six collections have `createRule`/`updateRule`/`deleteRule` left unset (`null`), which
 in PocketBase means **superuser-only** — i.e. only the admin panel (task 10+) or a
 superuser-authenticated API call can write to them. There's no separate "editor" account
 type yet; the admin panel will authenticate as a PocketBase superuser.

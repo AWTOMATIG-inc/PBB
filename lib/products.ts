@@ -189,6 +189,42 @@ export function deletePowerBand(token: string, id: string) {
   return pbAuthedFetch(token, `/api/collections/power_bands/records/${id}`, { method: "DELETE" });
 }
 
+// PBB-03a: approved clients for Home's "Our Clients" marquee.
+export type ClientRecord = {
+  id: string;
+  name: string;
+  logo: string;
+  sortOrder: number;
+  featured: boolean;
+  isActive: boolean;
+};
+
+export function clientLogoUrl(client: Pick<ClientRecord, "id" | "logo">) {
+  if (!client.logo) return null;
+  return `${PB_FILES_URL}/clients/${client.id}/${client.logo}`;
+}
+
+export async function listClients(token: string): Promise<ClientRecord[]> {
+  const res = await pbAuthedFetch(
+    token,
+    "/api/collections/clients/records?perPage=200&sort=sortOrder,name"
+  );
+  if (!res.ok) throw new Error("Failed to load clients");
+  return (await res.json()).items;
+}
+
+export function createClient(token: string, body: FormData) {
+  return pbAuthedFetch(token, "/api/collections/clients/records", { method: "POST", body });
+}
+
+export function updateClient(token: string, id: string, body: FormData) {
+  return pbAuthedFetch(token, `/api/collections/clients/records/${id}`, { method: "PATCH", body });
+}
+
+export function deleteClient(token: string, id: string) {
+  return pbAuthedFetch(token, `/api/collections/clients/records/${id}`, { method: "DELETE" });
+}
+
 export type HomeSection = "new_products" | "featured_models";
 
 export type HomePlacementRecord = {

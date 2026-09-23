@@ -31,10 +31,11 @@ ever needed. This file now tracks only what a fresh session still needs to know.
   favicon source).
 - Brand palette lives in `design.md` / `app/globals.css` `@theme` tokens (`brand-*`,
   `ink-*`). Primary orange is `#ED7423` (the company's official color).
-- Home's "Our Clients" marquee section reuses `BRAND_LOGOS` (manufacturer logos) as a
-  **disclosed placeholder** — real client logos don't exist yet. This section's name has
-  flipped before (renamed and reverted); don't rename it again without checking with the
-  user first.
+- Home's "Our Clients" marquee is fed by the PocketBase `clients` collection (PBB-03a,
+  admin at `/admin/clients`), showing active and featured clients only, and is **hidden when
+  there are none**. It no longer reuses `BRAND_LOGOS`; that placeholder note is superseded.
+  This section's name has flipped before (renamed and reverted); don't rename it again
+  without checking with the user first.
 - Catalog data: originally static `data/generators.json`/`.ts` (98 models), now
   **PocketBase is the source of truth** for products/brands/power bands (task 14).
   `data/generators.ts` survives only as types/UI constants (`Brand`, `KvaBand`,
@@ -280,3 +281,28 @@ session-by-session detail if ever needed. Summary of what shipped:
   `pocketbase/README.md`). Khalid applied the script change by hand on the server, and the
   restart path is first exercised by the next migration PR (likely PBB-03a). Check that deploy's
   log for the "New PocketBase migrations" line.
+
+
+## Session — 2026-09-23 — PBB-03a (clients collection + admin + Home marquee)
+
+- What was done: migration `1789554846_create_clients.js`. It adds `clients` (name unique,
+  logo, sortOrder, featured, isActive), with public list/view rule `isActive = true`. Admin
+  CRUD lives at `/admin/clients` (`app/admin/(protected)/clients/`,
+  `components/admin/clients-manager.tsx` + `client-form.tsx`, nav link, dashboard card).
+  `lib/products.ts` gained `ClientRecord`, `clientLogoUrl`, `listClients` and
+  create/update/delete. `lib/public-data.ts` gained `getFeaturedClients()`, which returns
+  `[]` when the collection is missing so Home never crashes before the migration runs.
+  Home's "Our Clients" section now uses it.
+- Key decisions: "Featured" means "shown in the Home marquee". New clients default to
+  featured and active. A client without a logo shows as a text name, so 3b isn't fully
+  blocked on logos. With zero clients the section is hidden rather than padded with
+  manufacturer logos. The admin page and actions give a "restart PocketBase" message
+  instead of crashing when the collection is missing.
+- Verified locally: migration applied on `serve`, and the public API returned only
+  active+featured clients. The built Home rendered the logo client and the text client and
+  excluded the hidden and unfeatured ones. With zero clients the section is absent. Test
+  data and the temp superuser were deleted. tsc, eslint and `next build` pass. The admin
+  form was not click-tested in a browser; the actions mirror the brands manager.
+- Deviations: PBB-11 deferred to the end of the round per Khalid.
+- Open issues / TODOs: first real test of `deploy.sh`'s automatic PocketBase restart. After
+  deploy, confirm `/admin/clients` loads on live. Then Ashikul does 3b.
