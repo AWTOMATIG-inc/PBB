@@ -138,7 +138,10 @@ this log is the timeline, the checkboxes are the current state.
   Footwear, Adib Builders, Sinha Knitwear, Atif Agro, Magura Group. The names can go in now,
   since Home shows text names until logos exist. Upload each logo when PBB supplies it (still
   an open blocker below).
-- Ashikul reported back: waiting.
+- Ashikul reported back: 2026-09-23. **PBB-03b done**: all 7 approved clients and their
+  logos added on live through `/admin/clients`. Admin data entry only, no code change, so no
+  PR from `ashikul`. Khalid ticked 3b and the logo blocker on his behalf. **PBB-03 is
+  complete.**
 - Next up: Khalid's PBB-08a still needs the GRAND POWER brochure. If it hasn't arrived,
   consider PBB-13 (quotation schema) next.
 
@@ -149,7 +152,7 @@ this log is the timeline, the checkboxes are the current state.
 - [ ] **GRAND POWER LTD brochure** (PDF/images) — not in the repo. Needed before PBB-08/8b
       (catalogue import) or the PBB-08a schema-field decisions can be finalized (some fields
       in section 4.2 may not all be present in this particular brochure).
-- [ ] **Real client logos** for the 7 approved clients (Skyview Apartment, Bashundhara
+- [x] **Real client logos** for the 7 approved clients (Skyview Apartment, Bashundhara
       Training and Testing, Bay Footwear, Adib Builders, Sinha Knitwear, Atif Agro, Magura
       Group) — needed for PBB-03b.
 - [ ] **Quotation sample documents** (Bashundhara Training and Testing Center quotation,
@@ -172,13 +175,13 @@ this log is the timeline, the checkboxes are the current state.
       expanded range. Same PR as PBB-01 in practice — `components/products-browser.tsx`'s
       `FilterGroup` for Power Band, plus any admin `power-bands-manager.tsx` UI, needs to
       reflect the new 5-band scheme.
-- [ ] **PBB-03-Clients** — split:
+- [x] **PBB-03-Clients** — split:
   - [x] **3a** `khalid` — new `clients` PocketBase collection (fields per feedback doc 3.2:
         Client Name, Logo, Display Order, Featured Yes/No, Active/Hidden), an admin CRUD
         manager mirroring `components/admin/brands-manager.tsx`, and rewire the Home "Our
         Clients" marquee (`app/(site)/page.tsx`) off the `BRAND_LOGOS` placeholder (see
         `memory.md`'s durable-decisions note on this) onto the real collection.
-  - [ ] **3b** `ashikul` — *depends on 3a merged + real client logos supplied.* Add the 7
+  - [x] **3b** `ashikul` — *depends on 3a merged + real client logos supplied.* Add the 7
         approved clients through the new admin screen.
 - [x] **PBB-04-Contact** — `ashikul`. Remove every phone number except the two approved:
       `+88 (0) 1989 474 447` (WhatsApp Business) and `+88 (0) 1625 181 403` (office). Known

@@ -306,3 +306,13 @@ session-by-session detail if ever needed. Summary of what shipped:
 - Deviations: PBB-11 deferred to the end of the round per Khalid.
 - Open issues / TODOs: first real test of `deploy.sh`'s automatic PocketBase restart. After
   deploy, confirm `/admin/clients` loads on live. Then Ashikul does 3b.
+
+
+## Session — 2026-09-23 — PBB-03b closed (tracker only)
+
+- Ashikul added the 7 approved clients and their logos on live through `/admin/clients`
+  (PBB-03b). Content only, so there was no code change and no PR from `ashikul`, and he didn't
+  pull. Khalid updated `rework-tasks.md` here: 3b, the PBB-03 parent, and the "Real client
+  logos" blocker are all checked. Home's "Our Clients" strip is now fed by real clients.
+- Note: live client data lives only in the VPS PocketBase. Local `pb_data` has no clients.
+
