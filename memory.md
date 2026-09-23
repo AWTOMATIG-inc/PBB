@@ -210,9 +210,16 @@ session-by-session detail if ever needed. Summary of what shipped:
   Perkins models show the correct band; PocketBase REST API confirms all 5 `power_bands`
   records and the two reclassified `products` records.
 - Deviations from tasks.md / CLAUDE.md: none.
-- Open issues / TODOs for next session: **not yet committed or pushed** — all changes are
-  still unstaged on the local `khalid` branch, and per `rework-tasks.md`'s sequencing rule
-  this needs to merge to `main` and deploy before Ashikul can start anything gated on it
-  (PBB-03b, PBB-07, PBB-08b, PBB-11). Khalid's next slice is PBB-03a or PBB-09+10 (see
-  `rework-tasks.md`'s Cycle 1 "Next up" note).
+- Open issues / TODOs for next session: **PBB-01/02 is done** — merged to `main` via PR #2
+  (manually merged by Khalid on GitHub, merge commit `24235ed`) and confirmed deployed live.
+  `gh` CLI was installed this session (`winget install --id GitHub.cli`) but is **not yet
+  authenticated** (`gh auth status` → not logged in); needs a one-time `gh auth login` from
+  Khalid (interactive browser flow) before it's usable for future PRs. Important correction:
+  merging PBB-01/02 does **not** by itself unblock PBB-03b/07/08b/11 for Ashikul — each has
+  its own separate Khalid prerequisite that hasn't shipped yet (3a for 3b, 8a for 8b, 9+10/12
+  for 07, 9+10 for 11's pricing-adjacent layout). Ashikul stays capped at PBB-04/05/06 until
+  one of those lands. Khalid's next slice candidates: PBB-03a or PBB-09+10 (PBB-08a is
+  blocked on the still-missing GRAND POWER brochure file regardless). See `rework-tasks.md`'s
+  Cycle 1 "Next up" note (corrected in this session — it previously overstated what PBB-01/02
+  alone would unblock).
 
