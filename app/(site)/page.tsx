@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { Reveal, Rise } from "cube-motion/react";
 import { BRANDS } from "@/data/generators";
-import { getPublicGenerators, getHomeSections } from "@/lib/public-data";
+import { getFeaturedClients, getPublicGenerators, getHomeSections } from "@/lib/public-data";
 import ProductCard from "@/components/product-card";
 import NewProductsCarousel from "@/components/new-products-carousel";
 
@@ -89,7 +89,7 @@ const SERVICES = [
 export const revalidate = 300;
 
 export default async function Home() {
-  const generators = await getPublicGenerators();
+  const [generators, clients] = await Promise.all([getPublicGenerators(), getFeaturedClients()]);
   const { featuredModels, newProducts } = await getHomeSections(generators);
 
   return (
@@ -290,26 +290,39 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Brand Partners: same BRAND_LOGOS marquee as "Brands We Carry" above. */}
-      <section className="border-t border-ink-100 bg-white">
-        <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-          <p className="text-center text-2xl font-semibold uppercase tracking-wide text-ink-400">
-            Our Clients
-          </p>
-          <div className="mt-14 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
-            <div className="flex w-max animate-marquee items-center gap-16 hover:[animation-play-state:paused]">
-              {[...BRAND_LOGOS, ...BRAND_LOGOS].map((brand, index) => (
-                <img
-                  key={`partner-${brand.name}-${index}`}
-                  src={`/brands/${brand.file}.png`}
-                  alt={brand.name}
-                  className="h-10 w-auto shrink-0 object-contain sm:h-12"
-                />
-              ))}
+      {/* Our Clients: admin-managed at /admin/clients (PBB-03a). Hidden until
+          at least one active, featured client exists, rather than padding it
+          with manufacturer logos that aren't clients. */}
+      {clients.length > 0 && (
+        <section className="border-t border-ink-100 bg-white">
+          <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+            <p className="text-center text-2xl font-semibold uppercase tracking-wide text-ink-400">
+              Our Clients
+            </p>
+            <div className="mt-14 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+              <div className="flex w-max animate-marquee items-center gap-16 hover:[animation-play-state:paused]">
+                {[...clients, ...clients].map((client, index) =>
+                  client.logoUrl ? (
+                    <img
+                      key={`client-${client.name}-${index}`}
+                      src={client.logoUrl}
+                      alt={client.name}
+                      className="h-10 w-auto shrink-0 object-contain sm:h-12"
+                    />
+                  ) : (
+                    <span
+                      key={`client-${client.name}-${index}`}
+                      className="shrink-0 whitespace-nowrap text-lg font-semibold text-ink-500 sm:text-xl"
+                    >
+                      {client.name}
+                    </span>
+                  )
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Bottom CTA */}
       <section className="bg-ink-900">

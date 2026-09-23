@@ -117,6 +117,31 @@ this log is the timeline, the checkboxes are the current state.
 - Next up: Khalid picks PBB-03a (clients) or PBB-08a (needs the GRAND POWER brochure).
   PBB-07 (catalogue redesign) still waits on the Condition/Availability filters from 8a/12.
 
+### Cycle 4 — 2026-09-23
+
+- Ashikul's PBB-11 is **deferred to the very end** of this feedback round (Khalid's call).
+  It stays unchecked; don't hand it out until everything else is done.
+- Khalid pushed: **PBB-03a** (clients). New migration
+  `pocketbase/pb_migrations/1789554846_create_clients.js` creates `clients` with `name`
+  (unique), `logo`, `sortOrder` (shown as "Display order"), `featured` and `isActive`. Its
+  public list/view rule is `isActive = true`, so hidden clients are never publicly readable.
+  New admin page `/admin/clients` (nav link and dashboard card), mirroring the brands
+  manager. New clients default to featured and active. Home's "Our Clients" marquee now
+  shows active, featured clients in display order. A client without a logo shows as its
+  name in text. **With zero clients, the section is hidden**, so after this deploy the
+  section disappears from Home until 3b adds the real clients. The old `BRAND_LOGOS`
+  placeholder no longer feeds it. **Deploy note:** includes a migration. `deploy.sh` should
+  restart PocketBase automatically; check the deploy log for that line. If
+  `/admin/clients` says it can't load clients, restart `pocketbase-PBB` by hand.
+- Handed to Ashikul (once this PR is merged and deployed): **PBB-03b**. Add the 7 approved
+  clients at `/admin/clients`: Skyview Apartment, Bashundhara Training and Testing, Bay
+  Footwear, Adib Builders, Sinha Knitwear, Atif Agro, Magura Group. The names can go in now,
+  since Home shows text names until logos exist. Upload each logo when PBB supplies it (still
+  an open blocker below).
+- Ashikul reported back: waiting.
+- Next up: Khalid's PBB-08a still needs the GRAND POWER brochure. If it hasn't arrived,
+  consider PBB-13 (quotation schema) next.
+
 ---
 
 ## Blockers — need from Khalid before certain tasks can start
@@ -148,7 +173,7 @@ this log is the timeline, the checkboxes are the current state.
       `FilterGroup` for Power Band, plus any admin `power-bands-manager.tsx` UI, needs to
       reflect the new 5-band scheme.
 - [ ] **PBB-03-Clients** — split:
-  - [ ] **3a** `khalid` — new `clients` PocketBase collection (fields per feedback doc 3.2:
+  - [x] **3a** `khalid` — new `clients` PocketBase collection (fields per feedback doc 3.2:
         Client Name, Logo, Display Order, Featured Yes/No, Active/Hidden), an admin CRUD
         manager mirroring `components/admin/brands-manager.tsx`, and rewire the Home "Our
         Clients" marquee (`app/(site)/page.tsx`) off the `BRAND_LOGOS` placeholder (see

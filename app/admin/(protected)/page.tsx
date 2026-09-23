@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Home, Package, SlidersHorizontal } from "lucide-react";
+import { Handshake, Home, Package, SlidersHorizontal } from "lucide-react";
 import { verifyAdminSession } from "@/lib/auth";
 
 export const metadata: Metadata = {
@@ -42,6 +42,21 @@ export default async function AdminDashboardPage() {
             <span className="block font-semibold text-ink-900">Filters</span>
             <span className="block text-sm text-ink-500">
               Manage brands and kVA power bands used by the Products filters.
+            </span>
+          </span>
+        </Link>
+
+        <Link
+          href="/admin/clients"
+          className="flex items-center gap-4 rounded-lg border border-ink-100 bg-white p-6 transition-colors hover:border-brand-200"
+        >
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand-50 text-brand-500">
+            <Handshake className="size-5" />
+          </span>
+          <span>
+            <span className="block font-semibold text-ink-900">Clients</span>
+            <span className="block text-sm text-ink-500">
+              Manage the client logos shown in the Home page &quot;Our Clients&quot; strip.
             </span>
           </span>
         </Link>

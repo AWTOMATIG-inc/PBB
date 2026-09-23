@@ -8,6 +8,7 @@
 // visitor (task 8's architecture decision, see memory.md).
 
 import { BRANDS, type Brand, type GeneratorModel, type KvaBand } from "@/data/generators";
+import { clientLogoUrl } from "@/lib/products";
 
 const POCKETBASE_URL = process.env.POCKETBASE_URL || "http://127.0.0.1:8090";
 const REVALIDATE_SECONDS = 300;
@@ -98,6 +99,30 @@ export async function getPublicGenerators(): Promise<GeneratorModel[]> {
   return (data.items as PBProduct[])
     .map(toGeneratorModel)
     .filter((g): g is GeneratorModel => g !== null);
+}
+
+export type PublicClient = { name: string; logoUrl: string | null };
+
+/**
+ * Home's "Our Clients" marquee (PBB-03a). The collection's public listRule
+ * already hides inactive clients; featured narrows it to the marquee set.
+ * Returns [] instead of throwing when the collection is missing (clients
+ * migration not applied yet), so Home still renders, just without the
+ * section.
+ */
+export async function getFeaturedClients(): Promise<PublicClient[]> {
+  const params = new URLSearchParams({
+    perPage: "200",
+    sort: "sortOrder,name",
+    filter: "featured = true",
+  });
+  const res = await pbPublicFetch(`/api/collections/clients/records?${params.toString()}`);
+  if (!res.ok) return [];
+  const data = await res.json();
+  return (data.items as { id: string; name: string; logo: string }[]).map((c) => ({
+    name: c.name,
+    logoUrl: clientLogoUrl(c),
+  }));
 }
 
 export type HomeSection = "new_products" | "featured_models";
