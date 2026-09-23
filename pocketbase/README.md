@@ -72,6 +72,29 @@ Port convention — increment per project, track it here as projects are added:
 |---------|:--:|
 | PPB (this project) | 8091 |
 
+### Applying migrations on the VPS
+
+PocketBase runs as the systemd service `pocketbase-PBB` (port 8091, reading this folder's
+`pb_migrations/`). It applies pending migrations only when it starts, and silently drops
+writes to fields that don't exist yet (see the PBB-09/10 bug in `memory.md`).
+
+The server's deploy script (`/home/khalidh/PBB/deploy.sh`, not tracked in git) handles this:
+if a deploy's `git pull` brings in any `pocketbase/pb_migrations/` file, it runs
+`sudo -n systemctl restart pocketbase-PBB` and waits for `/api/health` **before**
+`npm run build`. It fails the deploy if the restart fails. That relies on the sudoers rule in
+`/etc/sudoers.d/pocketbase-PBB`:
+
+```
+khalidh ALL=(root) NOPASSWD: /usr/bin/systemctl restart pocketbase-PBB
+```
+
+Manual fallback, if needed:
+
+```
+sudo systemctl restart pocketbase-PBB
+curl -s "http://127.0.0.1:8091/api/collections/<collection>/records?perPage=1"
+```
+
 ## Adding a new migration
 
 Create a new timestamped file in `pb_migrations/` (`<unix-seconds>_<description>.js`, higher
