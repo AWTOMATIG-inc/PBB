@@ -262,3 +262,17 @@ session-by-session detail if ever needed. Summary of what shipped:
 - Open issues / TODOs: the VPS PocketBase service needs a restart after deploying so the
   migration applies. PBB-11 is now unblocked for Ashikul.
 
+
+## Session — 2026-09-23 — Pricing bug on live (PocketBase not restarted)
+
+- Bug: on the live site, admin price saves "succeeded" but stored nothing. Cause: the VPS
+  PocketBase (`pocketbase-PBB` systemd service, port 8091) had not restarted since
+  2026-09-21, so neither `1789554844` (PBB-01/02 power bands) nor `1789554845` (pricing) had
+  applied. PocketBase silently drops unknown fields. PBB-01/02 only *looked* live because
+  `/products` filter labels come from the static `KVA_BANDS` in code.
+- Fix: `sudo systemctl restart pocketbase-PBB`. Verified on the server that both migrations
+  applied (pricing fields present, 5 power bands). The restart step is now documented in
+  `pocketbase/README.md`. The admin save action now returns an error if the saved record lacks
+  the pricing fields (PR #7).
+- Rule going forward: any PR that adds a `pb_migrations/` file needs a PocketBase restart on
+  the VPS after deploy. The auto-deploy doesn't do it.
