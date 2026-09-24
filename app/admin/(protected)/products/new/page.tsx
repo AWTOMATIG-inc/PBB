@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { redirect } from "next/navigation";
 import { getAdminSessionToken } from "@/lib/session";
-import { listBrands, listPowerBands } from "@/lib/products";
+import { listBrands, listOptions, listPowerBands } from "@/lib/products";
 import ProductForm from "@/components/admin/product-form";
 import { createProductAction } from "../actions";
 
@@ -15,7 +15,12 @@ export default async function NewProductPage() {
   const token = await getAdminSessionToken();
   if (!token) redirect("/admin/login");
 
-  const [brands, powerBands] = await Promise.all([listBrands(token), listPowerBands(token)]);
+  const [brands, powerBands, alternatorMakes, controllers] = await Promise.all([
+    listBrands(token),
+    listPowerBands(token),
+    listOptions(token, "alternator_makes"),
+    listOptions(token, "controllers"),
+  ]);
 
   return (
     <div>
@@ -33,6 +38,8 @@ export default async function NewProductPage() {
         <ProductForm
           brands={brands}
           powerBands={powerBands}
+          alternatorMakes={alternatorMakes}
+          controllers={controllers}
           action={createProductAction}
           submitLabel="Create product"
         />

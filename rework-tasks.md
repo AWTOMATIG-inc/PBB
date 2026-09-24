@@ -145,11 +145,43 @@ this log is the timeline, the checkboxes are the current state.
 - Next up: Khalid's PBB-08a still needs the GRAND POWER brochure. If it hasn't arrived,
   consider PBB-13 (quotation schema) next.
 
+### Cycle 5 — 2026-09-24 — PBB-07/08 re-scoped
+
+- **Scope change (Khalid's call):** no GRAND POWER import, no PS Engineering redesign, and
+  none of the extra spec fields (Condition, Country of Origin, Voltage, Frequency, Fuel
+  Consumption, Dimensions, gallery, datasheet). `/products` keeps its layout. PBB-07/08 are
+  now: add **Alternator make** and **Controller** to products, redesign the product card to
+  show them, and add Alternator, Controller, and Price filters plus a sort.
+- Khalid pushed: migration `1789554847_add_alternator_make_and_controller.js` creates two
+  admin-managed lists, `alternator_makes` and `controllers` (name only, managed at
+  `/admin/filters` like brands). It links each product to them through `alternatorMake` /
+  `controller` relation fields (dropdowns in the product form), and fills all 98 products
+  with **placeholder** values (no real data yet). The picks are hashed from the model name,
+  so local and live match. Renaming an entry updates every product using it. Deleting is
+  only offered for entries with 0 products (the server also refuses).
+  Makes: `Stamford`, `Copy-Stamford, China` (the two "copy" variants merged into one),
+  `Leroy Somer, France`. Controllers: `Smartgen, China`, `Deep Sea Electronics`. The
+  existing `alternator` field is **kept**. It holds the real catalog part numbers (PI144G,
+  UCI224E...), now labelled "Alternator part no." in admin. The 76 Stamford-series part
+  numbers only get a Stamford make, so no card pairs Leroy Somer with a Stamford part.
+  Leroy Somer only appears on Ricardo (22 models). The card now shows 5 aligned spec rows
+  (Engine, Alternator = make + part no., Controller, Weight, Fuel Tank). `/products` gains
+  Alternator/Controller checkbox filters (built from product data), a BDT min/max price
+  range (priced models only, with an empty state when nothing matches), and a Sort by
+  (Power / Price low-high / Price high-low; unpriced last). **Deploy note:** includes a
+  migration, so check the deploy log for the PocketBase restart line.
+- Handed to Ashikul: once real alternator/controller data arrives, correct the placeholder
+  values product by product at `/admin/products`; add any new make/controller under
+  `/admin/filters` first.
+- Next up: PBB-13 still blocked on the quotation samples; PBB-15 on the invoice-fields
+  decision. PBB-11 stays deferred to the end.
+
 ---
 
 ## Blockers — need from Khalid before certain tasks can start
 
-- [ ] **GRAND POWER LTD brochure** (PDF/images) — not in the repo. Needed before PBB-08/8b
+- [x] ~~**GRAND POWER LTD brochure**~~ — **dropped 2026-09-24**, not coming (Cycle 5).
+      Original note: not in the repo. Needed before PBB-08/8b
       (catalogue import) or the PBB-08a schema-field decisions can be finalized (some fields
       in section 4.2 may not all be present in this particular brochure).
 - [x] **Real client logos** for the 7 approved clients (Skyview Apartment, Bashundhara
@@ -201,13 +233,17 @@ this log is the timeline, the checkboxes are the current state.
 
 ## Sprint 2 — Catalogue redesign, schema, brochure import, imagery, pricing (PBB-07 to PBB-12)
 
-- [ ] **PBB-07-Catalogue** *(not on tracker — added per feedback doc)* — `ashikul`.
+- [x] **PBB-07 + PBB-08 (re-scoped 2026-09-24, see Cycle 5)** — `khalid`. Alternator make +
+      Controller fields, product card redesign, Alternator/Controller/Price filters and
+      sort. Replaces the original 07/08a/08b below, which are kept for history only. Follow-up
+      for `ashikul`: replace the placeholder make/controller values as real data arrives.
+- [ ] ~~**PBB-07-Catalogue**~~ *(superseded by the re-scope above)* — `ashikul`.
       *Depends on PBB-01/02 and PBB-09/12 merged first* — the new filters (Condition,
       Availability, Price State) and power bands need to exist before the redesigned filter
       UI can be built against them. Redesign `components/products-browser.tsx`'s layout
       using the supplied PS Engineering category page as a structural reference, keeping PBB
       branding/palette (`design.md`). Pure front-end, no schema changes of its own.
-- [ ] **PBB-08-Catalogue** — split:
+- [ ] ~~**PBB-08-Catalogue**~~ *(superseded by the re-scope above, no brochure coming)* — split:
   - [ ] **8a** `khalid` — *blocked on the GRAND POWER brochure file.* Extend the `products`
         PocketBase collection (currently `pocketbase/pb_migrations/1789554839_create_products.js`)
         to cover every field in feedback doc section 4.2 not already present: Condition,

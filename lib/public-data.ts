@@ -32,8 +32,12 @@ type PBProduct = {
   expand?: {
     brand?: { name: string };
     powerBand?: { value: string };
+    alternatorMake?: { name: string };
+    controller?: { name: string };
   };
 };
+
+const PRODUCT_EXPAND = ["brand", "powerBand", "alternatorMake", "controller"];
 
 function pbPublicFetch(path: string) {
   return fetch(`${POCKETBASE_URL}${path}`, {
@@ -75,6 +79,8 @@ function toGeneratorModel(p: PBProduct): GeneratorModel | null {
     primeKva: zeroToNull(p.primeKva),
     engineModel: p.engineModel || null,
     alternator: p.alternator || null,
+    alternatorMake: p.expand?.alternatorMake?.name ?? null,
+    controller: p.expand?.controller?.name ?? null,
     fuelTank: p.fuelTank || null,
     weightKg: zeroToNull(p.weightKg),
     kvaBand: kvaBand as KvaBand,
@@ -88,7 +94,7 @@ export async function getPublicGenerators(): Promise<GeneratorModel[]> {
   const params = new URLSearchParams({
     perPage: "500",
     sort: "sortOrder,model",
-    expand: "brand,powerBand",
+    expand: PRODUCT_EXPAND.join(","),
     filter: "isActive = true",
   });
   const res = await pbPublicFetch(`/api/collections/products/records?${params.toString()}`);
@@ -136,7 +142,7 @@ async function getHomePlacements(): Promise<Record<HomeSection, GeneratorModel[]
   const params = new URLSearchParams({
     perPage: "200",
     sort: "section,sortOrder",
-    expand: "product,product.brand,product.powerBand",
+    expand: ["product", ...PRODUCT_EXPAND.map((f) => `product.${f}`)].join(","),
   });
   const res = await pbPublicFetch(
     `/api/collections/home_placements/records?${params.toString()}`

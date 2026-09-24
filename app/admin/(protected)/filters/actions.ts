@@ -10,6 +10,12 @@ import {
   createPowerBand,
   deletePowerBand,
   updatePowerBand,
+  OPTION_LISTS,
+  countProductsUsingOption,
+  createOption,
+  deleteOption,
+  updateOption,
+  type OptionList,
 } from "@/lib/products";
 import { describePbError } from "@/lib/pb-error";
 import { parseOptionalInteger, parseOptionalNumber } from "@/lib/validation";
@@ -171,6 +177,76 @@ export async function updatePowerBandAction(
   revalidatePath("/admin/filters");
   revalidatePath("/");
   revalidatePath("/products");
+}
+
+// `list` arrives from the client, so it's checked against the allowlist
+// before being interpolated into a PocketBase URL.
+function assertOptionList(list: string): asserts list is OptionList {
+  if (!(list in OPTION_LISTS)) throw new Error("Unknown list.");
+}
+
+function revalidateOptionPages() {
+  revalidatePath("/admin/filters");
+  revalidatePath("/");
+  revalidatePath("/products");
+}
+
+async function saveOption(
+  list: string,
+  id: string | null,
+  formData: FormData
+): Promise<FilterFormState> {
+  const token = await getAdminSessionToken();
+  if (!token) redirect("/admin/login");
+  assertOptionList(list);
+
+  const name = String(formData.get("name") ?? "").trim();
+  if (!name) return { error: "Name is required." };
+  const payload = new FormData();
+  payload.set("name", name);
+
+  const res = id
+    ? await updateOption(token, list, id, payload)
+    : await createOption(token, list, payload);
+  if (!res.ok) return { error: describePbError(res.status, await res.json().catch(() => null)) };
+
+  revalidateOptionPages();
+}
+
+export async function createOptionAction(
+  list: string,
+  _prevState: FilterFormState,
+  formData: FormData
+): Promise<FilterFormState> {
+  return saveOption(list, null, formData);
+}
+
+export async function updateOptionAction(
+  list: string,
+  id: string,
+  _prevState: FilterFormState,
+  formData: FormData
+): Promise<FilterFormState> {
+  return saveOption(list, id, formData);
+}
+
+// Returns the error instead of throwing: production builds replace thrown
+// server-action messages with a generic one, and this one must reach the admin.
+export async function deleteOptionAction(list: string, id: string): Promise<FilterFormState> {
+  const token = await getAdminSessionToken();
+  if (!token) redirect("/admin/login");
+  assertOptionList(list);
+
+  const inUse = await countProductsUsingOption(token, list, id);
+  if (inUse > 0) {
+    return {
+      error: `Used by ${inUse} product${inUse === 1 ? "" : "s"}. Change ${inUse === 1 ? "it" : "them"} first.`,
+    };
+  }
+
+  const res = await deleteOption(token, list, id);
+  if (!res.ok) return { error: describePbError(res.status, await res.json().catch(() => null)) };
+  revalidateOptionPages();
 }
 
 export async function deletePowerBandAction(id: string) {

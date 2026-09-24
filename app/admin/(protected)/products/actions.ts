@@ -9,7 +9,7 @@ import { parseFuelTank, parseOptionalNumber } from "@/lib/validation";
 
 export type ProductFormState = { error: string } | undefined;
 
-const TEXT_FIELDS = ["engineModel", "alternator", "notes"] as const;
+const TEXT_FIELDS = ["engineModel", "alternator", "alternatorMake", "controller", "notes"] as const;
 const NUMBER_FIELDS = [
   { name: "standbyKva", label: "Standby kVA" },
   { name: "primeKva", label: "Prime kVA" },
