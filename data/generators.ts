@@ -43,7 +43,10 @@ export interface GeneratorModel {
   standbyKva: number | null;
   primeKva: number | null;
   engineModel: string | null;
+  // Part number from the original catalog, e.g. "UCI224E".
   alternator: string | null;
+  alternatorMake?: string | null;
+  controller?: string | null;
   fuelTank: string | number | null;
   weightKg: number | null;
   kvaBand: KvaBand;

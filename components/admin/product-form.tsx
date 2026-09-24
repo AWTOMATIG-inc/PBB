@@ -1,8 +1,14 @@
 "use client";
 
 import { useActionState } from "react";
+import Link from "next/link";
 import type { ProductFormState } from "@/app/admin/(protected)/products/actions";
-import type { BrandRecord, PowerBandRecord, ProductRecord } from "@/lib/products";
+import type {
+  BrandRecord,
+  OptionListRecord,
+  PowerBandRecord,
+  ProductRecord,
+} from "@/lib/products";
 
 const INPUT_CLASS =
   "w-full rounded-md border border-ink-200 px-3 py-2.5 text-sm text-ink-900 outline-none focus:border-brand-500";
@@ -11,6 +17,8 @@ const LABEL_CLASS = "text-sm font-medium text-ink-700";
 export default function ProductForm({
   brands,
   powerBands,
+  alternatorMakes,
+  controllers,
   action,
   product,
   currentImageUrl,
@@ -18,6 +26,8 @@ export default function ProductForm({
 }: {
   brands: BrandRecord[];
   powerBands: PowerBandRecord[];
+  alternatorMakes: OptionListRecord[];
+  controllers: OptionListRecord[];
   action: (state: ProductFormState, formData: FormData) => Promise<ProductFormState>;
   product?: ProductRecord;
   currentImageUrl?: string | null;
@@ -147,16 +157,62 @@ export default function ProductForm({
 
         <div className="flex flex-col gap-1.5">
           <label htmlFor="alternator" className={LABEL_CLASS}>
-            Alternator
+            Alternator part no.
           </label>
           <input
             id="alternator"
             name="alternator"
             type="text"
             maxLength={150}
+            placeholder="e.g. UCI224E"
             defaultValue={product?.alternator ?? ""}
             className={INPUT_CLASS}
           />
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="alternatorMake" className={LABEL_CLASS}>
+            Alternator make
+          </label>
+          <select
+            id="alternatorMake"
+            name="alternatorMake"
+            defaultValue={product?.alternatorMake ?? ""}
+            className={INPUT_CLASS}
+          >
+            <option value="">Not listed</option>
+            {alternatorMakes.map((o) => (
+              <option key={o.id} value={o.id}>
+                {o.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="controller" className={LABEL_CLASS}>
+            Controller
+          </label>
+          <select
+            id="controller"
+            name="controller"
+            defaultValue={product?.controller ?? ""}
+            className={INPUT_CLASS}
+          >
+            <option value="">Not listed</option>
+            {controllers.map((o) => (
+              <option key={o.id} value={o.id}>
+                {o.name}
+              </option>
+            ))}
+          </select>
+          <p className="text-xs text-ink-400">
+            Add new makes and controllers under{" "}
+            <Link href="/admin/filters" className="font-medium text-brand-600 hover:underline">
+              Filters
+            </Link>
+            .
+          </p>
         </div>
 
         <div className="flex flex-col gap-1.5">

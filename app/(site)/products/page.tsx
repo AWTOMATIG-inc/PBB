@@ -22,8 +22,8 @@ export default async function ProductsPage() {
             Generator Models
           </h1>
           <p className="mt-3 max-w-2xl text-ink-500">
-            98+ diesel generators across eight major brands. Filter by brand
-            and power band to find the right fit.
+            98+ diesel generators across eight major brands. Filter by brand,
+            power band, alternator, controller or price to find the right fit.
           </p>
         </div>
       </section>

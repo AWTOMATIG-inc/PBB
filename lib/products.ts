@@ -40,6 +40,9 @@ export type ProductRecord = {
   primeKva: number | null;
   engineModel: string;
   alternator: string;
+  // Relation ids; absent until migration 1789554847 has run on this instance.
+  alternatorMake?: string;
+  controller?: string;
   fuelTank: string;
   weightKg: number | null;
   specs: Record<string, string | number | null>;
@@ -223,6 +226,75 @@ export function updateClient(token: string, id: string, body: FormData) {
 
 export function deleteClient(token: string, id: string) {
   return pbAuthedFetch(token, `/api/collections/clients/records/${id}`, { method: "DELETE" });
+}
+
+// Name-only option lists managed on /admin/filters and linked from products.
+export type OptionListRecord = { id: string; name: string };
+
+export const OPTION_LISTS = {
+  alternator_makes: { productField: "alternatorMake", label: "alternator make" },
+  controllers: { productField: "controller", label: "controller" },
+} as const;
+
+export type OptionList = keyof typeof OPTION_LISTS;
+
+export async function listOptions(token: string, list: OptionList): Promise<OptionListRecord[]> {
+  const res = await pbAuthedFetch(token, `/api/collections/${list}/records?perPage=200&sort=name`);
+  if (!res.ok) throw new Error(`Failed to load ${OPTION_LISTS[list].label}s`);
+  return (await res.json()).items;
+}
+
+export function createOption(token: string, list: OptionList, body: FormData) {
+  return pbAuthedFetch(token, `/api/collections/${list}/records`, { method: "POST", body });
+}
+
+export function updateOption(token: string, list: OptionList, id: string, body: FormData) {
+  return pbAuthedFetch(token, `/api/collections/${list}/records/${id}`, { method: "PATCH", body });
+}
+
+export function deleteOption(token: string, list: OptionList, id: string) {
+  return pbAuthedFetch(token, `/api/collections/${list}/records/${id}`, { method: "DELETE" });
+}
+
+/** Product count per option id, for every option list, in one request. */
+export async function getOptionUsage(token: string): Promise<Record<OptionList, Record<string, number>>> {
+  const fields = Object.values(OPTION_LISTS).map((l) => l.productField);
+  const res = await pbAuthedFetch(
+    token,
+    `/api/collections/products/records?perPage=1000&fields=${fields.join(",")}`
+  );
+  if (!res.ok) throw new Error("Failed to load product usage");
+  const items: Record<string, string | undefined>[] = (await res.json()).items;
+
+  const usage = {} as Record<OptionList, Record<string, number>>;
+  for (const [list, { productField }] of Object.entries(OPTION_LISTS)) {
+    const counts: Record<string, number> = {};
+    for (const item of items) {
+      const id = item[productField];
+      if (id) counts[id] = (counts[id] ?? 0) + 1;
+    }
+    usage[list as OptionList] = counts;
+  }
+  return usage;
+}
+
+/**
+ * PocketBase silently clears an optional relation when its target is deleted,
+ * so deletes are guarded by this count instead of relying on the database.
+ */
+export async function countProductsUsingOption(
+  token: string,
+  list: OptionList,
+  id: string
+): Promise<number> {
+  const params = new URLSearchParams({
+    perPage: "1",
+    fields: "id",
+    filter: `${OPTION_LISTS[list].productField} = "${id.replace(/[^a-z0-9]/gi, "")}"`,
+  });
+  const res = await pbAuthedFetch(token, `/api/collections/products/records?${params.toString()}`);
+  if (!res.ok) throw new Error("Failed to check which products use this option");
+  return (await res.json()).totalItems;
 }
 
 export type HomeSection = "new_products" | "featured_models";

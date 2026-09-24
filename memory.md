@@ -316,3 +316,47 @@ session-by-session detail if ever needed. Summary of what shipped:
   logos" blocker are all checked. Home's "Our Clients" strip is now fed by real clients.
 - Note: live client data lives only in the VPS PocketBase. Local `pb_data` has no clients.
 
+
+
+## Session — 2026-09-24 — PBB-07/08 re-scoped: alternator make, controller, card, filters
+
+- What was done: Khalid dropped the GRAND POWER import and the PS Engineering redesign.
+  Migration `1789554847_add_alternator_make_and_controller.js` creates the
+  `alternator_makes` and `controllers` collections (name only, unique, public read), adds
+  `alternatorMake`/`controller` **relation** fields on products, and links all 98 products
+  to placeholder values hashed from the model name. Both lists are managed on
+  `/admin/filters` (`components/admin/option-list-manager.tsx`, one shared component, with
+  generic `createOptionAction`/`updateOptionAction`/`deleteOptionAction` bound to a list
+  name that's checked against `OPTION_LISTS` in `lib/products.ts`). The product form uses
+  real dropdowns. Each row shows a product count, and delete only appears at 0: PocketBase
+  would silently clear an optional relation on delete rather than block it, so
+  `deleteOptionAction` re-checks the count on the server and *returns* its error, because
+  thrown server-action messages are masked in production builds. Product card now shows 5 always-rendered spec rows ("Not listed" when empty)
+  so rows line up across the grid. `/products` adds Alternator/Controller filters (options
+  derived from product data), a BDT min/max price range, and a Sort by dropdown.
+- Key decisions: the existing `alternator` field is the catalog's **real part number** and
+  is kept (admin label "Alternator part no."). Make is a separate field. Stamford-series
+  part numbers only get Stamford/Copy-Stamford makes; Leroy Somer only on Ricardo. Merged
+  "Copy-Stamford" + "Copy-Stamford-China" into `Copy-Stamford, China`. Price range and price
+  sort compare BDT only, so USD-priced models sort with unpriced ones and are excluded from
+  the range filter. Unpriced always sort last. The migration only fills empty fields, so
+  admin corrections survive a re-run.
+- Skills invoked: none.
+- Files touched: the new migration, `data/generators.ts`, `lib/public-data.ts`,
+  `lib/products.ts`, `app/admin/(protected)/products/actions.ts`,
+  `app/admin/(protected)/products/new/page.tsx`, `.../[id]/edit/page.tsx`,
+  `app/admin/(protected)/filters/page.tsx` + `actions.ts`,
+  `components/admin/option-list-manager.tsx` (new), `components/admin/product-form.tsx`, `components/product-card.tsx`,
+  `components/products-browser.tsx`, `app/(site)/products/page.tsx` (intro copy),
+  `rework-tasks.md`, `memory.md`.
+- Verification: tsc/eslint clean, `next build` passes, migration applied on local `serve`
+  (98/98 filled, distribution checked). Screenshots at 1440px and 375px (use Playwright's
+  `chrome-headless-shell.exe`, because regular headless Chrome clamps the window wider than
+  375). Admin flows click-tested with Playwright (installed in the scratchpad, not the
+  project) and a temporary superuser, deleted afterwards: add, rename, duplicate rejected,
+  product dropdown save, in-use lock, public filter update, revert, delete.
+- Gotcha: stopping a background `pocketbase serve` / `next start` task doesn't kill the
+  child process on Windows. Kill it by PID (`netstat -ano`), or the next start hits
+  EADDRINUSE and the old process keeps serving stale code or migrations.
+- Open: alternator make/controller values are placeholders shown publicly until corrected.
+  The products intro still says "eight major brands" though only 6 have models (pre-existing).

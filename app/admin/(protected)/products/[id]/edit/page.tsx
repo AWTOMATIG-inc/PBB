@@ -3,7 +3,13 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { notFound, redirect } from "next/navigation";
 import { getAdminSessionToken } from "@/lib/session";
-import { getProduct, listBrands, listPowerBands, productImageUrl } from "@/lib/products";
+import {
+  getProduct,
+  listBrands,
+  listOptions,
+  listPowerBands,
+  productImageUrl,
+} from "@/lib/products";
 import ProductForm from "@/components/admin/product-form";
 import DeleteProductButton from "@/components/admin/delete-product-button";
 import { updateProductAction } from "../../actions";
@@ -18,10 +24,12 @@ export default async function EditProductPage({ params }: PageProps<"/admin/prod
   const token = await getAdminSessionToken();
   if (!token) redirect("/admin/login");
 
-  const [product, brands, powerBands] = await Promise.all([
+  const [product, brands, powerBands, alternatorMakes, controllers] = await Promise.all([
     getProduct(token, id),
     listBrands(token),
     listPowerBands(token),
+    listOptions(token, "alternator_makes"),
+    listOptions(token, "controllers"),
   ]);
 
   if (!product) notFound();
@@ -45,6 +53,8 @@ export default async function EditProductPage({ params }: PageProps<"/admin/prod
         <ProductForm
           brands={brands}
           powerBands={powerBands}
+          alternatorMakes={alternatorMakes}
+          controllers={controllers}
           product={product}
           currentImageUrl={productImageUrl(product)}
           action={updateProductAction.bind(null, product.id)}

@@ -50,11 +50,18 @@ export default function ProductCard({ model }: { model: GeneratorModel }) {
   const highlight = getHighlight(model);
   const fuelTank = formatFuelTank(model.fuelTank);
 
-  const specChips = [
-    model.engineModel ? { label: "Engine", value: model.engineModel } : null,
-    model.weightKg !== null ? { label: "Weight", value: `${model.weightKg} kg` } : null,
-    fuelTank ? { label: "Fuel Tank", value: fuelTank } : null,
-  ].filter((chip): chip is { label: string; value: string } => chip !== null);
+  // Every row always renders, so rows line up across cards in the grid.
+  const specRows: { label: string; value: string | null; detail?: string | null }[] = [
+    { label: "Engine", value: model.engineModel },
+    {
+      label: "Alternator",
+      value: model.alternatorMake ?? model.alternator,
+      detail: model.alternatorMake ? model.alternator : null,
+    },
+    { label: "Controller", value: model.controller ?? null },
+    { label: "Weight", value: model.weightKg !== null ? `${model.weightKg} kg` : null },
+    { label: "Fuel Tank", value: fuelTank },
+  ];
 
   return (
     <div className="flex flex-col overflow-hidden rounded-2xl border border-ink-100 bg-white transition-colors hover:border-brand-200 hover:shadow-sm">
@@ -87,17 +94,24 @@ export default function ProductCard({ model }: { model: GeneratorModel }) {
         ) : (
           <p className="mt-2 text-xs text-ink-400">{model.kvaBand} Power Band</p>
         )}
-        {specChips.length > 0 && (
-          <dl className="mt-4 flex w-full items-start justify-between gap-3 border-t border-ink-100 pt-3">
-            {specChips.map((chip) => (
-              <div key={chip.label} className="flex flex-col gap-0.5 text-xs last:items-end last:text-right">
-                <dt className="text-ink-400">{chip.label}</dt>
-                <dd className="font-medium tabular-nums text-ink-800">{chip.value}</dd>
-              </div>
-            ))}
-          </dl>
-        )}
-        <div className="mt-auto flex items-center justify-between gap-3 pt-4">
+        <dl className="mt-4 flex flex-col gap-2 border-t border-ink-100 pt-4 text-xs">
+          {specRows.map((row) => (
+            <div key={row.label} className="flex items-baseline justify-between gap-4">
+              <dt className="shrink-0 text-ink-400">{row.label}</dt>
+              {row.value ? (
+                <dd className="flex min-w-0 flex-wrap items-baseline justify-end gap-x-1.5 text-right">
+                  <span className="font-medium tabular-nums text-ink-800">{row.value}</span>
+                  {row.detail && (
+                    <span className="tabular-nums text-ink-400">{row.detail}</span>
+                  )}
+                </dd>
+              ) : (
+                <dd className="text-ink-300">Not listed</dd>
+              )}
+            </div>
+          ))}
+        </dl>
+        <div className="mt-auto flex items-center justify-between gap-3 pt-5">
           {model.price ? (
             <p className="text-sm font-semibold tabular-nums text-ink-900">
               {formatPrice(model.price)}

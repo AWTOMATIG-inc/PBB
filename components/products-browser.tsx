@@ -1,6 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from "react";
 import { ChevronDown, SearchX, SlidersHorizontal, X } from "lucide-react";
 import { morph } from "cube-motion";
 import { Rise } from "cube-motion/react";
@@ -58,16 +65,14 @@ function MorphCount({ value }: { value: number }) {
   );
 }
 
-function FilterGroup({
+function FilterSection({
   title,
-  options,
-  selected,
-  onToggle,
+  className,
+  children,
 }: {
   title: string;
-  options: { value: string; label: string }[];
-  selected: string[];
-  onToggle: (value: string) => void;
+  className: string;
+  children: ReactNode;
 }) {
   const [open, setOpen] = useState(true);
 
@@ -84,24 +89,70 @@ function FilterGroup({
           className={`size-4 text-ink-400 transition-transform ${open ? "rotate-180" : ""}`}
         />
       </button>
-      <Rise show={open} targets="children" className="mt-4 flex flex-col gap-3">
-        {options.map((opt) => (
-          <label
-            key={opt.value}
-            className="flex cursor-pointer items-center gap-2.5 text-sm text-ink-700"
-          >
-            <input
-              type="checkbox"
-              checked={selected.includes(opt.value)}
-              onChange={() => onToggle(opt.value)}
-              className="size-4 shrink-0 rounded border-ink-300 text-brand-600 focus:ring-2 focus:ring-brand-300 focus:ring-offset-0"
-            />
-            {opt.label}
-          </label>
-        ))}
+      <Rise show={open} targets="children" className={`mt-4 ${className}`}>
+        {children}
       </Rise>
     </div>
   );
+}
+
+function FilterGroup({
+  title,
+  options,
+  selected,
+  onToggle,
+}: {
+  title: string;
+  options: { value: string; label: string }[];
+  selected: string[];
+  onToggle: (value: string) => void;
+}) {
+  if (options.length === 0) return null;
+  return (
+    <FilterSection title={title} className="flex flex-col gap-3">
+      {options.map((opt) => (
+        <label
+          key={opt.value}
+          className="flex cursor-pointer items-center gap-2.5 text-sm text-ink-700"
+        >
+          <input
+            type="checkbox"
+            checked={selected.includes(opt.value)}
+            onChange={() => onToggle(opt.value)}
+            className="size-4 shrink-0 rounded border-ink-300 text-brand-600 focus:ring-2 focus:ring-brand-300 focus:ring-offset-0"
+          />
+          {opt.label}
+        </label>
+      ))}
+    </FilterSection>
+  );
+}
+
+const PRICE_INPUT_CLASS =
+  "w-full min-w-0 rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm tabular-nums text-ink-900 outline-none placeholder:text-ink-300 focus:border-brand-500";
+
+type SortKey = "default" | "price-asc" | "price-desc";
+
+const SORT_OPTIONS: { value: SortKey; label: string }[] = [
+  { value: "default", label: "Power: low to high" },
+  { value: "price-asc", label: "Price: low to high" },
+  { value: "price-desc", label: "Price: high to low" },
+];
+
+// Range filter and price sort compare BDT only; mixing currencies would
+// order a USD 5,000 unit below a BDT 50,000 one.
+function bdtPrice(g: GeneratorModel): number | null {
+  return g.price?.currency === "BDT" ? g.price.amount : null;
+}
+
+function uniqueSorted(values: (string | null | undefined)[]) {
+  return [...new Set(values.filter((v): v is string => Boolean(v)))].sort((a, b) =>
+    a.localeCompare(b)
+  );
+}
+
+function toggleIn(setter: (fn: (prev: string[]) => string[]) => void, value: string) {
+  setter((prev) => (prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]));
 }
 
 function getPageNumbers(current: number, total: number): (number | "...")[] {
@@ -123,40 +174,72 @@ export default function ProductsBrowser({
 }) {
   const [brands, setBrands] = useState<string[]>([]);
   const [bands, setBands] = useState<string[]>([]);
+  const [alternators, setAlternators] = useState<string[]>([]);
+  const [controllers, setControllers] = useState<string[]>([]);
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
+  const [sort, setSort] = useState<SortKey>("default");
   const [page, setPage] = useState(1);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
-  const toggleBrand = (value: string) => {
-    setBrands((prev) =>
-      prev.includes(value) ? prev.filter((b) => b !== value) : [...prev, value]
-    );
+  const alternatorOptions = useMemo(
+    () => uniqueSorted(generators.map((g) => g.alternatorMake)),
+    [generators]
+  );
+  const controllerOptions = useMemo(
+    () => uniqueSorted(generators.map((g) => g.controller)),
+    [generators]
+  );
+
+  const toggle = (setter: (fn: (prev: string[]) => string[]) => void) => (value: string) => {
+    toggleIn(setter, value);
     setPage(1);
   };
 
-  const toggleBand = (value: string) => {
-    setBands((prev) =>
-      prev.includes(value) ? prev.filter((b) => b !== value) : [...prev, value]
-    );
-    setPage(1);
-  };
+  const min = minPrice === "" ? null : Number(minPrice);
+  const max = maxPrice === "" ? null : Number(maxPrice);
+  const priceRangeActive = min !== null || max !== null;
 
   const clearAll = () => {
     setBrands([]);
     setBands([]);
+    setAlternators([]);
+    setControllers([]);
+    setMinPrice("");
+    setMaxPrice("");
     setPage(1);
   };
 
   const filtered = useMemo(() => {
+    const byPower = (a: GeneratorModel, b: GeneratorModel) => {
+      const bandDiff = BAND_ORDER.indexOf(a.kvaBand) - BAND_ORDER.indexOf(b.kvaBand);
+      if (bandDiff !== 0) return bandDiff;
+      return (a.standbyKva ?? 0) - (b.standbyKva ?? 0);
+    };
+    const byPrice = (dir: 1 | -1) => (a: GeneratorModel, b: GeneratorModel) => {
+      const pa = bdtPrice(a);
+      const pb = bdtPrice(b);
+      if (pa === null && pb === null) return byPower(a, b);
+      if (pa === null) return 1;
+      if (pb === null) return -1;
+      return (pa - pb) * dir || byPower(a, b);
+    };
+
     return generators
       .filter((g) => brands.length === 0 || brands.includes(g.brand))
       .filter((g) => bands.length === 0 || bands.includes(g.kvaBand))
-      .sort((a, b) => {
-        const bandDiff =
-          BAND_ORDER.indexOf(a.kvaBand) - BAND_ORDER.indexOf(b.kvaBand);
-        if (bandDiff !== 0) return bandDiff;
-        return (a.standbyKva ?? 0) - (b.standbyKva ?? 0);
-      });
-  }, [generators, brands, bands]);
+      .filter((g) => alternators.length === 0 || alternators.includes(g.alternatorMake ?? ""))
+      .filter((g) => controllers.length === 0 || controllers.includes(g.controller ?? ""))
+      .filter((g) => {
+        if (min === null && max === null) return true;
+        const price = bdtPrice(g);
+        if (price === null) return false;
+        return (min === null || price >= min) && (max === null || price <= max);
+      })
+      .sort(sort === "default" ? byPower : byPrice(sort === "price-asc" ? 1 : -1));
+  }, [generators, brands, bands, alternators, controllers, min, max, sort]);
+
+  const pricedCount = filtered.filter((g) => bdtPrice(g) !== null).length;
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const currentPage = Math.min(page, totalPages);
@@ -165,7 +248,12 @@ export default function ProductsBrowser({
     currentPage * PAGE_SIZE
   );
 
-  const activeCount = brands.length + bands.length;
+  const activeCount =
+    brands.length +
+    bands.length +
+    alternators.length +
+    controllers.length +
+    (priceRangeActive ? 1 : 0);
   const hasFilters = activeCount > 0;
 
   const goToPage = (p: number) => {
@@ -192,14 +280,60 @@ export default function ProductsBrowser({
         title="Brand"
         options={BRANDS.map((b) => ({ value: b, label: b }))}
         selected={brands}
-        onToggle={toggleBrand}
+        onToggle={toggle(setBrands)}
       />
       <FilterGroup
         title="Power Band"
         options={KVA_BANDS.map((b) => ({ value: b.value, label: b.label }))}
         selected={bands}
-        onToggle={toggleBand}
+        onToggle={toggle(setBands)}
       />
+      <FilterGroup
+        title="Alternator"
+        options={alternatorOptions.map((v) => ({ value: v, label: v }))}
+        selected={alternators}
+        onToggle={toggle(setAlternators)}
+      />
+      <FilterGroup
+        title="Controller"
+        options={controllerOptions.map((v) => ({ value: v, label: v }))}
+        selected={controllers}
+        onToggle={toggle(setControllers)}
+      />
+      <FilterSection title="Price (BDT)" className="flex flex-col gap-2">
+        <div className="flex items-center gap-2">
+          <input
+            type="number"
+            inputMode="numeric"
+            min={0}
+            placeholder="Min"
+            aria-label="Minimum price in BDT"
+            value={minPrice}
+            onChange={(e) => {
+              setMinPrice(e.target.value);
+              setPage(1);
+            }}
+            className={PRICE_INPUT_CLASS}
+          />
+          <span className="text-ink-300" aria-hidden>
+            to
+          </span>
+          <input
+            type="number"
+            inputMode="numeric"
+            min={0}
+            placeholder="Max"
+            aria-label="Maximum price in BDT"
+            value={maxPrice}
+            onChange={(e) => {
+              setMaxPrice(e.target.value);
+              setPage(1);
+            }}
+            className={PRICE_INPUT_CLASS}
+          />
+        </div>
+        <p className="text-xs text-ink-400">Only models with a listed price.</p>
+      </FilterSection>
     </>
   );
 
@@ -235,12 +369,12 @@ export default function ProductsBrowser({
         {filtersPanel}
       </Rise>
 
-      <aside className="hidden rounded-2xl border border-ink-100 bg-ink-50 p-6 lg:sticky lg:top-24 lg:block lg:w-72 lg:flex-shrink-0">
+      <aside className="hidden rounded-2xl border border-ink-100 bg-ink-50 p-6 [scrollbar-width:thin] lg:sticky lg:top-24 lg:block lg:max-h-[calc(100dvh-7rem)] lg:w-72 lg:flex-shrink-0 lg:overflow-y-auto lg:overscroll-contain">
         {filtersPanel}
       </aside>
 
       <div className="mt-8 min-w-0 flex-1 lg:mt-0">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="text-sm text-ink-500">
             Showing{" "}
             <span className="font-semibold text-ink-900">
@@ -250,22 +384,67 @@ export default function ProductsBrowser({
             of <span className="font-semibold text-ink-900">{filtered.length}</span>{" "}
             models
           </p>
+          <label className="flex items-center gap-2 text-sm text-ink-500">
+            Sort by
+            <select
+              value={sort}
+              onChange={(e) => {
+                setSort(e.target.value as SortKey);
+                setPage(1);
+              }}
+              className="rounded-lg border border-ink-200 bg-white py-1.5 pl-3 pr-8 text-sm font-medium text-ink-900 outline-none focus:border-brand-500"
+            >
+              {SORT_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </label>
         </div>
+
+        {sort !== "default" && filtered.length > 0 && pricedCount === 0 && (
+          <p className="mt-4 rounded-xl bg-ink-50 px-4 py-3 text-sm text-ink-500">
+            None of these models has a listed price yet, so they&apos;re shown by power. Use
+            Request Quotation on any model for a price.
+          </p>
+        )}
 
         {filtered.length === 0 ? (
           <div className="mt-8 flex flex-col items-center gap-3 rounded-2xl border border-dashed border-ink-200 py-16 text-center">
             <SearchX className="size-8 text-ink-300" />
-            <p className="font-medium text-ink-700">
-              No models match this combination of filters.
-            </p>
-            <p className="text-sm text-ink-400">
-              Try a different brand or power band, or clear the filters.
-            </p>
+            {priceRangeActive ? (
+              <>
+                <p className="font-medium text-ink-700">
+                  No models with a listed price in this range.
+                </p>
+                <p className="text-sm text-ink-400">
+                  Most models are priced on request. Clear the price range to see them all.
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="font-medium text-ink-700">
+                  No models match this combination of filters.
+                </p>
+                <p className="text-sm text-ink-400">
+                  Try different filters, or clear them.
+                </p>
+              </>
+            )}
           </div>
         ) : (
           <>
             <Rise
-              key={`${brands.join(",")}|${bands.join(",")}`}
+              key={[
+                brands,
+                bands,
+                alternators,
+                controllers,
+                [sort],
+              ]
+                .map((list) => list.join(","))
+                .join("|")}
               targets="children"
               className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
             >
