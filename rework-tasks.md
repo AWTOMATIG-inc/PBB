@@ -176,6 +176,23 @@ this log is the timeline, the checkboxes are the current state.
 - Next up: PBB-13 still blocked on the quotation samples; PBB-15 on the invoice-fields
   decision. PBB-11 stays deferred to the end.
 
+### Cycle 6 — 2026-09-25 — Sprint 3 reassigned to Ashikul
+
+- **Ownership change (Khalid's call):** Khalid is moving to other work, so **PBB-13/14**
+  (quotations) and **PBB-15/16** (invoices + PDFs) go to `ashikul`. This is a deliberate
+  exception to the "financial-calculation logic stays with Khalid" rule under "How this file
+  works". **PBB-19** (quotation/invoice calculation and PDF validation) stays with `khalid` as
+  the financial sign-off before anything goes live.
+- **Blockers cleared:** PBB has supplied the sample quotation documents (Bashundhara Training
+  and Testing Center, Ricardo 40 kVA) needed for PBB-13/14.
+- Khalid pushed/merged: this docs-only update. No code changes.
+- Handed to Ashikul: pull `main`, rebase/recreate `ashikul` from it, then start **PBB-13/14**.
+  Start **PBB-15/16** only after 13/14 is merged, since invoices convert from quotations.
+  Resolve the invoice-fields decision from the supplied documents at the start of PBB-15 and
+  record it in `memory.md`. Open a PR per slice into `main`, and Khalid merges it.
+- Ashikul reported back: waiting.
+- Next up: Ashikul on PBB-13/14. PBB-11 stays deferred to the end.
+
 ---
 
 ## Blockers — need from Khalid before certain tasks can start
@@ -187,11 +204,12 @@ this log is the timeline, the checkboxes are the current state.
 - [x] **Real client logos** for the 7 approved clients (Skyview Apartment, Bashundhara
       Training and Testing, Bay Footwear, Adib Builders, Sinha Knitwear, Atif Agro, Magura
       Group) — needed for PBB-03b.
-- [ ] **Quotation sample documents** (Bashundhara Training and Testing Center quotation,
+- [x] **Quotation sample documents** (Bashundhara Training and Testing Center quotation,
       Ricardo 40 kVA quotation) — needed for PBB-13/14 to match PBB's actual commercial
-      layout and numbering (`PBB-1095` style).
-- [ ] **Invoice field decision** — carried over from `memory.md`'s prior open item, still
-      unresolved. Needed before PBB-15.
+      layout and numbering (`PBB-1095` style). Supplied 2026-09-25 (Cycle 6).
+- [ ] **Invoice field decision** — carried over from `memory.md`'s prior open item. The
+      documents are in hand as of Cycle 6. `ashikul` settles this from them at the start of
+      PBB-15 and records it in `memory.md`.
 
 ---
 
@@ -275,17 +293,18 @@ this log is the timeline, the checkboxes are the current state.
 
 ## Sprint 3 — Customers, quotations, invoices, PDFs (PBB-13 to PBB-16)
 
-- [ ] **PBB-13-Quotation** *(not on tracker — added per feedback doc)* — `khalid`. *Blocked
-      on the two sample quotation documents.* Build the quotation generator: new `customers`
+- [ ] **PBB-13-Quotation** *(not on tracker — added per feedback doc)* — `ashikul`
+      *(reassigned from `khalid` in Cycle 6; sample documents supplied).* Build the quotation generator: new `customers`
       PocketBase collection, new `quotations` collection matching feedback doc section 6.2's
       data model (products/qty/unit price/line total, accessories, installation, transport,
       discount, VAT, terms, validity, status), sequential non-duplicating numbering matching
       PBB's historical `PBB-1095`-style format (section 6.3), and the create-quotation admin
       flow (section 6.1's 13-step workflow).
-- [ ] **PBB-14-Quotation** *(not on tracker — added per feedback doc)* — `khalid`. Same
+- [ ] **PBB-14-Quotation** *(not on tracker — added per feedback doc)* — `ashikul`
+      *(reassigned in Cycle 6)*. Same
       workstream as PBB-13 — match the supplied quotation samples' exact structure,
       terminology, and output layout once they're available.
-- [ ] **PBB-15+16-Invoice & Documents** — `khalid`. *Depends on PBB-13/14 merged* (invoices
+- [ ] **PBB-15+16-Invoice & Documents** — `ashikul` *(reassigned in Cycle 6)*. *Depends on PBB-13/14 merged* (invoices
       convert from accepted quotations per section 7.1, so the quotation model has to exist
       first). Resolve the still-open invoice-fields decision (`memory.md`), build
       quotation-to-invoice conversion (copies customer/product/terms, assigns next invoice
@@ -293,7 +312,7 @@ this log is the timeline, the checkboxes are the current state.
       PDFs for both quotations and invoices (lightweight lib — `pdf-lib` or
       `@react-pdf/renderer`, not headless-Chrome, per `tasks.md` task 15's existing note on
       the VPS's resource budget). All commercial totals calculated server-side.
-- [ ] **PBB-16-Documents** — `khalid`. Duplicate of the PDF-generation half of PBB-15+16 —
+- [ ] **PBB-16-Documents** — `ashikul` *(reassigned in Cycle 6)*. Duplicate of the PDF-generation half of PBB-15+16 —
       same tracker card appears twice in the screenshots; treat as one deliverable, not two.
 
 ## Sprint 4 — QA (PBB-17 to PBB-19)
