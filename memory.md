@@ -360,3 +360,29 @@ session-by-session detail if ever needed. Summary of what shipped:
   EADDRINUSE and the old process keeps serving stale code or migrations.
 - Open: alternator make/controller values are placeholders shown publicly until corrected.
   The products intro still says "eight major brands" though only 6 have models (pre-existing).
+
+
+## Session — 2026-09-25 — PBB-13 & PBB-14 completed: Quotation Module & 2-Page A4 PDF Engine
+
+- What was done: Ashikul implemented the complete back-office Quotation Engine for Power Bank Bangladesh.
+  1. **PocketBase Schema**: Created `quotations` collection via migrations `1789554848_create_quotations.js` and `1789554849_add_quotations_created_updated.js` with direct client snapshots (`companyName`, `contactPerson`, `designation`, `phone`, `email`, `address`, `binVatNumber`), line items, technical specs, financial calculations, scope of supply, commercial terms, and autodate `created`/`updated`.
+  2. **Zero-SDK Data Layer**: Created `lib/quotations.ts` providing full typing (`QuotationRecord`, `QuotationLineItem`, `ScopeOfSupplyItem`, `CommercialTerms`, `TechnicalSpecsSnapshot`), and CRUD functions (`listQuotations`, `getQuotation`, `createQuotation`, `updateQuotation`, `deleteQuotation`, `quotationPdfUrl`).
+  3. **Financial & BDT Engine**:
+     - `lib/format-bdt-words.ts`: Implemented authentic South Asian grouping (`Crore`, `Lakh`, `Thousand`) and formal legal wording (e.g. `Bangladeshi Taka Forty-Seven Lakh Fifty Thousand Only`).
+     - `lib/quotation-calculator.ts`: Calculation helpers and commercial standard presets for Scope of Supply, Terms & Conditions, Standard Exclusions, Warranty Exclusions, and CEO Signatory.
+  4. **High-Fidelity 2-Page A4 PDF Engine**: Built `components/pdf/quotation-pdf-document.tsx` using `@react-pdf/renderer` v4. Matches the commercial formatting of `Qoutation for PBB1095 Bashundhara Training and Testing center.pdf`:
+     - Centered PBB logo watermark (`opacity: 0.05`) in the background of each page.
+     - Strict A4 sizing (`@page size: A4`, padding: 28pt) guaranteed to render in exactly 2 pages.
+     - Page 1: Brand ribbon, submitted client card, technical matrix, and commercial table with yellow highlight grand total and BDT in words.
+     - Page 2: Scope of supply table (Included / By Client), standard commercial terms, standard exclusions, warranty exclusions, and CEO signatory block.
+     - Headless rendering buffer: `lib/pdf/generate-quotation-pdf.ts`.
+     - Streaming API route: `app/api/admin/quotations/[id]/pdf/route.ts` with `inline` preview header.
+  5. **Admin UI & UX**:
+     - Navigation: Added "Quotations" in `components/admin/admin-nav.tsx` and admin dashboard card.
+     - Interactive form: `components/admin/quotation-form.tsx` featuring Generator Master auto-fill (syncs model, kVA, brand, engine, alternator, controller), dynamic line items, real-time recalculation of subtotals and words, and full customizability.
+     - Pages: `/admin/quotations` (search, status filter, table, pagination, PDF preview), `/admin/quotations/new`, and `/admin/quotations/[id]/edit`.
+     - Versioning: `createRevisionAction` generates clean sequential revisions (`-R1`, `-R2`...) retaining original records.
+     - Safe deletion: `DeleteQuotationButton` with 2-click timeout confirmation.
+- Next.js & Node compatibility: Configured `serverExternalPackages: ["@react-pdf/renderer"]` in `next.config.ts`.
+- Verification: `npx tsc --noEmit` and `npm run build` pass with 0 errors. End-to-end verified with PocketBase daemon and Next.js runtime: created quotation record, verified PDF generation, verified exact 2-page count, tested edit/new/list routes with superuser session.
+

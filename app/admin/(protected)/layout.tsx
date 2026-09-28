@@ -1,4 +1,4 @@
-import AdminNav from "@/components/admin/admin-nav";
+import AdminSidebar from "@/components/admin/admin-sidebar";
 import { verifyAdminSession } from "@/lib/auth";
 
 export default async function AdminProtectedLayout({
@@ -7,13 +7,8 @@ export default async function AdminProtectedLayout({
   const admin = await verifyAdminSession();
 
   return (
-    <div className="flex min-h-screen flex-col bg-ink-50">
-      <AdminNav email={admin.email} />
-      <main className="flex-1">
-        <div className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          {children}
-        </div>
-      </main>
-    </div>
+    <AdminSidebar email={admin.email}>
+      {children}
+    </AdminSidebar>
   );
 }

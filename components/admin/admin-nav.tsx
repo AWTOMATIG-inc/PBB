@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Handshake, Home, LayoutDashboard, LogOut, Package, SlidersHorizontal } from "lucide-react";
+import { FileText, Handshake, Home, LayoutDashboard, LogOut, Package, SlidersHorizontal } from "lucide-react";
 import { logout } from "@/app/admin/actions";
 
 const ADMIN_NAV_LINKS = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/admin/quotations", label: "Quotations", icon: FileText },
   { href: "/admin/products", label: "Products", icon: Package },
   { href: "/admin/filters", label: "Filters", icon: SlidersHorizontal },
   { href: "/admin/clients", label: "Clients", icon: Handshake },
