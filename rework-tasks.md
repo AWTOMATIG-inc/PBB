@@ -190,8 +190,8 @@ this log is the timeline, the checkboxes are the current state.
   Start **PBB-15/16** only after 13/14 is merged, since invoices convert from quotations.
   Resolve the invoice-fields decision from the supplied documents at the start of PBB-15 and
   record it in `memory.md`. Open a PR per slice into `main`, and Khalid merges it.
-- Ashikul reported back: waiting.
-- Next up: Ashikul on PBB-13/14. PBB-11 stays deferred to the end.
+- Ashikul reported back: 2026-09-25 — completed **PBB-13 & PBB-14** (Quotation Module & 2-page A4 PDF Engine). Built `quotations` collection (migrations 1789554848 & 1789554849), BDT South Asian numbering in words, calculation engine with presets, `@react-pdf/renderer` 2-page A4 layout matching Bashundhara quotation with centered PBB watermark, PDF streaming route `/api/admin/quotations/[id]/pdf`, and full admin CRUD with Generator Master auto-fill and revisions. Build, typecheck, and runtime end-to-end PDF generation verified clean.
+- Next up: Khalid reviews/merges PBB-13/14, then Ashikul can proceed to PBB-15/16 (Invoices & Documents). PBB-11 stays deferred to the end.
 
 ---
 
@@ -293,14 +293,14 @@ this log is the timeline, the checkboxes are the current state.
 
 ## Sprint 3 — Customers, quotations, invoices, PDFs (PBB-13 to PBB-16)
 
-- [ ] **PBB-13-Quotation** *(not on tracker — added per feedback doc)* — `ashikul`
+- [x] **PBB-13-Quotation** *(not on tracker — added per feedback doc)* — `ashikul`
       *(reassigned from `khalid` in Cycle 6; sample documents supplied).* Build the quotation generator: new `customers`
       PocketBase collection, new `quotations` collection matching feedback doc section 6.2's
       data model (products/qty/unit price/line total, accessories, installation, transport,
       discount, VAT, terms, validity, status), sequential non-duplicating numbering matching
       PBB's historical `PBB-1095`-style format (section 6.3), and the create-quotation admin
       flow (section 6.1's 13-step workflow).
-- [ ] **PBB-14-Quotation** *(not on tracker — added per feedback doc)* — `ashikul`
+- [x] **PBB-14-Quotation** *(not on tracker — added per feedback doc)* — `ashikul`
       *(reassigned in Cycle 6)*. Same
       workstream as PBB-13 — match the supplied quotation samples' exact structure,
       terminology, and output layout once they're available.
