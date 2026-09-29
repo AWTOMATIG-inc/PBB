@@ -18,15 +18,15 @@ import {
   X,
   User,
 } from "lucide-react";
-import { logout } from "@/app/admin/actions";
+import { logout } from "@/app/dashboard/actions";
 
 const ADMIN_NAV_LINKS = [
-  { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/admin/quotations", label: "Quotations", icon: FileText },
-  { href: "/admin/products", label: "Products", icon: Package },
-  { href: "/admin/filters", label: "Filters", icon: SlidersHorizontal },
-  { href: "/admin/clients", label: "Clients", icon: Handshake },
-  { href: "/admin/home", label: "Home Page", icon: Home },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/dashboard/quotations", label: "Quotations", icon: FileText },
+  { href: "/dashboard/products", label: "Products", icon: Package },
+  { href: "/dashboard/filters", label: "Filters", icon: SlidersHorizontal },
+  { href: "/dashboard/clients", label: "Clients", icon: Handshake },
+  { href: "/dashboard/home", label: "Home Page", icon: Home },
 ];
 
 export default function AdminSidebar({
@@ -120,7 +120,7 @@ export default function AdminSidebar({
         {/* Sidebar Header & Brand */}
         <div className="flex h-16 items-center justify-between border-b border-ink-800 px-4">
           <Link
-            href="/admin"
+            href="/dashboard"
             className={`flex items-center gap-2.5 overflow-hidden transition-all ${
               collapsed ? "md:justify-center md:w-full" : ""
             }`}
@@ -182,7 +182,7 @@ export default function AdminSidebar({
         {/* Nav Links Section */}
         <div className="flex-1 overflow-y-auto px-3 py-4 space-y-1.5 scrollbar-thin">
           {ADMIN_NAV_LINKS.map(({ href, label, icon: Icon }) => {
-            const active = href === "/admin" ? pathname === href : pathname.startsWith(href);
+            const active = href === "/dashboard" ? pathname === href : pathname.startsWith(href);
             return (
               <Link
                 key={href}

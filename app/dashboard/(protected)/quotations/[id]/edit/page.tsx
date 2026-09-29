@@ -20,7 +20,7 @@ export default async function EditQuotationPage({
   const { id } = await params;
 
   const token = await getAdminSessionToken();
-  if (!token) redirect("/admin/login");
+  if (!token) redirect("/dashboard/login");
 
   const [quotation, { items: products }] = await Promise.all([
     getQuotation(token, id),
@@ -33,7 +33,7 @@ export default async function EditQuotationPage({
     <div className="mx-auto max-w-5xl">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <Link
-          href="/admin/quotations"
+          href="/dashboard/quotations"
           className="inline-flex items-center gap-2 text-sm font-medium text-ink-500 hover:text-ink-900 transition-colors"
         >
           <ArrowLeft className="size-4" />
@@ -41,7 +41,7 @@ export default async function EditQuotationPage({
         </Link>
 
         <a
-          href={`/api/admin/quotations/${quotation.id}/pdf`}
+          href={`/api/dashboard/quotations/${quotation.id}/pdf`}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 rounded-lg border border-ink-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-ink-700 shadow-sm transition-colors hover:bg-ink-50"

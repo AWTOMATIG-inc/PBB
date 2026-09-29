@@ -168,7 +168,7 @@ async function getHomePlacements(): Promise<Record<HomeSection, GeneratorModel[]
  * Home page's "New Products" / "Featured Models" sections. Prefers
  * admin-curated `home_placements` (task 13's admin/home CRUD); a section
  * with no curation yet falls back to the original "N per brand" selection
- * so the page never ships empty before someone visits /admin/home.
+ * so the page never ships empty before someone visits /dashboard/home.
  */
 export async function getHomeSections(
   generators: GeneratorModel[]

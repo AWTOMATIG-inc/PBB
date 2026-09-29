@@ -18,7 +18,7 @@ const bySortOrder = (a: HomePlacementRecord, b: HomePlacementRecord) => a.sortOr
 
 export default async function AdminHomePage() {
   const token = await getAdminSessionToken();
-  if (!token) redirect("/admin/login");
+  if (!token) redirect("/dashboard/login");
 
   const [placements, productsResult] = await Promise.all([
     listHomePlacements(token),

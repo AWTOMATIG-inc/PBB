@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Trash2 } from "lucide-react";
 import { Morph } from "cube-motion/react";
-import { deleteProductAction } from "@/app/admin/(protected)/products/actions";
+import { deleteProductAction } from "@/app/dashboard/(protected)/products/actions";
 
 const CONFIRM_TIMEOUT_MS = 3000;
 

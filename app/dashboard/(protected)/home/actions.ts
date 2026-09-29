@@ -21,7 +21,7 @@ export async function addHomePlacementAction(
   formData: FormData
 ): Promise<HomePlacementFormState> {
   const token = await getAdminSessionToken();
-  if (!token) redirect("/admin/login");
+  if (!token) redirect("/dashboard/login");
 
   const product = String(formData.get("product") ?? "").trim();
   if (!product) return { error: "Choose a product to add." };
@@ -41,19 +41,19 @@ export async function addHomePlacementAction(
   const res = await createHomePlacement(token, payload);
   if (!res.ok) return { error: describePbError(res.status, await res.json().catch(() => null)) };
 
-  revalidatePath("/admin/home");
+  revalidatePath("/dashboard/home");
   revalidatePath("/");
 }
 
 export async function deleteHomePlacementAction(id: string) {
   const token = await getAdminSessionToken();
-  if (!token) redirect("/admin/login");
+  if (!token) redirect("/dashboard/login");
 
   const res = await deleteHomePlacement(token, id);
   if (!res.ok) {
     throw new Error(describePbError(res.status, await res.json().catch(() => null)));
   }
-  revalidatePath("/admin/home");
+  revalidatePath("/dashboard/home");
   revalidatePath("/");
 }
 
@@ -63,7 +63,7 @@ export async function moveHomePlacementAction(
   direction: "up" | "down"
 ) {
   const token = await getAdminSessionToken();
-  if (!token) redirect("/admin/login");
+  if (!token) redirect("/dashboard/login");
 
   const items = (await listHomePlacements(token))
     .filter((p) => p.section === section)
@@ -88,6 +88,6 @@ export async function moveHomePlacementAction(
   if (!currentRes.ok || !swapRes.ok) {
     throw new Error("Failed to reorder.");
   }
-  revalidatePath("/admin/home");
+  revalidatePath("/dashboard/home");
   revalidatePath("/");
 }

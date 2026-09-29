@@ -228,7 +228,7 @@ export function deleteClient(token: string, id: string) {
   return pbAuthedFetch(token, `/api/collections/clients/records/${id}`, { method: "DELETE" });
 }
 
-// Name-only option lists managed on /admin/filters and linked from products.
+// Name-only option lists managed on /dashboard/filters and linked from products.
 export type OptionListRecord = { id: string; name: string };
 
 export const OPTION_LISTS = {

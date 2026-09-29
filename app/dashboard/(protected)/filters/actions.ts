@@ -97,7 +97,7 @@ export async function createBrandAction(
   formData: FormData
 ): Promise<FilterFormState> {
   const token = await getAdminSessionToken();
-  if (!token) redirect("/admin/login");
+  if (!token) redirect("/dashboard/login");
 
   const { payload, error } = buildBrandPayload(formData);
   if (error) return { error };
@@ -105,7 +105,7 @@ export async function createBrandAction(
   const res = await createBrand(token, payload);
   if (!res.ok) return { error: describePbError(res.status, await res.json().catch(() => null)) };
 
-  revalidatePath("/admin/filters");
+  revalidatePath("/dashboard/filters");
   revalidatePath("/");
   revalidatePath("/products");
 }
@@ -116,7 +116,7 @@ export async function updateBrandAction(
   formData: FormData
 ): Promise<FilterFormState> {
   const token = await getAdminSessionToken();
-  if (!token) redirect("/admin/login");
+  if (!token) redirect("/dashboard/login");
 
   const { payload, error } = buildBrandPayload(formData);
   if (error) return { error };
@@ -124,20 +124,20 @@ export async function updateBrandAction(
   const res = await updateBrand(token, id, payload);
   if (!res.ok) return { error: describePbError(res.status, await res.json().catch(() => null)) };
 
-  revalidatePath("/admin/filters");
+  revalidatePath("/dashboard/filters");
   revalidatePath("/");
   revalidatePath("/products");
 }
 
 export async function deleteBrandAction(id: string) {
   const token = await getAdminSessionToken();
-  if (!token) redirect("/admin/login");
+  if (!token) redirect("/dashboard/login");
 
   const res = await deleteBrand(token, id);
   if (!res.ok) {
     throw new Error(describePbError(res.status, await res.json().catch(() => null)));
   }
-  revalidatePath("/admin/filters");
+  revalidatePath("/dashboard/filters");
   revalidatePath("/");
   revalidatePath("/products");
 }
@@ -147,7 +147,7 @@ export async function createPowerBandAction(
   formData: FormData
 ): Promise<FilterFormState> {
   const token = await getAdminSessionToken();
-  if (!token) redirect("/admin/login");
+  if (!token) redirect("/dashboard/login");
 
   const { payload, error } = buildPowerBandPayload(formData);
   if (error) return { error };
@@ -155,7 +155,7 @@ export async function createPowerBandAction(
   const res = await createPowerBand(token, payload);
   if (!res.ok) return { error: describePbError(res.status, await res.json().catch(() => null)) };
 
-  revalidatePath("/admin/filters");
+  revalidatePath("/dashboard/filters");
   revalidatePath("/");
   revalidatePath("/products");
 }
@@ -166,7 +166,7 @@ export async function updatePowerBandAction(
   formData: FormData
 ): Promise<FilterFormState> {
   const token = await getAdminSessionToken();
-  if (!token) redirect("/admin/login");
+  if (!token) redirect("/dashboard/login");
 
   const { payload, error } = buildPowerBandPayload(formData);
   if (error) return { error };
@@ -174,7 +174,7 @@ export async function updatePowerBandAction(
   const res = await updatePowerBand(token, id, payload);
   if (!res.ok) return { error: describePbError(res.status, await res.json().catch(() => null)) };
 
-  revalidatePath("/admin/filters");
+  revalidatePath("/dashboard/filters");
   revalidatePath("/");
   revalidatePath("/products");
 }
@@ -186,7 +186,7 @@ function assertOptionList(list: string): asserts list is OptionList {
 }
 
 function revalidateOptionPages() {
-  revalidatePath("/admin/filters");
+  revalidatePath("/dashboard/filters");
   revalidatePath("/");
   revalidatePath("/products");
 }
@@ -197,7 +197,7 @@ async function saveOption(
   formData: FormData
 ): Promise<FilterFormState> {
   const token = await getAdminSessionToken();
-  if (!token) redirect("/admin/login");
+  if (!token) redirect("/dashboard/login");
   assertOptionList(list);
 
   const name = String(formData.get("name") ?? "").trim();
@@ -234,7 +234,7 @@ export async function updateOptionAction(
 // server-action messages with a generic one, and this one must reach the admin.
 export async function deleteOptionAction(list: string, id: string): Promise<FilterFormState> {
   const token = await getAdminSessionToken();
-  if (!token) redirect("/admin/login");
+  if (!token) redirect("/dashboard/login");
   assertOptionList(list);
 
   const inUse = await countProductsUsingOption(token, list, id);
@@ -251,13 +251,13 @@ export async function deleteOptionAction(list: string, id: string): Promise<Filt
 
 export async function deletePowerBandAction(id: string) {
   const token = await getAdminSessionToken();
-  if (!token) redirect("/admin/login");
+  if (!token) redirect("/dashboard/login");
 
   const res = await deletePowerBand(token, id);
   if (!res.ok) {
     throw new Error(describePbError(res.status, await res.json().catch(() => null)));
   }
-  revalidatePath("/admin/filters");
+  revalidatePath("/dashboard/filters");
   revalidatePath("/");
   revalidatePath("/products");
 }

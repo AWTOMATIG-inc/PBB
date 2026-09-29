@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default async function NewQuotationPage() {
   const token = await getAdminSessionToken();
-  if (!token) redirect("/admin/login");
+  if (!token) redirect("/dashboard/login");
 
   const { items: products } = await listProducts(token, {
     perPage: 200,
@@ -23,7 +23,7 @@ export default async function NewQuotationPage() {
   return (
     <div className="mx-auto max-w-5xl">
       <Link
-        href="/admin/quotations"
+        href="/dashboard/quotations"
         className="inline-flex items-center gap-2 text-sm font-medium text-ink-500 hover:text-ink-900 transition-colors"
       >
         <ArrowLeft className="size-4" />

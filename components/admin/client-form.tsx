@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useRef } from "react";
-import type { ClientFormState } from "@/app/admin/(protected)/clients/actions";
+import type { ClientFormState } from "@/app/dashboard/(protected)/clients/actions";
 import type { ClientRecord } from "@/lib/products";
 
 const INPUT_CLASS =

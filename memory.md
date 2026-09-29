@@ -386,3 +386,22 @@ session-by-session detail if ever needed. Summary of what shipped:
 - Next.js & Node compatibility: Configured `serverExternalPackages: ["@react-pdf/renderer"]` in `next.config.ts`.
 - Verification: `npx tsc --noEmit` and `npm run build` pass with 0 errors. End-to-end verified with PocketBase daemon and Next.js runtime: created quotation record, verified PDF generation, verified exact 2-page count, tested edit/new/list routes with superuser session.
 
+
+## Session — 2026-09-29 — Renamed backend dashboard URL & directory from /admin to /dashboard
+
+- What was done:
+  1. Renamed `app/admin` directory to `app/dashboard` and `app/api/admin` to `app/api/dashboard` in the Next.js App Router.
+  2. Updated all dashboard pages, layouts, and server action redirects/revalidations across Products, Quotations, Filters, Clients, Home curation, and Auth:
+     - `redirect("/admin/login")` -> `redirect("/dashboard/login")`
+     - `redirect("/admin/...")` -> `redirect("/dashboard/...")`
+     - `revalidatePath("/admin/...")` -> `revalidatePath("/dashboard/...")`
+     - `LayoutProps<"/admin">` -> `LayoutProps<"/dashboard">`
+     - `PageProps<"/admin/...">` -> `PageProps<"/dashboard/...">`
+  3. Updated UI links and server action imports in `components/admin/` (`admin-nav.tsx`, `admin-sidebar.tsx`, forms, and manager components).
+  4. Updated `lib/auth.ts` session checks to redirect to `/dashboard/login`.
+  5. Updated `proxy.ts` (Next.js middleware) matcher and route guards for `/dashboard`, with transparent backwards-compatible redirects for legacy `/admin` and `/api/admin` traffic.
+- Verification:
+  - `npx tsc --noEmit`: 0 errors.
+  - `npm run build`: built cleanly with all dynamic and static `/dashboard` routes.
+
+

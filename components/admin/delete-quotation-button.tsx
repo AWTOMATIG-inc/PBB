@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { Trash2 } from "lucide-react";
-import { deleteQuotationAction } from "@/app/admin/(protected)/quotations/actions";
+import { deleteQuotationAction } from "@/app/dashboard/(protected)/quotations/actions";
 
 const CONFIRM_TIMEOUT_MS = 3000;
 

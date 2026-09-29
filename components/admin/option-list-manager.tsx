@@ -9,7 +9,7 @@ import {
   deleteOptionAction,
   updateOptionAction,
   type FilterFormState,
-} from "@/app/admin/(protected)/filters/actions";
+} from "@/app/dashboard/(protected)/filters/actions";
 import DeleteFilterButton from "./delete-filter-button";
 
 const INPUT_CLASS =

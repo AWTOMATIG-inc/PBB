@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default async function AdminClientsPage() {
   const token = await getAdminSessionToken();
-  if (!token) redirect("/admin/login");
+  if (!token) redirect("/dashboard/login");
 
   // Before the clients migration has run on this PocketBase instance, the
   // collection doesn't exist yet; show the fix instead of a crash page.

@@ -8,7 +8,7 @@ import {
   createPowerBandAction,
   deletePowerBandAction,
   updatePowerBandAction,
-} from "@/app/admin/(protected)/filters/actions";
+} from "@/app/dashboard/(protected)/filters/actions";
 import PowerBandForm from "./power-band-form";
 import DeleteFilterButton from "./delete-filter-button";
 

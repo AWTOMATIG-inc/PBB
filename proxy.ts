@@ -4,26 +4,41 @@ import { ADMIN_AUTH_COOKIE } from "@/lib/auth-cookie";
 import { refreshSuperuserAuth } from "@/lib/pocketbase";
 
 // Cookie-presence check only for protected routes (cheap, no PocketBase round
-// trip) — the real check happens in app/admin/(protected)/layout.tsx, which
-// redirects to /admin/login on an invalid token but can't clear the cookie
-// itself (Server Components can't mutate cookies). So /admin/login is where a
+// trip) — the real check happens in app/dashboard/(protected)/layout.tsx, which
+// redirects to /dashboard/login on an invalid token but can't clear the cookie
+// itself (Server Components can't mutate cookies). So /dashboard/login is where a
 // stale cookie actually gets validated and cleared, since proxy runs on the
 // Node.js runtime here and can both fetch PocketBase and write the response
-// cookie. Skipping that would bounce a stale-cookie visitor between /admin
-// and /admin/login forever (ERR_TOO_MANY_REDIRECTS).
+// cookie. Skipping that would bounce a stale-cookie visitor between /dashboard
+// and /dashboard/login forever (ERR_TOO_MANY_REDIRECTS).
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const isLoginRoute = pathname === "/admin/login";
+
+  // Backwards compatibility: redirect legacy /admin routes to /dashboard
+  if (pathname === "/admin" || pathname.startsWith("/admin/")) {
+    const newPath = pathname.replace(/^\/admin/, "/dashboard");
+    const targetUrl = new URL(newPath, request.url);
+    targetUrl.search = request.nextUrl.search;
+    return NextResponse.redirect(targetUrl);
+  }
+  if (pathname.startsWith("/api/admin/")) {
+    const newPath = pathname.replace(/^\/api\/admin/, "/api/dashboard");
+    const targetUrl = new URL(newPath, request.url);
+    targetUrl.search = request.nextUrl.search;
+    return NextResponse.redirect(targetUrl);
+  }
+
+  const isLoginRoute = pathname === "/dashboard/login";
   const token = request.cookies.get(ADMIN_AUTH_COOKIE)?.value;
 
-  if (pathname.startsWith("/admin") && !isLoginRoute && !token) {
-    return NextResponse.redirect(new URL("/admin/login", request.url));
+  if (pathname.startsWith("/dashboard") && !isLoginRoute && !token) {
+    return NextResponse.redirect(new URL("/dashboard/login", request.url));
   }
 
   if (isLoginRoute && token) {
     const valid = await refreshSuperuserAuth(token);
     if (valid) {
-      return NextResponse.redirect(new URL("/admin", request.url));
+      return NextResponse.redirect(new URL("/dashboard", request.url));
     }
     const response = NextResponse.next();
     response.cookies.delete(ADMIN_AUTH_COOKIE);
@@ -34,5 +49,11 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin", "/admin/:path*"],
+  matcher: [
+    "/admin",
+    "/admin/:path*",
+    "/api/admin/:path*",
+    "/dashboard",
+    "/dashboard/:path*",
+  ],
 };

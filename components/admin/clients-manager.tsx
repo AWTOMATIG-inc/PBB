@@ -8,7 +8,7 @@ import {
   createClientAction,
   deleteClientAction,
   updateClientAction,
-} from "@/app/admin/(protected)/clients/actions";
+} from "@/app/dashboard/(protected)/clients/actions";
 import ClientForm from "./client-form";
 import DeleteFilterButton from "./delete-filter-button";
 

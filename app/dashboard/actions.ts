@@ -23,10 +23,10 @@ export async function login(
   }
 
   await setAdminSession(result.token);
-  redirect("/admin");
+  redirect("/dashboard");
 }
 
 export async function logout() {
   await clearAdminSession();
-  redirect("/admin/login");
+  redirect("/dashboard/login");
 }

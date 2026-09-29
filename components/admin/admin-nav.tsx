@@ -3,15 +3,15 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FileText, Handshake, Home, LayoutDashboard, LogOut, Package, SlidersHorizontal } from "lucide-react";
-import { logout } from "@/app/admin/actions";
+import { logout } from "@/app/dashboard/actions";
 
 const ADMIN_NAV_LINKS = [
-  { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/admin/quotations", label: "Quotations", icon: FileText },
-  { href: "/admin/products", label: "Products", icon: Package },
-  { href: "/admin/filters", label: "Filters", icon: SlidersHorizontal },
-  { href: "/admin/clients", label: "Clients", icon: Handshake },
-  { href: "/admin/home", label: "Home Page", icon: Home },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/dashboard/quotations", label: "Quotations", icon: FileText },
+  { href: "/dashboard/products", label: "Products", icon: Package },
+  { href: "/dashboard/filters", label: "Filters", icon: SlidersHorizontal },
+  { href: "/dashboard/clients", label: "Clients", icon: Handshake },
+  { href: "/dashboard/home", label: "Home Page", icon: Home },
 ];
 
 export default function AdminNav({ email }: { email: string }) {
@@ -21,7 +21,7 @@ export default function AdminNav({ email }: { email: string }) {
     <header className="border-b border-ink-800 bg-ink-900 text-white">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-8">
-          <Link href="/admin" className="flex items-center gap-2">
+          <Link href="/dashboard" className="flex items-center gap-2">
             <span className="text-base font-bold text-white">
               Power Bank Bangladesh
             </span>
@@ -32,7 +32,7 @@ export default function AdminNav({ email }: { email: string }) {
 
           <nav className="hidden items-center gap-6 sm:flex">
             {ADMIN_NAV_LINKS.map(({ href, label, icon: Icon }) => {
-              const active = href === "/admin" ? pathname === href : pathname.startsWith(href);
+              const active = href === "/dashboard" ? pathname === href : pathname.startsWith(href);
               return (
                 <Link
                   key={href}
