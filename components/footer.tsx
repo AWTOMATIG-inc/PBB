@@ -143,7 +143,15 @@ export default function Footer() {
         </div>
 
         <div className="mt-12 border-t border-ink-800 pt-6 text-center text-xs text-ink-400">
-          © {year} Power Bank Bangladesh. All rights reserved.
+          © {year} Power Bank Bangladesh. All rights reserved. · Developed by{" "}
+          <a
+            href="https://awtomatig.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-ink-300 transition-colors hover:text-brand-400"
+          >
+            AWTOMATIG
+          </a>
         </div>
       </div>
     </footer>
