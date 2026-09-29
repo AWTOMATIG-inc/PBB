@@ -20,6 +20,7 @@ import { BRANDS } from "@/data/generators";
 import { getFeaturedClients, getPublicGenerators, getHomeSections } from "@/lib/public-data";
 import ProductCard from "@/components/product-card";
 import NewProductsCarousel from "@/components/new-products-carousel";
+import InfiniteLogoSlider from "@/components/infinite-logo-slider";
 
 const BRAND_LOGOS: { name: string; file: string }[] = [
   ...BRANDS.map((brand) => ({ name: brand, file: brand })),
@@ -144,21 +145,20 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Brand strip */}
+      {/* Brand strip (Infinite Carousel Slider) */}
       <section className="border-b border-ink-100 bg-white">
-        <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-          <div className="overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
-            <div className="flex w-max animate-marquee items-center gap-16 hover:[animation-play-state:paused]">
-              {[...BRAND_LOGOS, ...BRAND_LOGOS].map((brand, index) => (
-                <img
-                  key={`${brand.name}-${index}`}
-                  src={`/brands/${brand.file}.png`}
-                  alt={brand.name}
-                  className="h-10 w-auto shrink-0 object-contain sm:h-12"
-                />
-              ))}
-            </div>
-          </div>
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+          <InfiniteLogoSlider
+            speed={28}
+            items={BRAND_LOGOS.map((brand) => (
+              <img
+                key={brand.name}
+                src={`/brands/${brand.file}.png`}
+                alt={brand.name}
+                className="h-10 w-auto shrink-0 object-contain opacity-85 transition-opacity hover:opacity-100 sm:h-12"
+              />
+            ))}
+          />
         </div>
       </section>
 
@@ -290,35 +290,34 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Our Clients: admin-managed at /admin/clients (PBB-03a). Hidden until
-          at least one active, featured client exists, rather than padding it
-          with manufacturer logos that aren't clients. */}
+      {/* Our Clients (Infinite Carousel Slider) */}
       {clients.length > 0 && (
         <section className="border-t border-ink-100 bg-white">
           <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-            <p className="text-center text-2xl font-semibold uppercase tracking-wide text-ink-400">
+            <p className="text-center text-xl font-bold uppercase tracking-wider text-ink-400 sm:text-2xl">
               Our Clients
             </p>
-            <div className="mt-14 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
-              <div className="flex w-max animate-marquee items-center gap-16 hover:[animation-play-state:paused]">
-                {[...clients, ...clients].map((client, index) =>
+            <div className="mt-10">
+              <InfiniteLogoSlider
+                speed={32}
+                items={clients.map((client) =>
                   client.logoUrl ? (
                     <img
-                      key={`client-${client.name}-${index}`}
+                      key={`client-${client.name}`}
                       src={client.logoUrl}
                       alt={client.name}
-                      className="h-10 w-auto shrink-0 object-contain sm:h-12"
+                      className="h-10 w-auto shrink-0 object-contain opacity-80 transition-opacity hover:opacity-100 sm:h-12"
                     />
                   ) : (
                     <span
-                      key={`client-${client.name}-${index}`}
-                      className="shrink-0 whitespace-nowrap text-lg font-semibold text-ink-500 sm:text-xl"
+                      key={`client-${client.name}`}
+                      className="shrink-0 whitespace-nowrap text-lg font-semibold text-ink-600 opacity-80 hover:opacity-100 sm:text-xl"
                     >
                       {client.name}
                     </span>
                   )
                 )}
-              </div>
+              />
             </div>
           </div>
         </section>
