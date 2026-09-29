@@ -26,14 +26,14 @@ function isProductSort(value: unknown): value is ProductSort {
 
 export default async function AdminProductsPage({
   searchParams,
-}: PageProps<"/admin/products">) {
+}: PageProps<"/dashboard/products">) {
   const { page: pageParam, q: qParam, sort: sortParam } = await searchParams;
   const page = Math.max(1, Number(pageParam) || 1);
   const search = typeof qParam === "string" ? qParam : "";
   const sort: ProductSort = isProductSort(sortParam) ? sortParam : "newest";
 
   const token = await getAdminSessionToken();
-  if (!token) redirect("/admin/login");
+  if (!token) redirect("/dashboard/login");
   const { items, totalPages, totalItems } = await listProducts(token, {
     page,
     perPage: PER_PAGE,
@@ -46,7 +46,7 @@ export default async function AdminProductsPage({
     params.set("page", String(p));
     if (search) params.set("q", search);
     if (sort !== "newest") params.set("sort", sort);
-    return `/admin/products?${params.toString()}`;
+    return `/dashboard/products?${params.toString()}`;
   };
 
   return (
@@ -57,7 +57,7 @@ export default async function AdminProductsPage({
           <p className="mt-1 text-sm text-ink-500">{totalItems} generator models.</p>
         </div>
         <Link
-          href="/admin/products/new"
+          href="/dashboard/products/new"
           className="flex items-center gap-2 rounded-full bg-brand-500 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-600"
         >
           <Plus className="size-4" />
@@ -154,7 +154,7 @@ export default async function AdminProductsPage({
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-end gap-1">
                       <Link
-                        href={`/admin/products/${product.id}/edit`}
+                        href={`/dashboard/products/${product.id}/edit`}
                         title="Edit product"
                         className="rounded-md p-2 text-ink-400 transition-colors hover:bg-ink-100 hover:text-ink-900"
                       >

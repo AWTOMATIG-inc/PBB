@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useRef } from "react";
-import type { FilterFormState } from "@/app/admin/(protected)/filters/actions";
+import type { FilterFormState } from "@/app/dashboard/(protected)/filters/actions";
 import type { PowerBandRecord } from "@/lib/products";
 
 const INPUT_CLASS =

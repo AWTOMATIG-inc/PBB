@@ -35,7 +35,7 @@ export default async function AdminQuotationsPage({
   const status = typeof statusParam === "string" ? statusParam : "";
 
   const token = await getAdminSessionToken();
-  if (!token) redirect("/admin/login");
+  if (!token) redirect("/dashboard/login");
 
   const { items, totalPages, totalItems } = await listQuotations(token, {
     page,
@@ -49,7 +49,7 @@ export default async function AdminQuotationsPage({
     params.set("page", String(p));
     if (search) params.set("q", search);
     if (status) params.set("status", status);
-    return `/admin/quotations?${params.toString()}`;
+    return `/dashboard/quotations?${params.toString()}`;
   };
 
   return (
@@ -62,7 +62,7 @@ export default async function AdminQuotationsPage({
           </p>
         </div>
         <Link
-          href="/admin/quotations/new"
+          href="/dashboard/quotations/new"
           className="flex items-center gap-2 rounded-full bg-brand-500 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-600 shadow-sm"
         >
           <Plus className="size-4" />
@@ -120,7 +120,7 @@ export default async function AdminQuotationsPage({
             Create your first unified 2-page quotation to get started.
           </p>
           <Link
-            href="/admin/quotations/new"
+            href="/dashboard/quotations/new"
             className="mt-4 inline-flex items-center gap-2 rounded-full bg-brand-500 px-4 py-2 text-xs font-semibold text-white hover:bg-brand-600"
           >
             <Plus className="size-3.5" />
@@ -196,7 +196,7 @@ export default async function AdminQuotationsPage({
                       <td className="py-3.5 pr-4 pl-3 text-right">
                         <div className="flex items-center justify-end gap-2">
                           <a
-                            href={`/api/admin/quotations/${q.id}/pdf`}
+                            href={`/api/dashboard/quotations/${q.id}/pdf`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-1 rounded border border-ink-200 bg-white px-2 py-1 text-xs font-semibold text-ink-700 hover:border-brand-300 hover:text-brand-600 shadow-2xs"
@@ -207,7 +207,7 @@ export default async function AdminQuotationsPage({
                           </a>
 
                           <Link
-                            href={`/admin/quotations/${q.id}/edit`}
+                            href={`/dashboard/quotations/${q.id}/edit`}
                             className="inline-flex items-center gap-1 rounded border border-ink-200 bg-white px-2 py-1 text-xs font-semibold text-ink-700 hover:border-brand-300 hover:text-brand-600 shadow-2xs"
                             title="Edit Quotation"
                           >

@@ -2,7 +2,7 @@
 
 import { useActionState } from "react";
 import Link from "next/link";
-import type { ProductFormState } from "@/app/admin/(protected)/products/actions";
+import type { ProductFormState } from "@/app/dashboard/(protected)/products/actions";
 import type {
   BrandRecord,
   OptionListRecord,
@@ -208,7 +208,7 @@ export default function ProductForm({
           </select>
           <p className="text-xs text-ink-400">
             Add new makes and controllers under{" "}
-            <Link href="/admin/filters" className="font-medium text-brand-600 hover:underline">
+            <Link href="/dashboard/filters" className="font-medium text-brand-600 hover:underline">
               Filters
             </Link>
             .

@@ -3,7 +3,7 @@ import { verifyAdminSession } from "@/lib/auth";
 
 export default async function AdminProtectedLayout({
   children,
-}: LayoutProps<"/admin">) {
+}: LayoutProps<"/dashboard">) {
   const admin = await verifyAdminSession();
 
   return (

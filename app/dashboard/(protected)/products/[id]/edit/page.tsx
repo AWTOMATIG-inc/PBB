@@ -18,11 +18,11 @@ export const metadata: Metadata = {
   title: "Edit Product | Admin | Power Bank Bangladesh",
 };
 
-export default async function EditProductPage({ params }: PageProps<"/admin/products/[id]/edit">) {
+export default async function EditProductPage({ params }: PageProps<"/dashboard/products/[id]/edit">) {
   const { id } = await params;
 
   const token = await getAdminSessionToken();
-  if (!token) redirect("/admin/login");
+  if (!token) redirect("/dashboard/login");
 
   const [product, brands, powerBands, alternatorMakes, controllers] = await Promise.all([
     getProduct(token, id),
@@ -38,13 +38,13 @@ export default async function EditProductPage({ params }: PageProps<"/admin/prod
     <div>
       <div className="flex items-center justify-between gap-4">
         <Link
-          href="/admin/products"
+          href="/dashboard/products"
           className="flex items-center gap-2 text-sm font-medium text-ink-500 hover:text-ink-900"
         >
           <ArrowLeft className="size-4" />
           Back to products
         </Link>
-        <DeleteProductButton id={product.id} model={product.model} redirectTo="/admin/products" />
+        <DeleteProductButton id={product.id} model={product.model} redirectTo="/dashboard/products" />
       </div>
 
       <h1 className="mt-4 text-2xl font-bold text-ink-900">Edit {product.model}</h1>

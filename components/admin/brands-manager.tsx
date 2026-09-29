@@ -8,7 +8,7 @@ import {
   createBrandAction,
   deleteBrandAction,
   updateBrandAction,
-} from "@/app/admin/(protected)/filters/actions";
+} from "@/app/dashboard/(protected)/filters/actions";
 import BrandForm from "./brand-form";
 import DeleteFilterButton from "./delete-filter-button";
 

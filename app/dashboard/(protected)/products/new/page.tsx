@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default async function NewProductPage() {
   const token = await getAdminSessionToken();
-  if (!token) redirect("/admin/login");
+  if (!token) redirect("/dashboard/login");
 
   const [brands, powerBands, alternatorMakes, controllers] = await Promise.all([
     listBrands(token),
@@ -25,7 +25,7 @@ export default async function NewProductPage() {
   return (
     <div>
       <Link
-        href="/admin/products"
+        href="/dashboard/products"
         className="flex items-center gap-2 text-sm font-medium text-ink-500 hover:text-ink-900"
       >
         <ArrowLeft className="size-4" />

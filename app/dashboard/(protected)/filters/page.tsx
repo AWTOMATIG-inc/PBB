@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 
 export default async function AdminFiltersPage() {
   const token = await getAdminSessionToken();
-  if (!token) redirect("/admin/login");
+  if (!token) redirect("/dashboard/login");
 
   const [brands, powerBands, alternatorMakes, controllers, usage] = await Promise.all([
     listBrands(token),

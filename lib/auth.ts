@@ -7,10 +7,10 @@ import { refreshSuperuserAuth } from "./pocketbase";
 // request via React's cache() so layout + page can both call it for free.
 export const verifyAdminSession = cache(async () => {
   const token = await getAdminSessionToken();
-  if (!token) redirect("/admin/login");
+  if (!token) redirect("/dashboard/login");
 
   const result = await refreshSuperuserAuth(token);
-  if (!result) redirect("/admin/login");
+  if (!result) redirect("/dashboard/login");
 
   return result.record;
 });

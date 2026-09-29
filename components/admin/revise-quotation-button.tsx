@@ -3,7 +3,7 @@
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { GitFork, Loader2 } from "lucide-react";
-import { createRevisionAction } from "@/app/admin/(protected)/quotations/actions";
+import { createRevisionAction } from "@/app/dashboard/(protected)/quotations/actions";
 
 export default function ReviseQuotationButton({ id }: { id: string }) {
   const router = useRouter();
@@ -13,7 +13,7 @@ export default function ReviseQuotationButton({ id }: { id: string }) {
     startTransition(async () => {
       const res = await createRevisionAction(id);
       if (res.success && res.newId) {
-        router.push(`/admin/quotations/${res.newId}/edit`);
+        router.push(`/dashboard/quotations/${res.newId}/edit`);
       }
     });
   };

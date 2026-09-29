@@ -9,7 +9,7 @@ import {
   addHomePlacementAction,
   deleteHomePlacementAction,
   moveHomePlacementAction,
-} from "@/app/admin/(protected)/home/actions";
+} from "@/app/dashboard/(protected)/home/actions";
 import DeleteFilterButton from "./delete-filter-button";
 
 export default function HomePlacementManager({

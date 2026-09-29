@@ -1000,7 +1000,7 @@ export default function QuotationForm({ products, quotation, action }: Quotation
       {/* Action Footer */}
       <div className="sticky bottom-4 z-20 flex flex-wrap items-center justify-between gap-4 rounded-xl border border-ink-200 bg-white/95 p-4 shadow-lg backdrop-blur">
         <Link
-          href="/admin/quotations"
+          href="/dashboard/quotations"
           className="text-sm font-semibold text-ink-600 hover:text-ink-900"
         >
           Cancel &amp; return

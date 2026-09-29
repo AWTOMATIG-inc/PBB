@@ -50,7 +50,7 @@ function describeClientError(status: number, body: unknown) {
 }
 
 function revalidateClientPages() {
-  revalidatePath("/admin/clients");
+  revalidatePath("/dashboard/clients");
   revalidatePath("/");
 }
 
@@ -59,7 +59,7 @@ export async function createClientAction(
   formData: FormData
 ): Promise<ClientFormState> {
   const token = await getAdminSessionToken();
-  if (!token) redirect("/admin/login");
+  if (!token) redirect("/dashboard/login");
 
   const { payload, error } = buildClientPayload(formData);
   if (error) return { error };
@@ -78,7 +78,7 @@ export async function updateClientAction(
   formData: FormData
 ): Promise<ClientFormState> {
   const token = await getAdminSessionToken();
-  if (!token) redirect("/admin/login");
+  if (!token) redirect("/dashboard/login");
 
   const { payload, error } = buildClientPayload(formData);
   if (error) return { error };
@@ -93,7 +93,7 @@ export async function updateClientAction(
 
 export async function deleteClientAction(id: string) {
   const token = await getAdminSessionToken();
-  if (!token) redirect("/admin/login");
+  if (!token) redirect("/dashboard/login");
 
   const res = await deleteClient(token, id);
   if (!res.ok) {

@@ -153,7 +153,7 @@ export async function createQuotationAction(
   formData: FormData
 ): Promise<QuotationFormState> {
   const token = await getAdminSessionToken();
-  if (!token) redirect("/admin/login");
+  if (!token) redirect("/dashboard/login");
 
   const { payload, error } = buildQuotationPayload(formData);
   if (error) return { error };
@@ -164,8 +164,8 @@ export async function createQuotationAction(
     return { error: describePbError(errorBody, "Failed to create quotation.") };
   }
 
-  revalidatePath("/admin/quotations");
-  redirect("/admin/quotations");
+  revalidatePath("/dashboard/quotations");
+  redirect("/dashboard/quotations");
 }
 
 export async function updateQuotationAction(
@@ -174,7 +174,7 @@ export async function updateQuotationAction(
   formData: FormData
 ): Promise<QuotationFormState> {
   const token = await getAdminSessionToken();
-  if (!token) redirect("/admin/login");
+  if (!token) redirect("/dashboard/login");
 
   const { payload, error } = buildQuotationPayload(formData);
   if (error) return { error };
@@ -185,26 +185,26 @@ export async function updateQuotationAction(
     return { error: describePbError(errorBody, "Failed to update quotation.") };
   }
 
-  revalidatePath("/admin/quotations");
-  redirect("/admin/quotations");
+  revalidatePath("/dashboard/quotations");
+  redirect("/dashboard/quotations");
 }
 
 export async function deleteQuotationAction(id: string): Promise<{ error?: string }> {
   const token = await getAdminSessionToken();
-  if (!token) redirect("/admin/login");
+  if (!token) redirect("/dashboard/login");
 
   const res = await deleteQuotation(token, id);
   if (!res.ok) {
     return { error: "Failed to delete quotation." };
   }
 
-  revalidatePath("/admin/quotations");
+  revalidatePath("/dashboard/quotations");
   return {};
 }
 
 export async function createRevisionAction(id: string): Promise<{ success: boolean; newId?: string; error?: string }> {
   const token = await getAdminSessionToken();
-  if (!token) redirect("/admin/login");
+  if (!token) redirect("/dashboard/login");
 
   const original = await getQuotation(token, id);
   if (!original) {
@@ -233,6 +233,6 @@ export async function createRevisionAction(id: string): Promise<{ success: boole
   }
 
   const created = await res.json();
-  revalidatePath("/admin/quotations");
+  revalidatePath("/dashboard/quotations");
   return { success: true, newId: created.id };
 }

@@ -114,7 +114,7 @@ export async function createProductAction(
   formData: FormData
 ): Promise<ProductFormState> {
   const token = await getAdminSessionToken();
-  if (!token) redirect("/admin/login");
+  if (!token) redirect("/dashboard/login");
 
   const { payload, error } = buildProductPayload(formData);
   if (error) return { error };
@@ -128,7 +128,7 @@ export async function createProductAction(
   revalidatePath("/");
   revalidatePath("/products");
   if (pricingError) return pricingError;
-  redirect("/admin/products");
+  redirect("/dashboard/products");
 }
 
 export async function updateProductAction(
@@ -137,7 +137,7 @@ export async function updateProductAction(
   formData: FormData
 ): Promise<ProductFormState> {
   const token = await getAdminSessionToken();
-  if (!token) redirect("/admin/login");
+  if (!token) redirect("/dashboard/login");
 
   const { payload, error } = buildProductPayload(formData);
   if (error) return { error };
@@ -151,15 +151,15 @@ export async function updateProductAction(
   revalidatePath("/");
   revalidatePath("/products");
   if (pricingError) return pricingError;
-  redirect("/admin/products");
+  redirect("/dashboard/products");
 }
 
 export async function deleteProductAction(id: string) {
   const token = await getAdminSessionToken();
-  if (!token) redirect("/admin/login");
+  if (!token) redirect("/dashboard/login");
 
   await deleteProduct(token, id);
-  revalidatePath("/admin/products");
+  revalidatePath("/dashboard/products");
   revalidatePath("/");
   revalidatePath("/products");
 }
