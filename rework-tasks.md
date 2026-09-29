@@ -21,7 +21,7 @@ call; check whether they exist under different names on the tracker.
   `56a9a7e`). Flow for each cycle: push/PR your branch into `main` → Khalid merges → the
   *other* person pulls `main` and rebases/recreates their branch from it before starting the
   next slice — don't keep piling commits on a branch that's drifted behind a merged `main`.
-- Same conventions as `tasks.md` / `design-task.md`: check items off as completed, split a
+- Same conventions as `tasks.md`: check items off as completed, split a
   task further if a session runs out of room, log decisions in `memory.md`.
 - Sprint grouping follows the feedback doc's section 8 recommendation. Work sprints in
   order; within a sprint, Khalid's items still gate Ashikul's.
@@ -207,7 +207,7 @@ this log is the timeline, the checkboxes are the current state.
 - [x] **Quotation sample documents** (Bashundhara Training and Testing Center quotation,
       Ricardo 40 kVA quotation) — needed for PBB-13/14 to match PBB's actual commercial
       layout and numbering (`PBB-1095` style). Supplied 2026-09-25 (Cycle 6).
-- [ ] **Invoice field decision** — carried over from `memory.md`'s prior open item. The
+- [x] **Invoice field decision** — carried over from `memory.md`'s prior open item. The
       documents are in hand as of Cycle 6. `ashikul` settles this from them at the start of
       PBB-15 and records it in `memory.md`.
 
@@ -255,14 +255,14 @@ this log is the timeline, the checkboxes are the current state.
       Controller fields, product card redesign, Alternator/Controller/Price filters and
       sort. Replaces the original 07/08a/08b below, which are kept for history only. Follow-up
       for `ashikul`: replace the placeholder make/controller values as real data arrives.
-- [ ] ~~**PBB-07-Catalogue**~~ *(superseded by the re-scope above)* — `ashikul`.
+- [x] ~~**PBB-07-Catalogue**~~ *(superseded by the re-scope above)* — `ashikul`.
       *Depends on PBB-01/02 and PBB-09/12 merged first* — the new filters (Condition,
       Availability, Price State) and power bands need to exist before the redesigned filter
       UI can be built against them. Redesign `components/products-browser.tsx`'s layout
       using the supplied PS Engineering category page as a structural reference, keeping PBB
       branding/palette (`design.md`). Pure front-end, no schema changes of its own.
-- [ ] ~~**PBB-08-Catalogue**~~ *(superseded by the re-scope above, no brochure coming)* — split:
-  - [ ] **8a** `khalid` — *blocked on the GRAND POWER brochure file.* Extend the `products`
+- [x] ~~**PBB-08-Catalogue**~~ *(superseded by the re-scope above, no brochure coming)* — split:
+  - [x] **8a** `khalid` — *blocked on the GRAND POWER brochure file.* Extend the `products`
         PocketBase collection (currently `pocketbase/pb_migrations/1789554839_create_products.js`)
         to cover every field in feedback doc section 4.2 not already present: Condition,
         Country of Origin, Controller, Voltage, Frequency, Fuel Consumption, Dimensions, an
@@ -272,21 +272,21 @@ this log is the timeline, the checkboxes are the current state.
         Caterpillar are logo-only today per `CLAUDE.md` — confirm whether Grand Power
         changes that). Add the matching fields to the admin product form (this is also
         PBB-12, see below — one PR covers both).
-  - [ ] **8b** `ashikul` — *depends on 8a merged.* The actual reconciliation import: for
+  - [x] **8b** `ashikul` — *depends on 8a merged.* The actual reconciliation import: for
         every model in the brochure, extract specs, create the product via the admin UI,
         assign brand/kVA/power band, add the genuine photo, fill technical specs, attach the
         brochure/datasheet, add price if supplied, publish. Track a running count against
         the brochure's model list as you go (feeds PBB-18).
-- [ ] **PBB-09+10+11** — split:
+- [x] **PBB-09+10+11** — split:
   - [x] **9+10** `khalid`. Add optional pricing: `price` (number, nullable), `currency`
         (default BDT), `showPrice` (bool) fields on `products`; admin form fields for them;
         and conditional rendering on `components/product-card.tsx` and the product detail
         view so the price block is fully hidden (not just blank/zero) when `showPrice` is
         off, with "Request Quotation" becoming the primary CTA in that case.
-  - [ ] **11** `ashikul` — *depends on 9+10 merged if any pricing-adjacent layout changed;
+  - [x] **11** `ashikul` — *depends on 9+10 merged if any pricing-adjacent layout changed;
         otherwise can run in parallel with 8b since it's the same admin image-upload flow.*
         Replace any remaining generic/placeholder product images with actual photos.
-- [ ] **PBB-12-Product Admin** — `khalid`. Same PR as 8a/9+10 in practice: make sure every
+- [x] **PBB-12-Product Admin** — `khalid`. Same PR as 8a/9+10 in practice: make sure every
       new field (specs, images/gallery, pricing) is editable from `/admin`'s existing
       Products CRUD (`components/admin/` product form), not just storable in PocketBase.
       *Pricing half done with 9+10 (Cycle 3); the specs/gallery half ships with 8a.*
@@ -304,7 +304,7 @@ this log is the timeline, the checkboxes are the current state.
       *(reassigned in Cycle 6)*. Same
       workstream as PBB-13 — match the supplied quotation samples' exact structure,
       terminology, and output layout once they're available.
-- [ ] **PBB-15+16-Invoice & Documents** — `ashikul` *(reassigned in Cycle 6)*. *Depends on PBB-13/14 merged* (invoices
+- [x] **PBB-15+16-Invoice & Documents** — `ashikul` *(reassigned in Cycle 6)*. *Depends on PBB-13/14 merged* (invoices
       convert from accepted quotations per section 7.1, so the quotation model has to exist
       first). Resolve the still-open invoice-fields decision (`memory.md`), build
       quotation-to-invoice conversion (copies customer/product/terms, assigns next invoice
@@ -312,19 +312,19 @@ this log is the timeline, the checkboxes are the current state.
       PDFs for both quotations and invoices (lightweight lib — `pdf-lib` or
       `@react-pdf/renderer`, not headless-Chrome, per `tasks.md` task 15's existing note on
       the VPS's resource budget). All commercial totals calculated server-side.
-- [ ] **PBB-16-Documents** — `ashikul` *(reassigned in Cycle 6)*. Duplicate of the PDF-generation half of PBB-15+16 —
+- [x] **PBB-16-Documents** — `ashikul` *(reassigned in Cycle 6)*. Duplicate of the PDF-generation half of PBB-15+16 —
       same tracker card appears twice in the screenshots; treat as one deliverable, not two.
 
 ## Sprint 4 — QA (PBB-17 to PBB-19)
 
-- [ ] **PBB-17+18+19-QA** — split:
-  - [ ] **17** `ashikul`. Responsive testing across desktop/tablet/mobile after the PBB-07
+- [x] **PBB-17+18+19-QA** — split:
+  - [x] **17** `ashikul`. Responsive testing across desktop/tablet/mobile after the PBB-07
         catalogue redesign ships.
-  - [ ] **18** `ashikul` (first pass, since he did the 8b import) → `khalid` (sign-off).
+  - [x] **18** `ashikul` (first pass, since he did the 8b import) → `khalid` (sign-off).
         Full catalogue/data reconciliation: brochure model count = backend product count =
         published product count, per the feedback doc's "no silent omissions" rule
         (section 4.3). Every published product has accurate specs and a real photo.
-  - [ ] **19** `khalid`. Quotation/invoice calculation and PDF validation — financial
+  - [x] **19** `khalid`. Quotation/invoice calculation and PDF validation — financial
         correctness stays with Khalid regardless of who built the surrounding UI. Numbering
         can't duplicate, totals/balances are correct, PDF output matches PBB's commercial
         document structure, print layout and page breaks are clean.
