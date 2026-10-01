@@ -7,7 +7,7 @@ import { listProducts, productImageUrl, type ProductSort } from "@/lib/products"
 import DeleteProductButton from "@/components/admin/delete-product-button";
 
 export const metadata: Metadata = {
-  title: "Products | Admin | Power Bank Bangladesh",
+  title: "Products | Admin",
 };
 
 const PER_PAGE = 20;

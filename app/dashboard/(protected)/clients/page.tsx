@@ -5,7 +5,7 @@ import { clientLogoUrl, listClients, type ClientRecord } from "@/lib/products";
 import ClientsManager from "@/components/admin/clients-manager";
 
 export const metadata: Metadata = {
-  title: "Clients | Admin | Power Bank Bangladesh",
+  title: "Clients | Admin",
 };
 
 export default async function AdminClientsPage() {

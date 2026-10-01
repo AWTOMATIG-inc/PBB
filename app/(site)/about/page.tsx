@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -12,11 +13,12 @@ import {
   Wrench,
 } from "lucide-react";
 
-export const metadata: Metadata = {
-  title: "About Us | Power Bank Bangladesh",
+export const metadata: Metadata = pageMetadata({
+  title: "About Us",
   description:
-    "Power Bank Bangladesh is a diesel generator dealer serving Dhaka and Chattogram: sell, exchange, rental and service across every major generator brand.",
-};
+    "Power Bank Bangladesh is a diesel generator dealer in Dhaka and Chattogram: sell, exchange, rental, service and spare parts for every major generator brand.",
+  path: "/about",
+});
 
 const ALL_BRANDS = [
   "John Deere",

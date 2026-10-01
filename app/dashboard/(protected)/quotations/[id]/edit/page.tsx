@@ -9,7 +9,7 @@ import QuotationForm from "@/components/admin/quotation-form";
 import { updateQuotationAction } from "../../actions";
 
 export const metadata: Metadata = {
-  title: "Edit Quotation | Admin | Power Bank Bangladesh",
+  title: "Edit Quotation | Admin",
 };
 
 export default async function EditQuotationPage({

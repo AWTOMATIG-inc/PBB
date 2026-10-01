@@ -1,15 +1,17 @@
 import { existsSync } from "node:fs";
 import path from "node:path";
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import ProductsBrowser from "@/components/products-browser";
 import BrandCarousel from "@/components/brand-carousel";
 import { getPublicBrands, getPublicGenerators } from "@/lib/public-data";
 
-export const metadata: Metadata = {
-  title: "Generator Models | Power Bank Bangladesh",
+export const metadata: Metadata = pageMetadata({
+  title: "Diesel Generator Price in Bangladesh",
   description:
-    "Browse diesel generator models from Perkins, Cummins, and Ricardo. Filter by brand and power output to find the right fit.",
-};
+    "Browse Perkins, Cummins and Ricardo diesel generators in Bangladesh by brand and kVA rating. See prices or request a quotation on WhatsApp.",
+  path: "/products",
+});
 
 export const revalidate = 300;
 

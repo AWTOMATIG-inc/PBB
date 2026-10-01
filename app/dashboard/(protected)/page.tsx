@@ -21,7 +21,7 @@ import { formatBdtCurrency } from "@/lib/format-bdt-words";
 import { formatQuotationDateTime } from "@/lib/format-date";
 
 export const metadata: Metadata = {
-  title: "Dashboard | Admin | Power Bank Bangladesh",
+  title: "Dashboard | Admin",
 };
 
 const STATUS_BADGES: Record<QuotationStatus, { bg: string; text: string; label: string }> = {

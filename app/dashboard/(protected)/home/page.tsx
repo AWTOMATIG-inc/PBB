@@ -11,7 +11,7 @@ import { HOME_SECTION_LIMITS } from "@/lib/home-section-limits";
 import HomePlacementManager from "@/components/admin/home-placement-manager";
 
 export const metadata: Metadata = {
-  title: "Home Page | Admin | Power Bank Bangladesh",
+  title: "Home Page | Admin",
 };
 
 const bySortOrder = (a: HomePlacementRecord, b: HomePlacementRecord) => a.sortOrder - b.sortOrder;

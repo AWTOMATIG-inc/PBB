@@ -8,7 +8,7 @@ import QuotationForm from "@/components/admin/quotation-form";
 import { createQuotationAction } from "../actions";
 
 export const metadata: Metadata = {
-  title: "New Quotation | Admin | Power Bank Bangladesh",
+  title: "New Quotation | Admin",
 };
 
 export default async function NewQuotationPage() {

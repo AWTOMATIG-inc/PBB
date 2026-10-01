@@ -72,3 +72,29 @@ Append new entries below: date, what changed, decisions, open TODOs. Keep them s
   quotation PDF footer name every brand on purpose (PBB sells parts/service for all).
 - Deploy needs the PocketBase restart (new migration) or the flag is missing and the public
   site shows no products.
+
+## Session — 2026-10-01 — Home hero slideshow
+
+- Client asked for a Sakura-style carousel hero. Built `components/home-hero.tsx`: white hero,
+  solid orange block behind a framed image card, 4 auto-rotating slides (Sell / Rental /
+  Service / Brands) with labelled progress tabs, pause button, pauses on hover/focus, no
+  autoplay under reduced motion. Contact info lives in a 32px near-black `components/top-bar.tsx`
+  above the nav on every public page (icons + values only, location hidden under sm).
+- User rejected the dark "navy" (ink) hero background: keep heroes white + orange.
+- Slide images reuse `/generator.png` and `public/carousel/*.webp` (stock, ~500px wide, other
+  makers' logos visible). Swap in real PBB photos (rental site, workshop) when available.
+
+## Session — 2026-10-01 — SEO basics
+
+- Canonical domain is `https://powerbankbangladesh.com` (no www); `SITE_URL` in `lib/seo.ts`.
+  Nginx should 301 `www` to it.
+- Added `app/robots.ts` (blocks /dashboard, /admin, /api), `app/sitemap.ts` (4 public pages),
+  `app/opengraph-image.tsx` (generated 1200x630 share card), root `metadataBase` + title template
+  `%s | Power Bank Bangladesh`. Dashboard is `noindex`.
+- Public pages use `pageMetadata()` from `lib/seo.ts`: a page-level `openGraph` replaces the root
+  one and drops the file-based OG image, so the helper sets it explicitly. New public pages must use it.
+- Organization + 2 LocalBusiness (Dhaka, Chattogram) JSON-LD rendered in `app/(site)/layout.tsx`.
+- Target searches: "generator price in Bangladesh", "diesel generator Bangladesh",
+  "<brand> generator price in Bangladesh", "generator rental Dhaka", "generator service Dhaka".
+  Biggest next win: per-model/brand product pages (competitors rank that way); needs client OK.
+- TODO (non-code): Google Business Profile for both locations, submit sitemap in Search Console.

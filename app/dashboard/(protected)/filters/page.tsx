@@ -13,7 +13,7 @@ import PowerBandsManager from "@/components/admin/power-bands-manager";
 import OptionListManager from "@/components/admin/option-list-manager";
 
 export const metadata: Metadata = {
-  title: "Filters | Admin | Power Bank Bangladesh",
+  title: "Filters | Admin",
 };
 
 export default async function AdminFiltersPage() {

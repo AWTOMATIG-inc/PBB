@@ -101,3 +101,17 @@ body {
 .animate-infinite-slide:focus-within {
   animation-play-state: paused;
 }
+
+@keyframes hero-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+::selection {
+  background: var(--color-brand-500);
+  color: #fff;
+}

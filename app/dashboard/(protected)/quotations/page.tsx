@@ -10,7 +10,7 @@ import ReviseQuotationButton from "@/components/admin/revise-quotation-button";
 import DeleteQuotationButton from "@/components/admin/delete-quotation-button";
 
 export const metadata: Metadata = {
-  title: "Quotations | Admin | Power Bank Bangladesh",
+  title: "Quotations | Admin",
 };
 
 const PER_PAGE = 20;
