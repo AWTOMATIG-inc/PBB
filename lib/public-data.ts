@@ -7,7 +7,7 @@
 // a few minutes stale so PocketBase is only hit on revalidation, not per
 // visitor (task 8's architecture decision, see memory.md).
 
-import { BRANDS, type Brand, type GeneratorModel, type KvaBand } from "@/data/generators";
+import type { GeneratorModel, KvaBand } from "@/data/generators";
 import { clientLogoUrl } from "@/lib/products";
 
 const POCKETBASE_URL = process.env.POCKETBASE_URL || "http://127.0.0.1:8090";
@@ -30,7 +30,7 @@ type PBProduct = {
   currency?: string;
   showPrice?: boolean;
   expand?: {
-    brand?: { name: string };
+    brand?: { name: string; showOnSite?: boolean };
     powerBand?: { value: string };
     alternatorMake?: { name: string };
     controller?: { name: string };
@@ -71,9 +71,11 @@ function toPublicPrice(p: PBProduct): GeneratorModel["price"] {
 function toGeneratorModel(p: PBProduct): GeneratorModel | null {
   const brand = p.expand?.brand?.name;
   const kvaBand = p.expand?.powerBand?.value;
-  if (!brand || !kvaBand) return null;
+  // Brands switched off in the dashboard keep their products for quotations
+  // but never appear on the public site.
+  if (!brand || !kvaBand || !p.expand?.brand?.showOnSite) return null;
   return {
-    brand: brand as Brand,
+    brand,
     model: p.model,
     standbyKva: zeroToNull(p.standbyKva),
     primeKva: zeroToNull(p.primeKva),
@@ -95,7 +97,7 @@ export async function getPublicGenerators(): Promise<GeneratorModel[]> {
     perPage: "500",
     sort: "sortOrder,model",
     expand: PRODUCT_EXPAND.join(","),
-    filter: "isActive = true",
+    filter: "isActive = true && brand.showOnSite = true",
   });
   const res = await pbPublicFetch(`/api/collections/products/records?${params.toString()}`);
   if (!res.ok) {
@@ -105,6 +107,21 @@ export async function getPublicGenerators(): Promise<GeneratorModel[]> {
   return (data.items as PBProduct[])
     .map(toGeneratorModel)
     .filter((g): g is GeneratorModel => g !== null);
+}
+
+/** Brands switched on for the public site, in dashboard sort order. */
+export async function getPublicBrands(): Promise<string[]> {
+  const params = new URLSearchParams({
+    perPage: "200",
+    sort: "sortOrder,name",
+    filter: "showOnSite = true",
+  });
+  const res = await pbPublicFetch(`/api/collections/brands/records?${params.toString()}`);
+  if (!res.ok) {
+    throw new Error(`Failed to load brands from PocketBase (${res.status})`);
+  }
+  const data = await res.json();
+  return (data.items as { name: string }[]).map((b) => b.name);
 }
 
 export type PublicClient = { name: string; logoUrl: string | null };
@@ -174,18 +191,19 @@ export async function getHomeSections(
   generators: GeneratorModel[]
 ): Promise<{ featuredModels: GeneratorModel[]; newProducts: GeneratorModel[] }> {
   const placements = await getHomePlacements();
+  const brands = [...new Set(generators.map((g) => g.brand))];
 
   const featuredModels =
     placements.featured_models.length > 0
       ? placements.featured_models
-      : BRANDS.map((brand) => generators.find((g) => g.brand === brand)).filter(
+      : brands.map((brand) => generators.find((g) => g.brand === brand)).filter(
           (g): g is GeneratorModel => Boolean(g)
         );
 
   const newProducts =
     placements.new_products.length > 0
       ? placements.new_products
-      : BRANDS.flatMap((brand) => generators.filter((g) => g.brand === brand).slice(0, 2));
+      : brands.flatMap((brand) => generators.filter((g) => g.brand === brand).slice(0, 2));
 
   return { featuredModels, newProducts };
 }

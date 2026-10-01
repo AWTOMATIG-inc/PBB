@@ -105,6 +105,7 @@ async function upsertBrands(token, generators) {
         name,
         slug: slugify(name),
         sortOrder: i,
+        showOnSite: ["Perkins", "Cummins", "Ricardo"].includes(name),
       }),
     });
     byName.set(name, record);

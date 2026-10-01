@@ -20,6 +20,7 @@ export type BrandRecord = {
   slug: string;
   logo: string;
   sortOrder: number;
+  showOnSite: boolean;
 };
 
 export type PowerBandRecord = {

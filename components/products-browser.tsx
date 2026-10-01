@@ -11,7 +11,7 @@ import {
 import { ChevronDown, SearchX, SlidersHorizontal, X } from "lucide-react";
 import { morph } from "cube-motion";
 import { Rise } from "cube-motion/react";
-import { BRANDS, KVA_BANDS, type GeneratorModel } from "@/data/generators";
+import { KVA_BANDS, type GeneratorModel } from "@/data/generators";
 import ProductCard from "@/components/product-card";
 
 const BAND_ORDER = KVA_BANDS.map((b) => b.value);
@@ -169,8 +169,10 @@ function getPageNumbers(current: number, total: number): (number | "...")[] {
 
 export default function ProductsBrowser({
   generators,
+  brands: brandOptions,
 }: {
   generators: GeneratorModel[];
+  brands: string[];
 }) {
   const [brands, setBrands] = useState<string[]>([]);
   const [bands, setBands] = useState<string[]>([]);
@@ -278,7 +280,7 @@ export default function ProductsBrowser({
       </div>
       <FilterGroup
         title="Brand"
-        options={BRANDS.map((b) => ({ value: b, label: b }))}
+        options={brandOptions.map((b) => ({ value: b, label: b }))}
         selected={brands}
         onToggle={toggle(setBrands)}
       />

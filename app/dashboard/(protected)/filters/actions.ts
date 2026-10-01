@@ -40,6 +40,7 @@ function buildBrandPayload(formData: FormData): { payload: FormData; error?: str
   );
   if (sortOrderError) return { payload, error: sortOrderError };
   payload.set("sortOrder", sortOrder || "0");
+  payload.set("showOnSite", formData.get("showOnSite") ? "true" : "false");
 
   const logo = formData.get("logo");
   if (logo instanceof File && logo.size > 0) {

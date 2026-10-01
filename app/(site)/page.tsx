@@ -16,16 +16,22 @@ import {
   Zap,
 } from "lucide-react";
 import { Reveal, Rise } from "cube-motion/react";
-import { BRANDS } from "@/data/generators";
 import { getFeaturedClients, getPublicGenerators, getHomeSections } from "@/lib/public-data";
 import ProductCard from "@/components/product-card";
 import NewProductsCarousel from "@/components/new-products-carousel";
 import InfiniteLogoSlider from "@/components/infinite-logo-slider";
 
+// Logo marquee covers every brand PBB services, not just the ones listed
+// on /products (brands with "Show on website" on in the dashboard).
 const BRAND_LOGOS: { name: string; file: string }[] = [
-  ...BRANDS.map((brand) => ({ name: brand, file: brand })),
-  { name: "Doosan", file: "Doosan" },
-];
+  "John Deere",
+  "Cummins",
+  "Ricardo",
+  "Perkins",
+  "Volvo Penta",
+  "Deutz",
+  "Doosan",
+].map((brand) => ({ name: brand, file: brand }));
 
 const WHY_US = [
   {

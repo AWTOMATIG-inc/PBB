@@ -2,14 +2,15 @@
 
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { BRANDS } from "@/data/generators";
 
-const slug = (brand: string) => brand.toLowerCase().replace(/\s+/g, "-");
-
-export default function BrandCarousel() {
+export default function BrandCarousel({
+  slides,
+}: {
+  slides: { brand: string; image: string }[];
+}) {
   const [index, setIndex] = useState(0);
 
-  const goTo = (i: number) => setIndex((i + BRANDS.length) % BRANDS.length);
+  const goTo = (i: number) => setIndex((i + slides.length) % slides.length);
 
   return (
     <div className="relative mt-8 w-full overflow-hidden rounded-xl border border-ink-100">
@@ -17,11 +18,11 @@ export default function BrandCarousel() {
         className="flex transition-transform duration-500 ease-out"
         style={{ transform: `translateX(-${index * 100}%)` }}
       >
-        {BRANDS.map((brand) => (
+        {slides.map(({ brand, image }) => (
           <div
             key={brand}
             className="relative flex aspect-video w-full shrink-0 items-end bg-ink-900 bg-cover bg-center"
-            style={{ backgroundImage: `url(/carousel/${slug(brand)}.webp)` }}
+            style={{ backgroundImage: `url(${image})` }}
           >
             <div className="absolute inset-0 bg-gradient-to-t from-ink-900/80 via-ink-900/10 to-transparent" />
             <span className="relative px-6 py-6 text-lg font-semibold text-brand-400 sm:px-8 sm:text-xl">
@@ -49,7 +50,7 @@ export default function BrandCarousel() {
       </button>
 
       <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-1.5">
-        {BRANDS.map((brand, i) => (
+        {slides.map(({ brand }, i) => (
           <button
             key={brand}
             type="button"
