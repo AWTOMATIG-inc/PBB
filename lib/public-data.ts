@@ -8,7 +8,7 @@
 // visitor (task 8's architecture decision, see memory.md).
 
 import type { GeneratorModel, KvaBand } from "@/data/generators";
-import { clientLogoUrl } from "@/lib/products";
+import { clientLogoUrl, productImageUrl } from "@/lib/products";
 
 const POCKETBASE_URL = process.env.POCKETBASE_URL || "http://127.0.0.1:8090";
 const REVALIDATE_SECONDS = 300;
@@ -25,6 +25,7 @@ type PBProduct = {
   specs: Record<string, string | number | null>;
   notes: string;
   isActive: boolean;
+  image: string;
   // Absent until the pricing migration (1789554845) has run on this instance.
   price?: number;
   currency?: string;
@@ -89,6 +90,7 @@ function toGeneratorModel(p: PBProduct): GeneratorModel | null {
     specs: p.specs ?? {},
     notes: p.notes || undefined,
     price: toPublicPrice(p),
+    imageUrl: productImageUrl(p),
   };
 }
 

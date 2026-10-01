@@ -37,4 +37,6 @@ export interface GeneratorModel {
   notes?: string;
   // Set only when an admin has entered a price and enabled "Show price".
   price?: { amount: number; currency: string };
+  // Uploaded product photo; null falls back to the generic generator image.
+  imageUrl: string | null;
 }
