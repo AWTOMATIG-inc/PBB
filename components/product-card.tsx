@@ -66,13 +66,25 @@ export default function ProductCard({ model }: { model: GeneratorModel }) {
   return (
     <div className="flex flex-col overflow-hidden rounded-2xl border border-ink-100 bg-white transition-colors hover:border-brand-200 hover:shadow-sm">
       <div className="relative aspect-[4/3] w-full rounded-t-2xl bg-ink-50 ring-1 ring-inset ring-ink-950/5">
-        <Image
-          src="/generator.png"
-          alt={`${model.brand} ${model.model} diesel generator`}
-          fill
-          sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-          className="object-contain p-6"
-        />
+        {model.imageUrl ? (
+          // Plain <img>: PocketBase file URLs differ per environment, so
+          // next/image would need a remotePatterns entry for each host.
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={model.imageUrl}
+            alt={`${model.brand} ${model.model} diesel generator`}
+            loading="lazy"
+            className="absolute inset-0 size-full object-contain p-6"
+          />
+        ) : (
+          <Image
+            src="/generator.png"
+            alt={`${model.brand} ${model.model} diesel generator`}
+            fill
+            sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+            className="object-contain p-6"
+          />
+        )}
       </div>
       <div className="flex flex-1 flex-col gap-1 border-t border-ink-100 px-5 py-5 text-left">
         <p className="text-xs font-semibold uppercase tracking-wide text-brand-600">

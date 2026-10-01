@@ -98,3 +98,10 @@ Append new entries below: date, what changed, decisions, open TODOs. Keep them s
   "<brand> generator price in Bangladesh", "generator rental Dhaka", "generator service Dhaka".
   Biggest next win: per-model/brand product pages (competitors rank that way); needs client OK.
 - TODO (non-code): Google Business Profile for both locations, submit sitemap in Search Console.
+
+## Session — 2026-10-01 — Product photos on public cards
+
+- `ProductCard` hardcoded `/generator.png`, so uploaded product images never showed publicly.
+  `GeneratorModel.imageUrl` now comes from `productImageUrl()` in `lib/public-data.ts`; card
+  uses a plain `<img>` for it (no `remotePatterns` needed) and keeps `/generator.png` as the
+  fallback for products without a photo.
