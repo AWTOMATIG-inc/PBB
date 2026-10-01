@@ -48,7 +48,6 @@ Compacted 2026-09-29. Frontend, CMS, motion polish, and the 2026-09 rework round
 
 - Invoices: fields never finalized; collection exists, no UI.
 - Replace placeholder alternator make / controller values as real data arrives.
-- Products intro says "eight major brands" but only 6 have models.
 
 ## Session log
 
@@ -60,3 +59,16 @@ Append new entries below: date, what changed, decisions, open TODOs. Keep them s
   deployments and environments on GitHub. The Vercel GitHub App still needs uninstalling
   from the AWTOMATIG-inc org settings (only an org admin can do it).
 - Marked every `rework-tasks.md` item done. Simplified `CLAUDE.md` and this file.
+
+## Session — 2026-10-01 — Per-brand "Show on website" switch
+
+- Client wants only Perkins, Cummins, Ricardo generators public. Added `brands.showOnSite`
+  (migration `1789554850`, sets those 3 on, others off). Toggle lives in Dashboard > Filters >
+  Brands; new brands default to on. Hidden brands keep their products for dashboard/quotations.
+- `lib/public-data.ts` filters products by `brand.showOnSite`; the products brand filter and
+  carousel come from `getPublicBrands()`. `BRANDS`/`Brand` constants are gone.
+- Carousel slides are hand-made `public/carousel/<slug>.webp`; brands without one are skipped.
+- Home logo marquee is a fixed list of all logos. About page, home "All Major Brands" card and
+  quotation PDF footer name every brand on purpose (PBB sells parts/service for all).
+- Deploy needs the PocketBase restart (new migration) or the flag is missing and the public
+  site shows no products.

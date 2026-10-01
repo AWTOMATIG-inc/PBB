@@ -53,12 +53,13 @@ export default function BrandsManager({
       </Rise>
 
       <div className="mt-4 overflow-x-auto rounded-lg border border-ink-100 bg-white">
-        <table className="w-full min-w-[560px] text-left text-sm">
+        <table className="w-full min-w-[640px] text-left text-sm">
           <thead>
             <tr className="border-b border-ink-100 text-xs font-semibold uppercase tracking-wide text-ink-400">
               <th className="px-4 py-3">Name</th>
               <th className="px-4 py-3">Slug</th>
               <th className="px-4 py-3">Sort order</th>
+              <th className="px-4 py-3">On website</th>
               <th className="px-4 py-3 text-right">Actions</th>
             </tr>
           </thead>
@@ -71,7 +72,7 @@ export default function BrandsManager({
                   targets="children"
                   className="border-b border-ink-100 last:border-0"
                 >
-                  <td colSpan={4} className="px-4 py-4">
+                  <td colSpan={5} className="px-4 py-4">
                     <BrandForm
                       brand={brand}
                       currentLogoUrl={logoUrls[brand.id]}
@@ -107,6 +108,17 @@ export default function BrandsManager({
                   <td className="px-4 py-3 text-ink-600">{brand.slug}</td>
                   <td className="px-4 py-3 text-ink-600">{brand.sortOrder}</td>
                   <td className="px-4 py-3">
+                    {brand.showOnSite ? (
+                      <span className="rounded-full bg-brand-50 px-2.5 py-1 text-xs font-semibold text-brand-700">
+                        Shown
+                      </span>
+                    ) : (
+                      <span className="rounded-full bg-ink-100 px-2.5 py-1 text-xs font-semibold text-ink-500">
+                        Hidden
+                      </span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3">
                     <div className="flex items-center justify-end gap-1">
                       <button
                         type="button"
@@ -127,7 +139,7 @@ export default function BrandsManager({
             )}
             {brands.length === 0 && (
               <tr>
-                <td colSpan={4} className="px-4 py-10 text-center text-ink-400">
+                <td colSpan={5} className="px-4 py-10 text-center text-ink-400">
                   No brands yet.
                 </td>
               </tr>

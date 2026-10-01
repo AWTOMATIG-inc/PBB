@@ -1,26 +1,9 @@
-export type Brand =
-  | "John Deere"
-  | "Cummins"
-  | "Ricardo"
-  | "Perkins"
-  | "Volvo Penta"
-  | "Deutz";
-
 export type KvaBand =
   | "Small"
   | "Medium"
   | "Large"
   | "Industrial"
   | "Heavy Industrial";
-
-export const BRANDS: Brand[] = [
-  "John Deere",
-  "Cummins",
-  "Ricardo",
-  "Perkins",
-  "Volvo Penta",
-  "Deutz",
-];
 
 export const KVA_BANDS: { value: KvaBand; label: string }[] = [
   { value: "Small", label: "Small (<50 kVA)" },
@@ -38,7 +21,7 @@ export const KVA_BANDS: { value: KvaBand; label: string }[] = [
 export type GeneratorSpecs = Record<string, string | number | null>;
 
 export interface GeneratorModel {
-  brand: Brand;
+  brand: string;
   model: string;
   standbyKva: number | null;
   primeKva: number | null;

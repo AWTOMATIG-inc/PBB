@@ -82,6 +82,22 @@ export default function BrandForm({
         </div>
       </div>
 
+      <label className="flex items-start gap-2 text-sm text-ink-700">
+        <input
+          type="checkbox"
+          name="showOnSite"
+          defaultChecked={brand?.showOnSite ?? true}
+          className="mt-0.5 size-4 accent-brand-500"
+        />
+        <span>
+          <span className="font-medium">Show on website</span>
+          <span className="block text-ink-500">
+            When off, the products stay in the dashboard and quotations but are hidden from the
+            public site.
+          </span>
+        </span>
+      </label>
+
       <div className="flex flex-col gap-1.5">
         <span className={LABEL_CLASS}>Logo</span>
         {currentLogoUrl && (

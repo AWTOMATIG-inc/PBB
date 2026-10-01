@@ -1,18 +1,25 @@
+import { existsSync } from "node:fs";
+import path from "node:path";
 import type { Metadata } from "next";
 import ProductsBrowser from "@/components/products-browser";
 import BrandCarousel from "@/components/brand-carousel";
-import { getPublicGenerators } from "@/lib/public-data";
+import { getPublicBrands, getPublicGenerators } from "@/lib/public-data";
 
 export const metadata: Metadata = {
   title: "Generator Models | Power Bank Bangladesh",
   description:
-    "Browse 98+ diesel generator models from John Deere, Cummins, Ricardo, Perkins, Volvo Penta, and Deutz. Filter by brand and power output to find the right fit.",
+    "Browse diesel generator models from Perkins, Cummins, and Ricardo. Filter by brand and power output to find the right fit.",
 };
 
 export const revalidate = 300;
 
 export default async function ProductsPage() {
-  const generators = await getPublicGenerators();
+  const [generators, brands] = await Promise.all([getPublicGenerators(), getPublicBrands()]);
+  // Carousel slides are hand-made images; brands added later without one
+  // are left out of the carousel but still listed below.
+  const slides = brands
+    .map((brand) => ({ brand, image: `/carousel/${brand.toLowerCase().replace(/\s+/g, "-")}.webp` }))
+    .filter((slide) => existsSync(path.join(process.cwd(), "public", slide.image)));
 
   return (
     <div className="flex flex-1 flex-col bg-white">
@@ -22,20 +29,22 @@ export default async function ProductsPage() {
             Generator Models
           </h1>
           <p className="mt-3 max-w-2xl text-ink-500">
-            98+ diesel generators across eight major brands. Filter by brand,
+            Diesel generators from Perkins, Cummins and Ricardo. Filter by brand,
             power band, alternator, controller or price to find the right fit.
           </p>
         </div>
       </section>
 
-      <section className="border-b border-ink-100">
-        <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6 lg:px-8">
-          <BrandCarousel />
-        </div>
-      </section>
+      {slides.length > 0 && (
+        <section className="border-b border-ink-100">
+          <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6 lg:px-8">
+            <BrandCarousel slides={slides} />
+          </div>
+        </section>
+      )}
 
       <section className="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <ProductsBrowser generators={generators} />
+        <ProductsBrowser generators={generators} brands={brands} />
       </section>
     </div>
   );
