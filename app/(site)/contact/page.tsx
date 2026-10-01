@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { ArrowRight, Mail, MapPin, Phone } from "lucide-react";
 
-export const metadata: Metadata = {
-  title: "Contact Us | Power Bank Bangladesh",
+export const metadata: Metadata = pageMetadata({
+  title: "Contact Us",
   description:
-    "Reach Power Bank Bangladesh directly: phone, email, and our Dhaka and Chattogram locations. No forms, just a direct line to our team.",
-};
+    "Call or WhatsApp Power Bank Bangladesh for generator sales, rental, service and spare parts. Visit us in Savar, Dhaka or Chawkbazar, Chattogram.",
+  path: "/contact",
+});
 
 const PHONES = [
   "+88 (0) 1989 474 447",

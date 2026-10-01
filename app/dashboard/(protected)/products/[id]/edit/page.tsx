@@ -15,7 +15,7 @@ import DeleteProductButton from "@/components/admin/delete-product-button";
 import { updateProductAction } from "../../actions";
 
 export const metadata: Metadata = {
-  title: "Edit Product | Admin | Power Bank Bangladesh",
+  title: "Edit Product | Admin",
 };
 
 export default async function EditProductPage({ params }: PageProps<"/dashboard/products/[id]/edit">) {

@@ -8,7 +8,7 @@ import ProductForm from "@/components/admin/product-form";
 import { createProductAction } from "../actions";
 
 export const metadata: Metadata = {
-  title: "New Product | Admin | Power Bank Bangladesh",
+  title: "New Product | Admin",
 };
 
 export default async function NewProductPage() {

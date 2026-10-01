@@ -1,4 +1,4 @@
-import Image from "next/image";
+import type { Metadata } from "next";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -7,19 +7,29 @@ import {
   Gauge,
   Handshake,
   MapPin,
-  Phone,
   RefreshCw,
   Repeat,
   Tag,
   Workflow,
   Wrench,
-  Zap,
 } from "lucide-react";
-import { Reveal, Rise } from "cube-motion/react";
+import { Reveal } from "cube-motion/react";
 import { getFeaturedClients, getPublicGenerators, getHomeSections } from "@/lib/public-data";
 import ProductCard from "@/components/product-card";
 import NewProductsCarousel from "@/components/new-products-carousel";
 import InfiniteLogoSlider from "@/components/infinite-logo-slider";
+import HomeHero from "@/components/home-hero";
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = {
+  ...pageMetadata({
+    title: "Generator Sell, Rental & Service in Bangladesh | Power Bank Bangladesh",
+    description:
+      "Diesel generator dealer in Dhaka and Chattogram. Sell, exchange, rental, service and spare parts for Perkins, Cummins, Ricardo and all major brands. Get a quotation on WhatsApp.",
+    path: "/",
+  }),
+  title: { absolute: "Generator Sell, Rental & Service in Bangladesh | Power Bank Bangladesh" },
+};
 
 // Logo marquee covers every brand PBB services, not just the ones listed
 // on /products (brands with "Show on website" on in the dashboard).
@@ -101,55 +111,7 @@ export default async function Home() {
 
   return (
     <div className="flex flex-1 flex-col">
-      {/* Hero */}
-      <section className="border-b border-ink-100 bg-white">
-        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
-          <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16">
-            <Rise as="div" targets="children">
-              <div className="inline-flex items-center gap-2 rounded-full bg-brand-50 px-4 py-1.5 text-sm font-semibold text-brand-700">
-                <Zap className="size-4" />
-                Bringing Energy to Your Doorstep
-              </div>
-              <h1 className="mt-6 text-4xl font-bold tracking-tight text-ink-900 sm:text-5xl lg:text-6xl">
-                You Believe,{" "}
-                <span className="text-brand-500">We Assure Trust</span>
-              </h1>
-              <p className="mt-6 max-w-2xl text-lg leading-8 text-ink-500">
-                From small standby units to industrial-scale power, we sell,
-                exchange, rent, and service every major generator brand out of
-                Dhaka and Chattogram.
-              </p>
-              <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-                <Link
-                  href="/products"
-                  className="inline-flex items-center justify-center gap-2 rounded-full bg-brand-500 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-600"
-                >
-                  Browse Generators
-                  <ArrowRight className="size-4" />
-                </Link>
-                <Link
-                  href="/contact"
-                  className="inline-flex items-center justify-center gap-2 rounded-full border border-ink-200 px-6 py-3 text-sm font-semibold text-ink-900 transition-colors hover:border-brand-300 hover:text-brand-600"
-                >
-                  <Phone className="size-4" />
-                  Contact Us
-                </Link>
-              </div>
-            </Rise>
-
-            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl ring-1 ring-inset ring-ink-950/5">
-              <Image
-                src="/generator.png"
-                alt="Power Bank Bangladesh generator"
-                fill
-                sizes="(min-width: 1024px) 50vw, 100vw"
-                className="object-cover"
-                priority
-              />
-            </div>
-          </div>
-        </div>
-      </section>
+      <HomeHero />
 
       {/* Brand strip (Infinite Carousel Slider) */}
       <section className="border-b border-ink-100 bg-white">
