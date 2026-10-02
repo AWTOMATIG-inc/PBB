@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { ADMIN_AUTH_COOKIE } from "@/lib/auth-cookie";
+import { ADMIN_AUTH_COOKIE, ADMIN_AUTH_COOKIE_OPTIONS } from "@/lib/auth-cookie";
 import { refreshSuperuserAuth } from "@/lib/pocketbase";
 
 // Cookie-presence check only for protected routes (cheap, no PocketBase round
@@ -43,6 +43,22 @@ export async function proxy(request: NextRequest) {
     const response = NextResponse.next();
     response.cookies.delete(ADMIN_AUTH_COOKIE);
     return response;
+  }
+
+  // Sliding session: PocketBase superuser tokens expire (1 day by default) and
+  // the login cookie alone never renews them, so a form left open long enough
+  // would save as a guest ("Only superusers can perform this action."). Swap in
+  // a fresh token on every dashboard request, server action POSTs included,
+  // and forward it upstream so this same request already uses it. On failure,
+  // pass through: the protected layout redirects to login.
+  if (pathname.startsWith("/dashboard") && token) {
+    const refreshed = await refreshSuperuserAuth(token);
+    if (refreshed) {
+      request.cookies.set(ADMIN_AUTH_COOKIE, refreshed.token);
+      const response = NextResponse.next({ request: { headers: request.headers } });
+      response.cookies.set(ADMIN_AUTH_COOKIE, refreshed.token, ADMIN_AUTH_COOKIE_OPTIONS);
+      return response;
+    }
   }
 
   return NextResponse.next();

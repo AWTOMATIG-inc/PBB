@@ -3,6 +3,11 @@
 // straight to PocketBase and need to surface its validation errors.
 
 export function describePbError(status: number, body: unknown): string {
+  // Every dashboard write is superuser-only, so 401/403 means the login token
+  // expired (PocketBase then treats the request as a guest).
+  if (status === 401 || status === 403) {
+    return "Your login session expired. Log in again, then save.";
+  }
   if (status === 400 && body && typeof body === "object" && "data" in body) {
     const data = (body as { data?: Record<string, { message?: string }> }).data;
     if (data) {
