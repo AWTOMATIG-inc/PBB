@@ -4,90 +4,19 @@ import {
   Page,
   Text,
   View,
-  Image,
   StyleSheet,
 } from "@react-pdf/renderer";
 import type { QuotationRecord } from "../../lib/quotations";
 import { formatBdtCurrency } from "../../lib/format-bdt-words";
-import path from "path";
-
-// Color Palette matching PBB Brand & Commercial Guidelines
-const COLORS = {
-  brandOrange: "#ED7423",
-  brandDark: "#D45F11",
-  ink900: "#14181B",
-  ink800: "#1E2327",
-  ink700: "#2B3136",
-  ink500: "#5B6368",
-  ink400: "#7D8489",
-  ink100: "#E7E8E9",
-  ink50: "#F5F5F6",
-  navyHeader: "#1E293B",
-  navyLight: "#F1F5F9",
-  yellowBg: "#FEF9C3",
-  yellowBorder: "#FACC15",
-  greenIncluded: "#15803D",
-  greenBg: "#DCFCE7",
-  redExcluded: "#B91C1C",
-  redBg: "#FEE2E2",
-};
+import {
+  PDF_COLORS as COLORS,
+  PdfFooter,
+  PdfHeader,
+  PdfWatermark,
+  letterheadStyles,
+} from "./pdf-letterhead";
 
 const styles = StyleSheet.create({
-  page: {
-    size: "A4",
-    paddingTop: 36,     // Top margin (e.g. 0.5 inch / 36 pt)
-    paddingBottom: 36,  // Bottom margin
-    paddingLeft: 72,    // Left margin
-    paddingRight: 72,   // Right margin
-    // paddingHorizontal: 28,
-    fontFamily: "Helvetica",
-    fontSize: 10,
-    color: COLORS.ink900,
-    position: "relative",
-    backgroundColor: "#FFFFFF",
-  },
-  watermarkContainer: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    zIndex: -1,
-    transform: "rotate(-45deg)",
-  },
-  watermarkImage: {
-    width: 440,
-    height: 350,
-    opacity: 0.05,
-    objectFit: "contain",
-  },
-  // Top Header
-  headerRow: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.ink100,
-    paddingBottom: 8,
-  },
-  headerContactCol: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 2,
-  },
-  headerContactItem: {
-    fontSize: 7.5,
-    color: COLORS.ink700,
-  },
-  headerLogo: {
-    width: 95,
-    height: 48,
-    objectFit: "contain",
-  },
   // Title & Metadata Ribbon
   titleSection: {
     marginTop: 8,
@@ -396,31 +325,6 @@ const styles = StyleSheet.create({
     fontSize: 7.5,
     color: COLORS.ink700,
   },
-  // Bottom Brand Footer Strip
-  footerStrip: {
-    position: "absolute",
-    bottom: 12,
-    left: 28,
-    right: 28,
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    borderTopWidth: 1,
-    borderTopColor: COLORS.ink100,
-    paddingTop: 4,
-  },
-  footerBrandText: {
-    fontSize: 6.5,
-    color: COLORS.ink400,
-    textTransform: "uppercase",
-    letterSpacing: 0.5,
-  },
-  pageNumber: {
-    fontSize: 7,
-    color: COLORS.ink500,
-    fontFamily: "Helvetica-Bold",
-  },
 });
 
 interface QuotationPdfProps {
@@ -458,31 +362,12 @@ export function QuotationPdfDocument({ quotation, logoSrc }: QuotationPdfProps) 
       {/* ============================================================== */}
       {/* PAGE 1: COMMERCIAL & TECHNICAL SPECIFICATION OFFER             */}
       {/* ============================================================== */}
-      <Page size="A4" style={styles.page}>
+      <Page size="A4" style={letterheadStyles.page}>
         {/* Background Watermark */}
-        {resolvedLogo ? (
-          <View style={styles.watermarkContainer}>
-            <Image src={resolvedLogo} style={styles.watermarkImage} />
-          </View>
-        ) : null}
+        <PdfWatermark logoSrc={resolvedLogo} />
 
         {/* Top Header */}
-        <View style={styles.headerRow}>
-          <View style={styles.headerContactCol}>
-            <Text style={styles.headerContactItem}>
-              Email: powerbankbd23@gmail.com
-            </Text>
-            <Text style={styles.headerContactItem}>
-              Address: Kamalapur, Biruliya, Savar, Dhaka
-            </Text>
-            <Text style={styles.headerContactItem}>
-              Hotline: +88 (0) 1989 474 447 | Office: +88 (0) 1625 181 403
-            </Text>
-          </View>
-          {resolvedLogo ? (
-            <Image src={resolvedLogo} style={styles.headerLogo} />
-          ) : null}
-        </View>
+        <PdfHeader logoSrc={resolvedLogo} />
 
         {/* Title */}
         <View style={styles.titleSection}>
@@ -627,42 +512,18 @@ export function QuotationPdfDocument({ quotation, logoSrc }: QuotationPdfProps) 
         </View>
 
         {/* Page 1 Footer */}
-        <View style={styles.footerStrip}>
-          <Text style={styles.footerBrandText}>
-            Powered by: CAT | DOOSAN | CUMMINS | PERKINS | RICARDO | VOLVO PENTA | JOHN DEERE
-          </Text>
-          <Text style={styles.pageNumber}>Page 1 of 2</Text>
-        </View>
+        <PdfFooter pageLabel="Page 1 of 2" />
       </Page>
 
       {/* ============================================================== */}
       {/* PAGE 2: TERMS, SCOPE OF SUPPLY & AUTHORIZED SIGNATURE          */}
       {/* ============================================================== */}
-      <Page size="A4" style={styles.page}>
+      <Page size="A4" style={letterheadStyles.page}>
         {/* Background Watermark */}
-        {resolvedLogo ? (
-          <View style={styles.watermarkContainer}>
-            <Image src={resolvedLogo} style={styles.watermarkImage} />
-          </View>
-        ) : null}
+        <PdfWatermark logoSrc={resolvedLogo} />
 
         {/* Top Header */}
-        <View style={styles.headerRow}>
-          <View style={styles.headerContactCol}>
-            <Text style={styles.headerContactItem}>
-              Email: powerbankbd23@gmail.com
-            </Text>
-            <Text style={styles.headerContactItem}>
-              Address: Kamalapur, Biruliya, Savar, Dhaka
-            </Text>
-            <Text style={styles.headerContactItem}>
-              Hotline: +88 (0) 1989 474 447 | Office: +88 (0) 1625 181 403
-            </Text>
-          </View>
-          {resolvedLogo ? (
-            <Image src={resolvedLogo} style={styles.headerLogo} />
-          ) : null}
-        </View>
+        <PdfHeader logoSrc={resolvedLogo} />
 
         {/* Section 1: Scope of Supply */}
         <View style={{ marginTop: 8 }}>
@@ -761,12 +622,7 @@ export function QuotationPdfDocument({ quotation, logoSrc }: QuotationPdfProps) 
         </View>
 
         {/* Page 2 Footer */}
-        <View style={styles.footerStrip}>
-          <Text style={styles.footerBrandText}>
-            Powered by: CAT | DOOSAN | CUMMINS | PERKINS | RICARDO | VOLVO PENTA | JOHN DEERE
-          </Text>
-          <Text style={styles.pageNumber}>Page 2 of 2</Text>
-        </View>
+        <PdfFooter pageLabel="Page 2 of 2" />
       </Page>
     </Document>
   );

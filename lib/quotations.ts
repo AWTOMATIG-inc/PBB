@@ -83,8 +83,12 @@ export type QuotationRecord = {
   subject: string;
   items: QuotationLineItem[];
   subtotal: number;
+  // VAT/AIT and discount as entered; the *Type fields say Tk or %.
+  // Missing type (older records) means a flat BDT amount.
   vatAit?: number;
+  vatAitType?: "amount" | "percent" | "";
   discount?: number;
+  discountType?: "amount" | "percent" | "";
   deliveryCharge?: number;
   grandTotal: number;
   amountInWords: string;

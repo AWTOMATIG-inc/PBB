@@ -5,6 +5,8 @@ import Link from "next/link";
 import { Plus, Trash2, CheckCircle2, XCircle, Calculator, FileCheck, Save, Search, ChevronDown, X } from "lucide-react";
 import type { QuotationRecord, QuotationLineItem, ScopeOfSupplyItem, CommercialTerms, TechnicalSpecsSnapshot } from "@/lib/quotations";
 import type { ProductRecord } from "@/lib/products";
+import type { AdjustmentType } from "@/lib/invoices";
+import AdjustmentField from "./adjustment-field";
 import {
   DEFAULT_SCOPE_OF_SUPPLY,
   DEFAULT_COMMERCIAL_TERMS,
@@ -162,6 +164,12 @@ export default function QuotationForm({ products, quotation, action }: Quotation
   const [discount, setDiscount] = useState<number | "">(
     quotation?.discount && quotation.discount > 0 ? quotation.discount : ""
   );
+  const [vatAitType, setVatAitType] = useState<AdjustmentType>(
+    quotation?.vatAitType === "percent" ? "percent" : "amount"
+  );
+  const [discountType, setDiscountType] = useState<AdjustmentType>(
+    quotation?.discountType === "percent" ? "percent" : "amount"
+  );
   const [deliveryCharge, setDeliveryCharge] = useState<number | "">(
     quotation?.deliveryCharge && quotation.deliveryCharge > 0
       ? quotation.deliveryCharge
@@ -193,12 +201,25 @@ export default function QuotationForm({ products, quotation, action }: Quotation
     total: it.total,
   }));
 
-  const { subtotal, grandTotal, amountInWords } = calculateQuotationTotals({
-    items: normalizedItems,
-    vatAit: vatAit === "" ? 0 : Number(vatAit),
-    discount: discount === "" ? 0 : Number(discount),
-    deliveryCharge: deliveryCharge === "" ? 0 : Number(deliveryCharge),
-  });
+  const { subtotal, discountAmount, vatAitAmount, grandTotal, amountInWords } =
+    calculateQuotationTotals({
+      items: normalizedItems,
+      vatAit: vatAit === "" ? 0 : Number(vatAit),
+      vatAitType,
+      discount: discount === "" ? 0 : Number(discount),
+      discountType,
+      deliveryCharge: deliveryCharge === "" ? 0 : Number(deliveryCharge),
+    });
+
+  const discountError =
+    discountType === "percent" && Number(discount || 0) > 100
+      ? "Percentage cannot be more than 100."
+      : undefined;
+  const vatAitError =
+    vatAitType === "percent" && Number(vatAit || 0) > 100
+      ? "Percentage cannot be more than 100."
+      : undefined;
+  const hasAdjustmentError = Boolean(discountError || vatAitError);
 
   // Handler: Selecting a generator model from master data
   const handleProductSelect = (productId: string) => {
@@ -346,6 +367,8 @@ export default function QuotationForm({ products, quotation, action }: Quotation
     // Pricing
     formData.set("items", JSON.stringify(normalizedItems));
     formData.set("vatAit", String(vatAit === "" ? 0 : Number(vatAit)));
+    formData.set("vatAitType", vatAitType);
+    formData.set("discountType", discountType);
     formData.set("discount", String(discount === "" ? 0 : Number(discount)));
     formData.set("deliveryCharge", String(deliveryCharge === "" ? 0 : Number(deliveryCharge)));
 
@@ -804,65 +827,53 @@ export default function QuotationForm({ products, quotation, action }: Quotation
             </button>
           </div>
 
-          {/* Totals & Commercial Breakdown Block (Right-aligned) */}
+          {/* Totals & Commercial Breakdown Block (same design as invoices) */}
           <div className="flex justify-end pt-2">
-            <div className="w-80 flex flex-col gap-2 rounded-lg bg-ink-50 p-4 border border-ink-100">
-              <div className="flex justify-between text-xs text-ink-700">
-                <span>Subtotal:</span>
+            <div className="flex w-full flex-col gap-3 rounded-lg border border-ink-100 bg-ink-50 p-4 sm:w-[22rem]">
+              <div className="flex justify-between text-sm text-ink-700">
+                <span>Subtotal</span>
                 <span className="font-semibold tabular-nums">{formatBdtCurrency(subtotal)}</span>
               </div>
-              <div className="flex items-center justify-between text-xs text-ink-700">
-                <span>VAT / AIT:</span>
-                <input
-                  type="number"
-                  min="0"
-                  value={vatAit}
-                  onChange={(e) =>
-                    setVatAit(e.target.value === "" ? "" : Number(e.target.value))
-                  }
-                  placeholder="0"
-                  className="w-28 rounded border border-ink-200 bg-white px-2 py-1 text-right text-xs outline-none focus:border-brand-500 tabular-nums"
-                />
-              </div>
-              <div className="flex items-center justify-between text-xs text-ink-700">
-                <span>Discount:</span>
-                <input
-                  type="number"
-                  min="0"
-                  value={discount}
-                  onChange={(e) =>
-                    setDiscount(
-                      e.target.value === "" ? "" : Number(e.target.value)
-                    )
-                  }
-                  placeholder="0"
-                  className="w-28 rounded border border-ink-200 bg-white px-2 py-1 text-right text-xs outline-none focus:border-brand-500 tabular-nums"
-                />
-              </div>
-              <div className="flex items-center justify-between text-xs text-ink-700">
-                <span>Delivery:</span>
-                <input
-                  type="number"
-                  min="0"
-                  value={deliveryCharge}
-                  onChange={(e) =>
-                    setDeliveryCharge(
-                      e.target.value === "" ? "" : Number(e.target.value)
-                    )
-                  }
-                  placeholder="0"
-                  className="w-28 rounded border border-ink-200 bg-white px-2 py-1 text-right text-xs outline-none focus:border-brand-500 tabular-nums"
-                />
-              </div>
-              <div className="flex justify-between border-t border-ink-200 pt-2 text-sm font-bold text-ink-900">
-                <span>Grand Total:</span>
+
+              <AdjustmentField
+                label="Discount"
+                type={discountType}
+                onTypeChange={setDiscountType}
+                value={discount}
+                onValueChange={setDiscount}
+                amount={discountAmount}
+                sign="-"
+                error={discountError}
+              />
+
+              <AdjustmentField
+                label="VAT / AIT"
+                type={vatAitType}
+                onTypeChange={setVatAitType}
+                value={vatAit}
+                onValueChange={setVatAit}
+                amount={vatAitAmount}
+                sign="+"
+                error={vatAitError}
+              />
+
+              <AdjustmentField
+                label="Delivery"
+                value={deliveryCharge}
+                onValueChange={setDeliveryCharge}
+                amount={deliveryCharge === "" ? 0 : Number(deliveryCharge)}
+                sign="+"
+              />
+
+              <div className="flex justify-between border-t border-ink-200 pt-3 text-base font-bold text-ink-900">
+                <span>Grand Total</span>
                 <span className="text-brand-600 tabular-nums">{formatBdtCurrency(grandTotal)}</span>
               </div>
             </div>
           </div>
 
           <div className="rounded-md border-l-4 border-brand-500 bg-brand-50 p-3 text-xs font-semibold text-brand-900">
-            <span className="uppercase text-brand-600 mr-2">In Words:</span>
+            <span className="mr-2 uppercase text-brand-700">In Words:</span>
             {amountInWords}
           </div>
         </div>
@@ -1009,7 +1020,7 @@ export default function QuotationForm({ products, quotation, action }: Quotation
         <div className="flex items-center gap-3">
           <button
             type="button"
-            disabled={isPending}
+            disabled={isPending || hasAdjustmentError}
             onClick={() => handleSubmit("draft")}
             className="inline-flex items-center gap-2 rounded-full border border-ink-300 bg-white px-5 py-2.5 text-sm font-semibold text-ink-800 transition-colors hover:bg-ink-50 disabled:opacity-50"
           >
@@ -1019,7 +1030,7 @@ export default function QuotationForm({ products, quotation, action }: Quotation
 
           <button
             type="button"
-            disabled={isPending}
+            disabled={isPending || hasAdjustmentError}
             onClick={() => handleSubmit("finalized")}
             className="inline-flex items-center gap-2 rounded-full bg-brand-500 px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-600 disabled:opacity-50 shadow-sm"
           >
