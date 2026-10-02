@@ -1,17 +1,9 @@
 import { cookies } from "next/headers";
-import { ADMIN_AUTH_COOKIE } from "./auth-cookie";
-
-const SEVEN_DAYS = 60 * 60 * 24 * 7;
+import { ADMIN_AUTH_COOKIE, ADMIN_AUTH_COOKIE_OPTIONS } from "./auth-cookie";
 
 export async function setAdminSession(token: string) {
   const cookieStore = await cookies();
-  cookieStore.set(ADMIN_AUTH_COOKIE, token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/",
-    maxAge: SEVEN_DAYS,
-  });
+  cookieStore.set(ADMIN_AUTH_COOKIE, token, ADMIN_AUTH_COOKIE_OPTIONS);
 }
 
 export async function getAdminSessionToken() {
