@@ -53,15 +53,26 @@ function buildQuotationPayload(formData: FormData): {
     return { payload: {}, error: "At least one price line item is required to finalize." };
   }
 
-  const vatAit = Number(formData.get("vatAit")) || 0;
-  const discount = Number(formData.get("discount")) || 0;
-  const deliveryCharge = Number(formData.get("deliveryCharge")) || 0;
+  const vatAit = Math.max(0, Number(formData.get("vatAit")) || 0);
+  const vatAitType = formData.get("vatAitType") === "percent" ? "percent" : "amount";
+  const discount = Math.max(0, Number(formData.get("discount")) || 0);
+  const discountType = formData.get("discountType") === "percent" ? "percent" : "amount";
+  const deliveryCharge = Math.max(0, Number(formData.get("deliveryCharge")) || 0);
+
+  if (vatAitType === "percent" && vatAit > 100) {
+    return { payload: {}, error: "VAT / AIT percentage cannot be more than 100." };
+  }
+  if (discountType === "percent" && discount > 100) {
+    return { payload: {}, error: "Discount percentage cannot be more than 100." };
+  }
 
   // Server-side recalculation of financial totals & words
   const { subtotal, grandTotal, amountInWords } = calculateQuotationTotals({
     items,
     vatAit,
+    vatAitType,
     discount,
+    discountType,
     deliveryCharge,
   });
 
@@ -128,7 +139,9 @@ function buildQuotationPayload(formData: FormData): {
     items,
     subtotal,
     vatAit,
+    vatAitType,
     discount,
+    discountType,
     deliveryCharge,
     grandTotal,
     amountInWords,

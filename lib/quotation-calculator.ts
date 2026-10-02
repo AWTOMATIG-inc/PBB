@@ -20,23 +20,31 @@ export function calculateLineTotal(qty: number, unitPrice: number): number {
 }
 
 /**
- * Recalculates full quotation totals server-side:
+ * Recalculates full quotation totals (form preview and server-side on save):
  * Subtotal = Sum of line totals
+ * Discount = flat amount, or % of the subtotal
+ * VAT/AIT  = flat amount, or % of the subtotal after discount
  * Grand Total = Subtotal + VAT/AIT + Delivery - Discount
  * Auto-generates formal BDT amount in words.
  */
 export function calculateQuotationTotals({
   items,
   vatAit = 0,
+  vatAitType = "amount",
   discount = 0,
+  discountType = "amount",
   deliveryCharge = 0,
 }: {
   items: QuotationLineItem[];
   vatAit?: number;
+  vatAitType?: "amount" | "percent" | "";
   discount?: number;
+  discountType?: "amount" | "percent" | "";
   deliveryCharge?: number;
 }): {
   subtotal: number;
+  discountAmount: number;
+  vatAitAmount: number;
   grandTotal: number;
   amountInWords: string;
 } {
@@ -45,11 +53,22 @@ export function calculateQuotationTotals({
   const safeDiscount = Math.max(0, isNaN(discount) ? 0 : discount);
   const safeDelivery = Math.max(0, isNaN(deliveryCharge) ? 0 : deliveryCharge);
 
-  const grandTotal = Math.max(0, subtotal + safeVat + safeDelivery - safeDiscount);
+  const discountAmount =
+    discountType === "percent"
+      ? Math.round((subtotal * Math.min(safeDiscount, 100)) / 100)
+      : safeDiscount;
+  const vatAitAmount =
+    vatAitType === "percent"
+      ? Math.round((Math.max(0, subtotal - discountAmount) * Math.min(safeVat, 100)) / 100)
+      : safeVat;
+
+  const grandTotal = Math.max(0, subtotal + vatAitAmount + safeDelivery - discountAmount);
   const amountInWords = numberToBdtWords(grandTotal);
 
   return {
     subtotal,
+    discountAmount,
+    vatAitAmount,
     grandTotal,
     amountInWords,
   };

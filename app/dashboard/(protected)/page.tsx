@@ -99,6 +99,13 @@ export default async function AdminDashboardPage() {
             Add Product
           </Link>
           <Link
+            href="/dashboard/invoices/new"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-ink-200 bg-white px-3.5 py-2 text-sm font-semibold text-ink-700 shadow-xs transition hover:bg-ink-50 hover:text-ink-900"
+          >
+            <Plus className="size-4 text-ink-500" />
+            New Invoice
+          </Link>
+          <Link
             href="/dashboard/quotations/new"
             className="inline-flex items-center gap-1.5 rounded-lg bg-brand-500 px-4 py-2 text-sm font-semibold text-white shadow-xs transition hover:bg-brand-600"
           >

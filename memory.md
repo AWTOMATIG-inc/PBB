@@ -13,7 +13,7 @@ Compacted 2026-09-29. Frontend, CMS, motion polish, and the 2026-09 rework round
   pull includes new `pb_migrations/` files. If it doesn't restart, PocketBase **silently drops
   writes to unknown fields** (this caused the 2026-09-23 "price saves but nothing stored" bug).
 - Collections: `brands`, `power_bands`, `products`, `home_placements`, `clients`,
-  `alternator_makes`, `controllers`, `quotations`, `invoices` (schema only, no UI yet).
+  `alternator_makes`, `controllers`, `quotations`, `invoices`.
 - Unset `number` fields come back as `0`; `lib/public-data.ts` normalizes kVA/weight to `null`.
 - Auth: superuser JWT in an httpOnly cookie (`lib/auth.ts`, `lib/session.ts`, `proxy.ts`).
   Superuser: `khalidh.awtomatig@gmail.com`.
@@ -46,7 +46,6 @@ Compacted 2026-09-29. Frontend, CMS, motion polish, and the 2026-09 rework round
 
 ## Open items
 
-- Invoices: fields never finalized; collection exists, no UI.
 - Replace placeholder alternator make / controller values as real data arrives.
 
 ## Session log
@@ -105,3 +104,27 @@ Append new entries below: date, what changed, decisions, open TODOs. Keep them s
   `GeneratorModel.imageUrl` now comes from `productImageUrl()` in `lib/public-data.ts`; card
   uses a plain `<img>` for it (no `remotePatterns` needed) and keeps `/generator.png` as the
   fallback for products without a photo.
+
+## Session — 2026-10-02 — Invoice module
+
+- Dashboard > Invoices (list/new/edit/delete) + `/api/dashboard/invoices/[id]/pdf`. Migration `1789554851`
+  adds `companyName`, `discountType` (amount|percent), `amountInWords`, created/updated. Deploy needs the
+  PocketBase restart or the new fields are silently dropped.
+- Items JSON `[{ name, qty, unitPrice, total }]`; money math in `lib/invoice-calculator.ts`, recomputed
+  server-side on save and again in the PDF. `discount` stores the entered value, not the BDT amount.
+- Numbers auto-assigned `INV-YYYY-NNNN` (year of invoice date), retry on unique-index clash. Not editable.
+- Form has no date/status fields: create sets `issuedDate` = today (Dhaka, UTC+6) and status `draft`;
+  edits never change them. Status is changed by the dropdown in the invoices table
+  (`updateInvoiceStatusAction`). New invoices pre-fill Mobil, Mobil Filter, Diesel Filter, Air Filter,
+  Service Charge (`DEFAULT_ITEM_NAMES` in `components/admin/invoice-form.tsx`).
+- PDF letterhead (watermark, header, footer) now shared in `components/pdf/pdf-letterhead.tsx`, used by
+  both quotation and invoice PDFs. Invoice PDF is one flowing page that overflows onto more pages.
+- Signatory on invoices is `DEFAULT_SIGNATORY` (no per-invoice fields).
+- Optional VAT: stored in the existing `tax` field (value as entered) + `taxType` (amount|percent,
+  migration `1789554852`). VAT is charged on the amount after discount: Total = Subtotal - Discount + VAT.
+- Quotation totals box now matches invoices via shared `components/admin/adjustment-field.tsx`.
+  Quotation VAT/AIT and discount accept Tk or % (`vatAitType`, `discountType`, migration `1789554853`;
+  no type = flat amount, so old quotations keep their totals). Delivery is Tk only.
+- Not built: quotation-to-invoice conversion, partial payments/balance due.
+- Existing bug (not fixed): quotation actions call `describePbError(body, msg)` with args swapped, so
+  PocketBase validation errors show as a generic message.

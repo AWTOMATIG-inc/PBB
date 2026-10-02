@@ -17,12 +17,14 @@ import {
   Menu,
   X,
   User,
+  Receipt,
 } from "lucide-react";
 import { logout } from "@/app/dashboard/actions";
 
 const ADMIN_NAV_LINKS = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/dashboard/quotations", label: "Quotations", icon: FileText },
+  { href: "/dashboard/invoices", label: "Invoices", icon: Receipt },
   { href: "/dashboard/products", label: "Products", icon: Package },
   { href: "/dashboard/filters", label: "Filters", icon: SlidersHorizontal },
   { href: "/dashboard/clients", label: "Clients", icon: Handshake },
