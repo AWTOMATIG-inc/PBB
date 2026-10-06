@@ -66,7 +66,7 @@ const SLIDES: Slide[] = [
   },
 ];
 
-const SLIDE_MS = 6500;
+const SLIDE_MS = 5000;
 const EASE = "ease-[cubic-bezier(0.16,1,0.3,1)]";
 
 export default function HomeHero() {
