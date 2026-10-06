@@ -149,6 +149,15 @@ export function numberToBdtWords(amount: number): string {
 }
 
 /**
+ * Same as numberToBdtWords without the "Bangladeshi Taka" prefix, for forms
+ * that already print "a sum of taka" before it:
+ * 4750000 -> "Forty-Seven Lakh Fifty Thousand Only"
+ */
+export function numberToTakaWords(amount: number): string {
+  return numberToBdtWords(amount).replace(/^Bangladeshi Taka\s+/, "");
+}
+
+/**
  * Formats a numeric amount with Bangladeshi / South Asian comma separation:
  * e.g., 4750000 -> "47,50,000/-"
  * e.g., 150000  -> "1,50,000/-"

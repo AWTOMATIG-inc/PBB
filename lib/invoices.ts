@@ -2,6 +2,7 @@
 // Talks to PocketBase's REST API directly with the superuser token from
 // the admin session cookie, adhering to the project's zero-SDK convention.
 
+import { nextSequentialNumber } from "./doc-number";
 import { listProducts } from "./products";
 
 const POCKETBASE_URL = process.env.POCKETBASE_URL || "http://127.0.0.1:8090";
@@ -103,24 +104,12 @@ export async function getInvoice(token: string, id: string): Promise<InvoiceReco
  * The unique index on invoiceNumber is the real guard against duplicates;
  * callers retry when two saves race for the same number.
  */
-export async function nextInvoiceNumber(token: string, year: number): Promise<string> {
-  const prefix = `INV-${year}-`;
-  const params = new URLSearchParams({
-    page: "1",
-    perPage: "1",
-    sort: "-invoiceNumber",
-    filter: `invoiceNumber ~ "${prefix}%"`,
-    fields: "invoiceNumber",
-    skipTotal: "1",
+export function nextInvoiceNumber(token: string, year: number): Promise<string> {
+  return nextSequentialNumber(token, {
+    collection: "invoices",
+    field: "invoiceNumber",
+    prefix: `INV-${year}-`,
   });
-  const res = await pbAuthedFetch(token, `/api/collections/invoices/records?${params.toString()}`);
-  let last = 0;
-  if (res.ok) {
-    const data = await res.json();
-    const match = String(data.items?.[0]?.invoiceNumber ?? "").match(/-(\d+)$/);
-    if (match) last = Number(match[1]);
-  }
-  return `${prefix}${String(last + 1).padStart(4, "0")}`;
 }
 
 export function createInvoice(token: string, data: Record<string, unknown>) {

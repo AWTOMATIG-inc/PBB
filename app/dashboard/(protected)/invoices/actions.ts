@@ -15,6 +15,7 @@ import {
 } from "@/lib/invoices";
 import { calculateInvoiceTotals, calculateLineTotal } from "@/lib/invoice-calculator";
 import { describePbError } from "@/lib/pb-error";
+import { isDuplicateNumberError, todayInDhaka } from "@/lib/doc-number";
 
 export type InvoiceFormState = { error?: string } | undefined;
 
@@ -122,17 +123,6 @@ function buildInvoicePayload(formData: FormData): {
   };
 }
 
-// Today's date in Bangladesh (UTC+6, no DST), so an invoice created after
-// midnight Dhaka time isn't dated the previous day on a UTC server.
-function todayInDhaka() {
-  return new Date(Date.now() + 6 * 60 * 60 * 1000).toISOString().split("T")[0];
-}
-
-function isDuplicateNumberError(body: unknown) {
-  const data = (body as { data?: Record<string, { code?: string }> })?.data;
-  return data?.invoiceNumber?.code === "validation_not_unique";
-}
-
 export async function createInvoiceAction(
   _state: InvoiceFormState,
   formData: FormData
@@ -164,7 +154,7 @@ export async function createInvoiceAction(
       redirect("/dashboard/invoices");
     }
     const body = await res.json().catch(() => ({}));
-    if (!isDuplicateNumberError(body)) {
+    if (!isDuplicateNumberError(body, "invoiceNumber")) {
       return { error: describePbError(res.status, body) };
     }
   }
