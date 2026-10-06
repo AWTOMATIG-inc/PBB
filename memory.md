@@ -151,3 +151,19 @@ Append new entries below: date, what changed, decisions, open TODOs. Keep them s
   invoices now use them too), `numberToTakaWords` in `lib/format-bdt-words.ts`.
 - Tooling note: `pocketbase migrate up` on a brand-new DB fails at migration 1789554844 (needs
   existing power band rows). Test against a copy of `pb_data` instead.
+
+## Session — 2026-10-06 — Client flyer images in carousels
+
+- Client sent 12 WhatsApp flyers (text baked in). Originals moved out of the repo to
+  `Desktop/PPB-client-originals/`. Optimized WebP copies (q80, max 1600 px wide) in `public/assets/`
+  with descriptive names. One near-duplicate (blue "Service" flyer) was dropped.
+- Home hero (`components/home-hero.tsx`): 4 square flyers, card is now `aspect-square`.
+  `public/carousel/*.webp` (old per-brand slides) removed.
+- Products page: `components/brand-carousel.tsx` replaced by `components/promo-carousel.tsx`
+  (next/image, `object-contain` so baked-in text is never cropped), 3 landscape flyers.
+- Unused but available: `banner-bringing-energy-wide`, `flyer-telecom-tower`, `flyer-ricardo-healthcare`,
+  `flyer-perkins-canopy`.
+- Several flyers still print "SELL, BUY" (old wording; copy now says Exchange). Needs the client's designer.
+- Products header now has a "With every generator" panel (`INCLUDED` in `app/(site)/products/page.tsx`):
+  lube oil + lube oil filter (diesel filter) + air filter, coolant liquid, delivery and installation,
+  1 year warranty. Client's wording; "lube oil filter (diesel filter)" not yet clarified.
