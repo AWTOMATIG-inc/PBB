@@ -128,3 +128,26 @@ Append new entries below: date, what changed, decisions, open TODOs. Keep them s
 - Not built: quotation-to-invoice conversion, partial payments/balance due.
 - Existing bug (not fixed): quotation actions call `describePbError(body, msg)` with args swapped, so
   PocketBase validation errors show as a generic message.
+
+## Session — 2026-10-06 — Money receipts
+
+- Dashboard > Money Receipts (list/new/edit/delete) + `/api/dashboard/money-receipts/[id]/pdf`.
+  Collection `money_receipts` (migration `1789554854`; deploy needs the PocketBase restart).
+  Numbers `PBB-MR-YYYY-NNNN`; date = today (Dhaka) on create, number/date never change on edit.
+  Fields: receivedFrom, amount (whole taka, max 99,99,99,999), onAccountOf + onAccountOf2 (the two
+  printed lines), paymentMode cash|cheque, chequeNo/Bank/Date (cheque only), note (stub only).
+- PDF `components/pdf/money-receipt-pdf-document.tsx` is laid out from measurements of the approved
+  artwork (1600x693 px reference): page 800 x 346.5 pt, every position in reference px via `u()`
+  (SCALE 0.5). Change SCALE only to resize. Colours are sampled from the artwork (band orange
+  #EF8333, not brand-500). Helvetica, so title/labels differ slightly from the artwork's font.
+- The artwork prints "Cell: +88(0)8989 474 447"; the PDF uses the verified +88 (0) 1989 474 447.
+- Logo and both watermarks use `public/logo.png` (no new asset). The logo file's small caption is
+  masked out of the watermarks with paper-coloured rects, since the artwork's watermark is mark only.
+- react-pdf gotcha: an Image/box that runs past the page bottom makes layout loop forever (render
+  hangs). Keep absolutely placed boxes inside the page.
+- `lib/pdf/text-width.ts` has Helvetica widths so long values shrink to fit their line; stub values
+  wrap to max 2 lines (cut with "..."), the receipt side keeps the full text.
+- Shared helpers added: `lib/doc-number.ts` (sequential numbers, todayInDhaka, duplicate check;
+  invoices now use them too), `numberToTakaWords` in `lib/format-bdt-words.ts`.
+- Tooling note: `pocketbase migrate up` on a brand-new DB fails at migration 1789554844 (needs
+  existing power band rows). Test against a copy of `pb_data` instead.
