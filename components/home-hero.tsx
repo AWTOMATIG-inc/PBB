@@ -16,8 +16,6 @@ type Slide = {
   body: string;
   image: string;
   alt: string;
-  // Cut-out renders sit inside the card; photos fill it.
-  fit: "contain" | "cover";
   cta: { label: string; href: string; external?: boolean };
 };
 
@@ -27,9 +25,8 @@ const SLIDES: Slide[] = [
     title: "Diesel generators,",
     highlight: "standby to 1500 kVA",
     body: "New and reconditioned units matched to your load and budget. Bring your existing generator and exchange it toward another, subject to inspection.",
-    image: "/generator.png",
-    alt: "Canopied diesel generator",
-    fit: "contain",
+    image: "/assets/flyer-uninterrupted-energy.webp",
+    alt: "Open diesel generator under a stormy sky: Uninterrupted energy for every moment",
     cta: { label: "Browse Generators", href: "/products" },
   },
   {
@@ -37,9 +34,8 @@ const SLIDES: Slide[] = [
     title: "Generator rental,",
     highlight: "short or long term",
     body: "Backup power for events, construction sites and standby needs, from Dhaka and Chattogram.",
-    image: "/carousel/cummins.webp",
-    alt: "Diesel generator set up outdoors",
-    fit: "cover",
+    image: "/assets/flyer-perkins-construction.webp",
+    alt: "Canopied Perkins generator in front of a building construction site",
     cta: {
       label: "Ask About Rental",
       href: whatsappLink("Hello, I'd like to ask about generator rental."),
@@ -51,9 +47,8 @@ const SLIDES: Slide[] = [
     title: "Service and",
     highlight: "genuine spare parts",
     body: "Routine maintenance, repair and parts support for every major brand, so your generator keeps running.",
-    image: "/carousel/perkins.webp",
-    alt: "Diesel generator with service doors",
-    fit: "cover",
+    image: "/assets/flyer-generator-service.webp",
+    alt: "Technician beside a diesel generator: Service your generator to ensure its longevity",
     cta: {
       label: "Book a Service",
       href: whatsappLink("Hello, I need generator service / spare parts."),
@@ -65,9 +60,8 @@ const SLIDES: Slide[] = [
     title: "Perkins, Cummins",
     highlight: "and Ricardo",
     body: "Compare models by brand and power output, then request a quotation straight from the product.",
-    image: "/carousel/ricardo.webp",
-    alt: "Ricardo diesel generator",
-    fit: "cover",
+    image: "/assets/flyer-perkins-purple.webp",
+    alt: "Large Perkins diesel generator with a 12 month warranty seal",
     cta: { label: "View All Models", href: "/products" },
   },
 ];
@@ -207,7 +201,7 @@ export default function HomeHero() {
         <div className="relative">
           {/* Orange band behind the card (mobile/tablet) */}
           <div aria-hidden className="absolute -inset-x-4 top-1/3 -bottom-14 bg-brand-500 sm:-inset-x-6 lg:hidden" />
-          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-white shadow-[0_30px_60px_-20px_rgb(99_44_8/0.45)] ring-1 ring-ink-950/5">
+          <div className="relative aspect-square overflow-hidden rounded-2xl bg-white shadow-[0_30px_60px_-20px_rgb(99_44_8/0.45)] ring-1 ring-ink-950/5">
             {SLIDES.map((slide, i) => {
               const active = i === index;
               return (
@@ -226,11 +220,7 @@ export default function HomeHero() {
                     fill
                     sizes="(min-width: 1024px) 50vw, 100vw"
                     priority={i === 0}
-                    className={
-                      slide.fit === "contain"
-                        ? "object-contain p-6 sm:p-10"
-                        : `object-cover transition-transform duration-[2000ms] ${EASE} ${active ? "scale-100" : "scale-110"}`
-                    }
+                    className={`object-cover transition-transform duration-[2000ms] ${EASE} ${active ? "scale-100" : "scale-110"}`}
                   />
                 </div>
               );

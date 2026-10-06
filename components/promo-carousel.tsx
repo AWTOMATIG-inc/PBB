@@ -1,33 +1,46 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-export default function BrandCarousel({
+// Client flyers have text baked in, so they are shown whole (contain), never cropped.
+export default function PromoCarousel({
   slides,
 }: {
-  slides: { brand: string; image: string }[];
+  slides: { image: string; alt: string }[];
 }) {
   const [index, setIndex] = useState(0);
 
   const goTo = (i: number) => setIndex((i + slides.length) % slides.length);
 
   return (
-    <div className="relative mt-8 w-full overflow-hidden rounded-xl border border-ink-100">
+    <div
+      aria-roledescription="carousel"
+      aria-label="Power Bank Bangladesh offers"
+      className="relative mt-8 w-full overflow-hidden rounded-xl border border-ink-100 bg-ink-950"
+    >
       <div
-        className="flex transition-transform duration-500 ease-out"
+        className="flex transition-transform duration-500 ease-out motion-reduce:transition-none"
         style={{ transform: `translateX(-${index * 100}%)` }}
       >
-        {slides.map(({ brand, image }) => (
+        {slides.map(({ image, alt }, i) => (
           <div
-            key={brand}
-            className="relative flex aspect-video w-full shrink-0 items-end bg-ink-900 bg-cover bg-center"
-            style={{ backgroundImage: `url(${image})` }}
+            key={image}
+            role="group"
+            aria-roledescription="slide"
+            aria-label={`${i + 1} of ${slides.length}`}
+            aria-hidden={i !== index}
+            className="relative aspect-video w-full shrink-0"
           >
-            <div className="absolute inset-0 bg-gradient-to-t from-ink-900/80 via-ink-900/10 to-transparent" />
-            <span className="relative px-6 py-6 text-lg font-semibold text-brand-400 sm:px-8 sm:text-xl">
-              {brand}
-            </span>
+            <Image
+              src={image}
+              alt={alt}
+              fill
+              sizes="(min-width: 1280px) 1216px, 100vw"
+              priority={i === 0}
+              className="object-contain"
+            />
           </div>
         ))}
       </div>
@@ -35,7 +48,7 @@ export default function BrandCarousel({
       <button
         type="button"
         onClick={() => goTo(index - 1)}
-        aria-label="Previous brand"
+        aria-label="Previous slide"
         className="absolute left-3 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-ink-700 shadow-md transition-colors hover:text-brand-600"
       >
         <ChevronLeft className="size-5" />
@@ -43,18 +56,19 @@ export default function BrandCarousel({
       <button
         type="button"
         onClick={() => goTo(index + 1)}
-        aria-label="Next brand"
+        aria-label="Next slide"
         className="absolute right-3 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-ink-700 shadow-md transition-colors hover:text-brand-600"
       >
         <ChevronRight className="size-5" />
       </button>
 
-      <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-1.5">
-        {slides.map(({ brand }, i) => (
+      <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1.5">
+        {slides.map(({ image }, i) => (
           <button
-            key={brand}
+            key={image}
             type="button"
-            aria-label={`Go to ${brand}`}
+            aria-label={`Go to slide ${i + 1}`}
+            aria-current={i === index}
             onClick={() => goTo(i)}
             className={`h-1.5 rounded-full transition-all ${
               i === index ? "w-6 bg-brand-500" : "w-1.5 bg-ink-300"
