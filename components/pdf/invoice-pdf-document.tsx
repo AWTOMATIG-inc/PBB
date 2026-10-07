@@ -9,6 +9,7 @@ import {
   PDF_COLORS as COLORS,
   PdfFooter,
   PdfHeader,
+  PdfSignature,
   PdfWatermark,
   letterheadStyles,
 } from "./pdf-letterhead";
@@ -375,7 +376,7 @@ export function InvoicePdfDocument({ invoice, logoSrc }: InvoicePdfProps) {
             </Text>
           </View>
           <View style={styles.signatoryRight}>
-            <View style={styles.signatureSpace} />
+            <PdfSignature />
             <View style={styles.signatureLine} />
             <Text style={styles.signatoryName}>{DEFAULT_SIGNATORY.name}</Text>
             <Text style={styles.signatoryRole}>{DEFAULT_SIGNATORY.title}</Text>

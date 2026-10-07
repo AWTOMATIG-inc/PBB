@@ -124,7 +124,7 @@ export const DEFAULT_WARRANTY_EXCLUSIONS =
 export const DEFAULT_SIGNATORY = {
   name: "Md Tawfikur Rahman",
   title: "Founder & CEO",
-  phone: "+880-1989-474447",
+  phone: "+8801989474447",
   company: "Power Bank Bangladesh",
 };
 
@@ -137,8 +137,10 @@ export function normalizeSignatoryTitle(title?: string): string {
   return !t || /^manager\s*\(ceo\)$/i.test(t) ? DEFAULT_SIGNATORY.title : t;
 }
 
-/** "+88 (0) 1989 474 447" / "+8801989474447" -> "+880-1989-474447" (Bangladeshi style). */
+/** "+88 (0) 1989 474 447" / "+880-1989-474447" -> "+8801989474447" (no spaces or dashes). */
 export function formatBdPhone(text: string): string {
-  return text.replace(/\+88\s*\(?0\)?[\s-]*(1\d{3})[\s-]*(\d{3})[\s-]*(\d{3})/g, "+880-$1-$2$3")
-    .replace(/\+880(1\d{3})(\d{6})/g, "+880-$1-$2");
+  return text.replace(
+    /\+88\s*\(?0\)?[\s-]*(1\d{3})[\s-]*(\d{3})[\s-]*(\d{3})|\+880-(1\d{3})-(\d{6})/g,
+    (_m, a, b, c, d, e) => (a ? `+880${a}${b}${c}` : `+880${d}${e}`)
+  );
 }

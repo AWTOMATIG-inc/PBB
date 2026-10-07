@@ -151,7 +151,7 @@ function buildQuotationPayload(formData: FormData): {
     warrantyExclusions: String(formData.get("warrantyExclusions") ?? "").trim(),
     signatoryName: String(formData.get("signatoryName") ?? "Md Tawfikur Rahman").trim(),
     signatoryTitle: String(formData.get("signatoryTitle") ?? "Founder & CEO").trim(),
-    signatoryPhone: String(formData.get("signatoryPhone") ?? "+880-1989-474447").trim(),
+    signatoryPhone: String(formData.get("signatoryPhone") ?? "+8801989474447").trim(),
     quotationDate,
     validUntil,
     preparedBy: String(formData.get("preparedBy") ?? "").trim(),

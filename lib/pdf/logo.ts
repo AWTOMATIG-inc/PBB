@@ -20,6 +20,19 @@ function readLogoDataUri(): string {
 
 export const pdfLogoDataUri = readLogoDataUri();
 
+// Authorized signatory's signature (public/sign.png) for the signature block.
+function readSignatureDataUri(): string {
+  try {
+    const buffer = fs.readFileSync(path.join(process.cwd(), "public", "sign.png"));
+    return `data:image/png;base64,${buffer.toString("base64")}`;
+  } catch (err) {
+    console.error("Error reading signature for PDF:", err);
+    return "";
+  }
+}
+
+export const pdfSignatureDataUri = readSignatureDataUri();
+
 export type PdfBrandLogo = { name: string; src: string; aspect: number };
 
 // Footer brand strip, in display order. Files live in public/brands.

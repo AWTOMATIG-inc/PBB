@@ -221,7 +221,7 @@ export default function InvoiceForm({ invoice, catalog, action }: InvoiceFormPro
               maxLength={50}
               value={customerPhone}
               onChange={(e) => setCustomerPhone(e.target.value)}
-              placeholder="e.g. +880-1711-000000"
+              placeholder="e.g. +8801711000000"
               className={INPUT_CLASS}
             />
           </label>
