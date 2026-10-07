@@ -4,7 +4,7 @@ import type { InvoiceRecord } from "../../lib/invoices";
 import { formatBdtCurrency } from "../../lib/format-bdt-words";
 import { formatQuotationDateTime } from "../../lib/format-date";
 import { calculateInvoiceTotals } from "../../lib/invoice-calculator";
-import { DEFAULT_SIGNATORY } from "../../lib/quotation-calculator";
+import { DEFAULT_SIGNATORY, formatBdPhone } from "../../lib/quotation-calculator";
 import {
   PDF_COLORS as COLORS,
   PdfFooter,
@@ -379,7 +379,7 @@ export function InvoicePdfDocument({ invoice, logoSrc }: InvoicePdfProps) {
             <View style={styles.signatureLine} />
             <Text style={styles.signatoryName}>{DEFAULT_SIGNATORY.name}</Text>
             <Text style={styles.signatoryRole}>{DEFAULT_SIGNATORY.title}</Text>
-            <Text style={styles.signatoryRole}>{DEFAULT_SIGNATORY.phone}</Text>
+            <Text style={styles.signatoryRole}>{formatBdPhone(DEFAULT_SIGNATORY.phone)}</Text>
           </View>
         </View>
 

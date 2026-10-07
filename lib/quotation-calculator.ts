@@ -123,7 +123,22 @@ export const DEFAULT_WARRANTY_EXCLUSIONS =
  */
 export const DEFAULT_SIGNATORY = {
   name: "Md Tawfikur Rahman",
-  title: "Manager (CEO)",
-  phone: "+88 (0) 1989 474 447",
+  title: "Founder & CEO",
+  phone: "+880-1989-474447",
   company: "Power Bank Bangladesh",
 };
+
+/**
+ * Normalises saved signatory text for print. Older records still hold
+ * "Manager (CEO)" and the "+88 (0) 1989 474 447" phone style.
+ */
+export function normalizeSignatoryTitle(title?: string): string {
+  const t = (title ?? "").trim();
+  return !t || /^manager\s*\(ceo\)$/i.test(t) ? DEFAULT_SIGNATORY.title : t;
+}
+
+/** "+88 (0) 1989 474 447" / "+8801989474447" -> "+880-1989-474447" (Bangladeshi style). */
+export function formatBdPhone(text: string): string {
+  return text.replace(/\+88\s*\(?0\)?[\s-]*(1\d{3})[\s-]*(\d{3})[\s-]*(\d{3})/g, "+880-$1-$2$3")
+    .replace(/\+880(1\d{3})(\d{6})/g, "+880-$1-$2");
+}

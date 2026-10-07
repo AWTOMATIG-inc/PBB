@@ -534,7 +534,7 @@ export function MoneyReceiptPdfDocument({ receipt, logoSrc }: MoneyReceiptPdfPro
           Address: Kamalapur, Biruliya, Savar, Dhaka
         </Txt>
         <Txt x={424} base={666} size={SMALL} color={FOOTER_TEXT}>
-          Cell: +8801989474447
+          Cell: +880-1989-474447
         </Txt>
 
         <Rule x0={1199} x1={1326} y={642} />

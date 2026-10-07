@@ -4,6 +4,7 @@
 
 import React from "react";
 import { Text, View, Image, StyleSheet } from "@react-pdf/renderer";
+import { pdfBrandLogos } from "../../lib/pdf/logo";
 
 // Color Palette matching PBB Brand & Commercial Guidelines
 export const PDF_COLORS = {
@@ -27,6 +28,7 @@ export const PDF_COLORS = {
 };
 
 const COLORS = PDF_COLORS;
+const FOOTER_LOGO_HEIGHT = 11;
 
 export const letterheadStyles = StyleSheet.create({
   page: {
@@ -95,6 +97,12 @@ export const letterheadStyles = StyleSheet.create({
     borderTopColor: COLORS.ink100,
     paddingTop: 4,
   },
+  footerBrands: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 7,
+  },
   footerBrandText: {
     fontSize: 6.5,
     color: COLORS.ink400,
@@ -132,7 +140,7 @@ export function PdfHeader({ logoSrc, fixed = false }: { logoSrc?: string; fixed?
           Address: Kamalapur, Biruliya, Savar, Dhaka
         </Text>
         <Text style={styles.headerContactItem}>
-          Hotline: +88 (0) 1989 474 447 | Office: +88 (0) 1625 181 403
+          Hotline: +880-1989-474447 | Office: +880-1625-181403
         </Text>
       </View>
       {logoSrc ? <Image src={logoSrc} style={styles.headerLogo} /> : null}
@@ -147,9 +155,16 @@ export function PdfHeader({ logoSrc, fixed = false }: { logoSrc?: string; fixed?
 export function PdfFooter({ pageLabel }: { pageLabel?: string }) {
   return (
     <View style={styles.footerStrip} fixed>
-      <Text style={styles.footerBrandText}>
-        Powered by: CAT | DOOSAN | CUMMINS | PERKINS | RICARDO | VOLVO PENTA | JOHN DEERE
-      </Text>
+      <View style={styles.footerBrands}>
+        <Text style={styles.footerBrandText}>Powered by</Text>
+        {pdfBrandLogos.map((logo) => (
+          <Image
+            key={logo.name}
+            src={logo.src}
+            style={{ height: FOOTER_LOGO_HEIGHT, width: FOOTER_LOGO_HEIGHT * logo.aspect }}
+          />
+        ))}
+      </View>
       {pageLabel ? (
         <Text style={styles.pageNumber}>{pageLabel}</Text>
       ) : (

@@ -8,6 +8,7 @@ import {
 } from "@react-pdf/renderer";
 import type { QuotationRecord } from "../../lib/quotations";
 import { formatBdtCurrency } from "../../lib/format-bdt-words";
+import { normalizeSignatoryTitle, formatBdPhone } from "../../lib/quotation-calculator";
 import {
   PDF_COLORS as COLORS,
   PdfFooter,
@@ -613,10 +614,10 @@ export function QuotationPdfDocument({ quotation, logoSrc }: QuotationPdfProps) 
               {quotation.signatoryName || "Md Tawfikur Rahman"}
             </Text>
             <Text style={styles.signatoryRole}>
-              {quotation.signatoryTitle || "Manager (CEO)"}
+              {normalizeSignatoryTitle(quotation.signatoryTitle)}
             </Text>
             <Text style={styles.signatoryRole}>
-              {quotation.signatoryPhone || "Cell: +88 (0) 1989 474 447"}
+              {formatBdPhone(quotation.signatoryPhone || "Cell: +880-1989-474447")}
             </Text>
           </View>
         </View>
