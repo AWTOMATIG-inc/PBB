@@ -453,7 +453,7 @@ export default function QuotationForm({ products, quotation, action }: Quotation
               required
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              placeholder="e.g. +880-1711-000000"
+              placeholder="e.g. +8801711000000"
               className={INPUT_CLASS}
             />
           </div>

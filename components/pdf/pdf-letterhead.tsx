@@ -4,7 +4,7 @@
 
 import React from "react";
 import { Text, View, Image, StyleSheet } from "@react-pdf/renderer";
-import { pdfBrandLogos } from "../../lib/pdf/logo";
+import { pdfBrandLogos, pdfSignatureDataUri } from "../../lib/pdf/logo";
 
 // Color Palette matching PBB Brand & Commercial Guidelines
 export const PDF_COLORS = {
@@ -97,6 +97,12 @@ export const letterheadStyles = StyleSheet.create({
     borderTopColor: COLORS.ink100,
     paddingTop: 4,
   },
+  signatureImage: {
+    width: 100,
+    height: 38,
+    objectFit: "contain",
+    marginBottom: -4,
+  },
   footerBrands: {
     display: "flex",
     flexDirection: "row",
@@ -140,7 +146,7 @@ export function PdfHeader({ logoSrc, fixed = false }: { logoSrc?: string; fixed?
           Address: Kamalapur, Biruliya, Savar, Dhaka
         </Text>
         <Text style={styles.headerContactItem}>
-          Hotline: +880-1989-474447 | Office: +880-1625-181403
+          Hotline: +8801989474447 | Office: +8801625181403
         </Text>
       </View>
       {logoSrc ? <Image src={logoSrc} style={styles.headerLogo} /> : null}
@@ -174,5 +180,14 @@ export function PdfFooter({ pageLabel }: { pageLabel?: string }) {
         />
       )}
     </View>
+  );
+}
+
+/** Signature image sitting on the signature line; keeps the blank gap if the file is missing. */
+export function PdfSignature() {
+  return pdfSignatureDataUri ? (
+    <Image src={pdfSignatureDataUri} style={styles.signatureImage} />
+  ) : (
+    <View style={{ height: 52 }} />
   );
 }

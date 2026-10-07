@@ -13,6 +13,7 @@ import {
   PDF_COLORS as COLORS,
   PdfFooter,
   PdfHeader,
+  PdfSignature,
   PdfWatermark,
   letterheadStyles,
 } from "./pdf-letterhead";
@@ -608,7 +609,7 @@ export function QuotationPdfDocument({ quotation, logoSrc }: QuotationPdfProps) 
             </Text>
           </View>
           <View style={styles.signatoryRight}>
-            <View style={styles.signatureSpace} />
+            <PdfSignature />
             <View style={styles.signatureLine} />
             <Text style={styles.signatoryName}>
               {quotation.signatoryName || "Md Tawfikur Rahman"}
@@ -617,7 +618,7 @@ export function QuotationPdfDocument({ quotation, logoSrc }: QuotationPdfProps) 
               {normalizeSignatoryTitle(quotation.signatoryTitle)}
             </Text>
             <Text style={styles.signatoryRole}>
-              {formatBdPhone(quotation.signatoryPhone || "Cell: +880-1989-474447")}
+              {formatBdPhone(quotation.signatoryPhone || "Cell: +8801989474447")}
             </Text>
           </View>
         </View>
