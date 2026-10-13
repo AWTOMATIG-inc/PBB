@@ -19,9 +19,7 @@ export const metadata: Metadata = {
 };
 
 export default async function EditProductPage({ params }: PageProps<"/dashboard/products/[id]/edit">) {
-  const { id } = await params;
-
-  const token = await getAdminSessionToken();
+  const [{ id }, token] = await Promise.all([params, getAdminSessionToken()]);
   if (!token) redirect("/dashboard/login");
 
   const [product, brands, powerBands, alternatorMakes, controllers] = await Promise.all([

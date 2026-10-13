@@ -79,6 +79,7 @@ export default async function AdminQuotationsPage({
             name="q"
             defaultValue={search}
             placeholder="Search by quote # or client name..."
+            aria-label="Search by quote number or client name"
             className="w-full text-sm text-ink-900 outline-none"
           />
         </div>

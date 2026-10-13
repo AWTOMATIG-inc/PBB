@@ -58,10 +58,11 @@ export default function QuotationForm({ products, quotation, action }: Quotation
     quotation?.subject ?? "QUOTATION FOR SUPPLY OF DIESEL GENERATOR"
   );
   const [quotationDate, setQuotationDate] = useState(
-    quotation?.quotationDate?.split("T")[0] ?? new Date().toISOString().split("T")[0]
+    () => quotation?.quotationDate?.split("T")[0] ?? new Date().toISOString().split("T")[0]
   );
   const [validUntil, setValidUntil] = useState(
-    quotation?.validUntil?.split("T")[0] ??
+    () =>
+      quotation?.validUntil?.split("T")[0] ??
       new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0]
   );
 
@@ -133,6 +134,7 @@ export default function QuotationForm({ products, quotation, action }: Quotation
 
   // Line items
   const [items, setItems] = useState<FormLineItem[]>(
+    () =>
     quotation?.items?.map((it) => ({
       sl: it.sl,
       description: it.description,
@@ -412,8 +414,8 @@ export default function QuotationForm({ products, quotation, action }: Quotation
 
         <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <div className="flex flex-col gap-1.5 sm:col-span-2">
-            <label className={LABEL_CLASS}>Company / Organization Name *</label>
-            <input
+            <label htmlFor="qf-21" className={LABEL_CLASS}>Company / Organization Name *</label>
+            <input id="qf-21"
               type="text"
               required
               value={companyName}
@@ -424,8 +426,8 @@ export default function QuotationForm({ products, quotation, action }: Quotation
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label className={LABEL_CLASS}>Contact Person *</label>
-            <input
+            <label htmlFor="qf-20" className={LABEL_CLASS}>Contact Person *</label>
+            <input id="qf-20"
               type="text"
               required
               value={contactPerson}
@@ -436,8 +438,8 @@ export default function QuotationForm({ products, quotation, action }: Quotation
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label className={LABEL_CLASS}>Designation</label>
-            <input
+            <label htmlFor="qf-19" className={LABEL_CLASS}>Designation</label>
+            <input id="qf-19"
               type="text"
               value={designation}
               onChange={(e) => setDesignation(e.target.value)}
@@ -447,8 +449,8 @@ export default function QuotationForm({ products, quotation, action }: Quotation
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label className={LABEL_CLASS}>Phone / Mobile *</label>
-            <input
+            <label htmlFor="qf-18" className={LABEL_CLASS}>Phone / Mobile *</label>
+            <input id="qf-18"
               type="text"
               required
               value={phone}
@@ -459,8 +461,8 @@ export default function QuotationForm({ products, quotation, action }: Quotation
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label className={LABEL_CLASS}>Email Address</label>
-            <input
+            <label htmlFor="qf-17" className={LABEL_CLASS}>Email Address</label>
+            <input id="qf-17"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -470,8 +472,8 @@ export default function QuotationForm({ products, quotation, action }: Quotation
           </div>
 
           <div className="flex flex-col gap-1.5 sm:col-span-2">
-            <label className={LABEL_CLASS}>Address / Site Location *</label>
-            <input
+            <label htmlFor="qf-16" className={LABEL_CLASS}>Address / Site Location *</label>
+            <input id="qf-16"
               type="text"
               required
               value={address}
@@ -482,8 +484,8 @@ export default function QuotationForm({ products, quotation, action }: Quotation
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label className={LABEL_CLASS}>BIN / VAT Number (Optional)</label>
-            <input
+            <label htmlFor="qf-15" className={LABEL_CLASS}>BIN / VAT Number (Optional)</label>
+            <input id="qf-15"
               type="text"
               value={binVatNumber}
               onChange={(e) => setBinVatNumber(e.target.value)}
@@ -510,7 +512,7 @@ export default function QuotationForm({ products, quotation, action }: Quotation
           {/* Searchable Combobox for Generator Master */}
           <div className="flex flex-col gap-1.5" ref={comboboxRef}>
             <div className="flex items-center justify-between">
-              <label className={LABEL_CLASS}>Auto-Fill from Generator Master</label>
+              <label htmlFor="qf-14" className={LABEL_CLASS}>Auto-Fill from Generator Master</label>
               {(selectedProductId || productSearch || technicalSpecs.generatorModel || technicalSpecs.generatorBrand) && (
                 <button
                   type="button"
@@ -527,7 +529,7 @@ export default function QuotationForm({ products, quotation, action }: Quotation
             <div className="relative">
               <div className="relative flex items-center">
                 <Search className="absolute left-3 size-4 text-ink-400 pointer-events-none" />
-                <input
+                <input id="qf-14"
                   type="text"
                   value={productSearch}
                   onChange={(e) => {
@@ -543,6 +545,7 @@ export default function QuotationForm({ products, quotation, action }: Quotation
                   onClick={() => setComboboxOpen((prev) => !prev)}
                   className="absolute right-2 p-1.5 text-ink-400 hover:text-ink-600"
                   tabIndex={-1}
+                  aria-label="Toggle generator list"
                 >
                   <ChevronDown className={`size-4 transition-transform ${comboboxOpen ? "rotate-180" : ""}`} />
                 </button>
@@ -613,8 +616,8 @@ export default function QuotationForm({ products, quotation, action }: Quotation
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label className={LABEL_CLASS}>Quotation Subject Title *</label>
-            <input
+            <label htmlFor="qf-13" className={LABEL_CLASS}>Quotation Subject Title *</label>
+            <input id="qf-13"
               type="text"
               required
               value={subject}
@@ -625,8 +628,8 @@ export default function QuotationForm({ products, quotation, action }: Quotation
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <div className="flex flex-col gap-1.5">
-              <label className={LABEL_CLASS}>Generator Brand</label>
-              <input
+              <label htmlFor="qf-12" className={LABEL_CLASS}>Generator Brand</label>
+              <input id="qf-12"
                 type="text"
                 value={technicalSpecs.generatorBrand}
                 onChange={(e) =>
@@ -636,8 +639,8 @@ export default function QuotationForm({ products, quotation, action }: Quotation
               />
             </div>
             <div className="flex flex-col gap-1.5">
-              <label className={LABEL_CLASS}>Generator Model</label>
-              <input
+              <label htmlFor="qf-11" className={LABEL_CLASS}>Generator Model</label>
+              <input id="qf-11"
                 type="text"
                 value={technicalSpecs.generatorModel}
                 onChange={(e) =>
@@ -647,8 +650,8 @@ export default function QuotationForm({ products, quotation, action }: Quotation
               />
             </div>
             <div className="flex flex-col gap-1.5">
-              <label className={LABEL_CLASS}>Prime Capacity (kVA)</label>
-              <input
+              <label htmlFor="qf-10" className={LABEL_CLASS}>Prime Capacity (kVA)</label>
+              <input id="qf-10"
                 type="number"
                 value={technicalSpecs.primeKva ?? ""}
                 onChange={(e) =>
@@ -661,8 +664,8 @@ export default function QuotationForm({ products, quotation, action }: Quotation
               />
             </div>
             <div className="flex flex-col gap-1.5">
-              <label className={LABEL_CLASS}>Standby Capacity (kVA)</label>
-              <input
+              <label htmlFor="qf-9" className={LABEL_CLASS}>Standby Capacity (kVA)</label>
+              <input id="qf-9"
                 type="number"
                 value={technicalSpecs.standbyKva ?? ""}
                 onChange={(e) =>
@@ -675,8 +678,8 @@ export default function QuotationForm({ products, quotation, action }: Quotation
               />
             </div>
             <div className="flex flex-col gap-1.5">
-              <label className={LABEL_CLASS}>Engine Brand & Model</label>
-              <input
+              <label htmlFor="qf-8" className={LABEL_CLASS}>Engine Brand & Model</label>
+              <input id="qf-8"
                 type="text"
                 value={technicalSpecs.engineModel}
                 onChange={(e) =>
@@ -686,8 +689,8 @@ export default function QuotationForm({ products, quotation, action }: Quotation
               />
             </div>
             <div className="flex flex-col gap-1.5">
-              <label className={LABEL_CLASS}>Alternator Brand</label>
-              <input
+              <label htmlFor="qf-7" className={LABEL_CLASS}>Alternator Brand</label>
+              <input id="qf-7"
                 type="text"
                 value={technicalSpecs.alternatorBrand}
                 onChange={(e) =>
@@ -697,8 +700,8 @@ export default function QuotationForm({ products, quotation, action }: Quotation
               />
             </div>
             <div className="flex flex-col gap-1.5">
-              <label className={LABEL_CLASS}>Controller</label>
-              <input
+              <label htmlFor="qf-6" className={LABEL_CLASS}>Controller</label>
+              <input id="qf-6"
                 type="text"
                 value={technicalSpecs.controllerBrand}
                 onChange={(e) =>
@@ -708,8 +711,8 @@ export default function QuotationForm({ products, quotation, action }: Quotation
               />
             </div>
             <div className="flex flex-col gap-1.5">
-              <label className={LABEL_CLASS}>Stock & Delivery Time</label>
-              <input
+              <label htmlFor="qf-5" className={LABEL_CLASS}>Stock & Delivery Time</label>
+              <input id="qf-5"
                 type="text"
                 value={technicalSpecs.stockStatus}
                 onChange={(e) =>
@@ -759,6 +762,7 @@ export default function QuotationForm({ products, quotation, action }: Quotation
                         value={item.description}
                         onChange={(e) => updateLineItem(idx, "description", e.target.value)}
                         placeholder="Item description"
+                        aria-label="Item description"
                         className={INPUT_CLASS}
                       />
                     </td>
@@ -775,6 +779,7 @@ export default function QuotationForm({ products, quotation, action }: Quotation
                           )
                         }
                         placeholder="1"
+                        aria-label="Quantity"
                         className={`${INPUT_CLASS} text-center`}
                       />
                     </td>
@@ -791,6 +796,7 @@ export default function QuotationForm({ products, quotation, action }: Quotation
                           )
                         }
                         placeholder="0"
+                        aria-label="Unit price (BDT)"
                         className={`${INPUT_CLASS} text-right font-medium tabular-nums`}
                       />
                     </td>
@@ -894,12 +900,21 @@ export default function QuotationForm({ products, quotation, action }: Quotation
         <div className="mt-4 flex flex-col gap-6">
           {/* Scope Checklist */}
           <div>
-            <label className={`${LABEL_CLASS} mb-2 block`}>Scope of Supply Inclusions</label>
+            <span className={`${LABEL_CLASS} mb-2 block`}>Scope of Supply Inclusions</span>
             <div className="grid gap-2 sm:grid-cols-2">
               {scopeOfSupply.map((s, idx) => (
                 <div
                   key={idx}
+                  role="button"
+                  tabIndex={0}
+                  aria-pressed={s.included}
                   onClick={() => toggleScope(idx)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      toggleScope(idx);
+                    }
+                  }}
                   className={`flex cursor-pointer items-center justify-between rounded-lg border p-3 text-xs font-medium transition-colors ${
                     s.included
                       ? "border-emerald-200 bg-emerald-50/50 text-emerald-900"
@@ -924,8 +939,8 @@ export default function QuotationForm({ products, quotation, action }: Quotation
           {/* Key Terms */}
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="flex flex-col gap-1.5">
-              <label className={LABEL_CLASS}>1. Terms of Payment</label>
-              <textarea
+              <label htmlFor="qf-4" className={LABEL_CLASS}>1. Terms of Payment</label>
+              <textarea id="qf-4"
                 rows={2}
                 value={commercialTerms.paymentTerms}
                 onChange={(e) =>
@@ -936,8 +951,8 @@ export default function QuotationForm({ products, quotation, action }: Quotation
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label className={LABEL_CLASS}>2. Offer Validity</label>
-              <textarea
+              <label htmlFor="qf-3" className={LABEL_CLASS}>2. Offer Validity</label>
+              <textarea id="qf-3"
                 rows={2}
                 value={commercialTerms.offerValidity}
                 onChange={(e) =>
@@ -948,8 +963,8 @@ export default function QuotationForm({ products, quotation, action }: Quotation
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label className={LABEL_CLASS}>3. Warranty</label>
-              <textarea
+              <label htmlFor="qf-2" className={LABEL_CLASS}>3. Warranty</label>
+              <textarea id="qf-2"
                 rows={2}
                 value={commercialTerms.warranty}
                 onChange={(e) =>
@@ -960,8 +975,8 @@ export default function QuotationForm({ products, quotation, action }: Quotation
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label className={LABEL_CLASS}>4. Installation & Commissioning</label>
-              <textarea
+              <label htmlFor="qf-1" className={LABEL_CLASS}>4. Installation & Commissioning</label>
+              <textarea id="qf-1"
                 rows={2}
                 value={commercialTerms.installation}
                 onChange={(e) =>
@@ -974,11 +989,12 @@ export default function QuotationForm({ products, quotation, action }: Quotation
 
           {/* Signatory */}
           <div className="border-t border-ink-100 pt-4">
-            <label className={`${LABEL_CLASS} mb-3 block`}>Authorized Signatory</label>
+            <span className={`${LABEL_CLASS} mb-3 block`}>Authorized Signatory</span>
             <div className="grid gap-4 sm:grid-cols-3">
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs text-ink-500">Officer Name</label>
+                <label htmlFor="qf-sig-0" className="text-xs text-ink-500">Officer Name</label>
                 <input
+                  id="qf-sig-0"
                   type="text"
                   value={signatoryName}
                   onChange={(e) => setSignatoryName(e.target.value)}
@@ -986,8 +1002,9 @@ export default function QuotationForm({ products, quotation, action }: Quotation
                 />
               </div>
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs text-ink-500">Designation / Title</label>
+                <label htmlFor="qf-sig-1" className="text-xs text-ink-500">Designation / Title</label>
                 <input
+                  id="qf-sig-1"
                   type="text"
                   value={signatoryTitle}
                   onChange={(e) => setSignatoryTitle(e.target.value)}
@@ -995,8 +1012,9 @@ export default function QuotationForm({ products, quotation, action }: Quotation
                 />
               </div>
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs text-ink-500">Phone</label>
+                <label htmlFor="qf-sig-2" className="text-xs text-ink-500">Phone</label>
                 <input
+                  id="qf-sig-2"
                   type="text"
                   value={signatoryPhone}
                   onChange={(e) => setSignatoryPhone(e.target.value)}

@@ -17,9 +17,7 @@ export default async function EditMoneyReceiptPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = await params;
-
-  const token = await getAdminSessionToken();
+  const [{ id }, token] = await Promise.all([params, getAdminSessionToken()]);
   if (!token) redirect("/dashboard/login");
 
   const receipt = await getMoneyReceipt(token, id);

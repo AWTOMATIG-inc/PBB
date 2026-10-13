@@ -45,7 +45,7 @@ export default function MoneyReceiptForm({ receipt, action }: MoneyReceiptFormPr
   const [paymentMode, setPaymentMode] = useState<PaymentMode>(receipt?.paymentMode ?? "cash");
   const [chequeNo, setChequeNo] = useState(receipt?.chequeNo ?? "");
   const [chequeBank, setChequeBank] = useState(receipt?.chequeBank ?? "");
-  const [chequeDate, setChequeDate] = useState(receipt?.chequeDate?.split(/[ T]/)[0] ?? "");
+  const [chequeDate, setChequeDate] = useState(() => receipt?.chequeDate?.split(/[ T]/)[0] ?? "");
   const [note, setNote] = useState(receipt?.note ?? "");
 
   const amountNumber = amount === "" ? 0 : Math.round(Number(amount));

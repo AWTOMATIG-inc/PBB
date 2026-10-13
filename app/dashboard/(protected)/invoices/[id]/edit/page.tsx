@@ -17,9 +17,7 @@ export default async function EditInvoicePage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = await params;
-
-  const token = await getAdminSessionToken();
+  const [{ id }, token] = await Promise.all([params, getAdminSessionToken()]);
   if (!token) redirect("/dashboard/login");
 
   const [invoice, catalog] = await Promise.all([
