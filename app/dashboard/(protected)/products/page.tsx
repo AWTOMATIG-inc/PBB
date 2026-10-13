@@ -73,6 +73,7 @@ export default async function AdminProductsPage({
             name="q"
             defaultValue={search}
             placeholder="Search by model..."
+            aria-label="Search by model"
             className="w-full text-sm text-ink-900 outline-none"
           />
         </div>

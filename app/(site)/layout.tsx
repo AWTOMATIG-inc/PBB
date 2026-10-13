@@ -8,7 +8,7 @@ export default function SiteLayout({ children }: LayoutProps<"/">) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(businessJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(businessJsonLd).replace(/</g, "\\u003c") }}
       />
       <TopBar />
       <Nav />

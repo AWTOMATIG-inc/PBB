@@ -167,3 +167,10 @@ Append new entries below: date, what changed, decisions, open TODOs. Keep them s
 - Products header now has a "With every generator" panel (`INCLUDED` in `app/(site)/products/page.tsx`):
   lube oil + lube oil filter (diesel filter) + air filter, coolant liquid, delivery and installation,
   1 year warranty. Client's wording; "lube oil filter (diesel filter)" not yet clarified.
+
+## Session — 2026-10-13 — react-doctor cleanup (56 -> 68)
+
+- Fixed behavior-safe items: sidebar updater side effect, JSON-LD `<` escape, scoped transitions,
+  label/aria fixes in quotation form + file/search inputs, lazy state init, parallel awaits on edit pages.
+- Deliberately left: map iframe sandbox (could break embed), PDF dynamic imports and index keys
+  (PDF generation risk), `MorphCount` effect and `includes` lookups in `products-browser.tsx`, giant-component refactors.

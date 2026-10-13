@@ -90,7 +90,7 @@ export default function NewProductsCarousel({
         onClick={() => scrollToCard(activeIndex - 1)}
         disabled={!canScrollPrev}
         aria-label="Previous models"
-        className="hidden sm:flex absolute -left-5 top-1/2 -translate-y-1/2 z-20 size-11 items-center justify-center rounded-full border border-ink-200 bg-white text-ink-700 shadow-md transition-all hover:border-brand-300 hover:bg-brand-50 hover:text-brand-600 disabled:pointer-events-none disabled:opacity-0"
+        className="hidden sm:flex absolute -left-5 top-1/2 -translate-y-1/2 z-20 size-11 items-center justify-center rounded-full border border-ink-200 bg-white text-ink-700 shadow-md transition-[border-color,background-color,color,opacity] hover:border-brand-300 hover:bg-brand-50 hover:text-brand-600 disabled:pointer-events-none disabled:opacity-0"
       >
         <ChevronLeft className="size-5" />
       </button>
@@ -99,7 +99,7 @@ export default function NewProductsCarousel({
         onClick={() => scrollToCard(activeIndex + 1)}
         disabled={!canScrollNext}
         aria-label="Next models"
-        className="hidden sm:flex absolute -right-5 top-1/2 -translate-y-1/2 z-20 size-11 items-center justify-center rounded-full border border-ink-200 bg-white text-ink-700 shadow-md transition-all hover:border-brand-300 hover:bg-brand-50 hover:text-brand-600 disabled:pointer-events-none disabled:opacity-0"
+        className="hidden sm:flex absolute -right-5 top-1/2 -translate-y-1/2 z-20 size-11 items-center justify-center rounded-full border border-ink-200 bg-white text-ink-700 shadow-md transition-[border-color,background-color,color,opacity] hover:border-brand-300 hover:bg-brand-50 hover:text-brand-600 disabled:pointer-events-none disabled:opacity-0"
       >
         <ChevronRight className="size-5" />
       </button>
@@ -110,7 +110,7 @@ export default function NewProductsCarousel({
         onClick={() => scrollToCard(activeIndex - 1)}
         disabled={!canScrollPrev}
         aria-label="Previous card"
-        className="sm:hidden absolute left-1 top-1/2 -translate-y-1/2 z-20 flex size-9 items-center justify-center rounded-full border border-ink-200/80 bg-white/95 backdrop-blur-xs text-ink-700 shadow-md transition-all hover:text-brand-600 disabled:pointer-events-none disabled:opacity-0"
+        className="sm:hidden absolute left-1 top-1/2 -translate-y-1/2 z-20 flex size-9 items-center justify-center rounded-full border border-ink-200/80 bg-white/95 backdrop-blur-xs text-ink-700 shadow-md transition-[color,opacity] hover:text-brand-600 disabled:pointer-events-none disabled:opacity-0"
       >
         <ChevronLeft className="size-4.5" />
       </button>
@@ -119,7 +119,7 @@ export default function NewProductsCarousel({
         onClick={() => scrollToCard(activeIndex + 1)}
         disabled={!canScrollNext}
         aria-label="Next card"
-        className="sm:hidden absolute right-1 top-1/2 -translate-y-1/2 z-20 flex size-9 items-center justify-center rounded-full border border-ink-200/80 bg-white/95 backdrop-blur-xs text-ink-700 shadow-md transition-all hover:text-brand-600 disabled:pointer-events-none disabled:opacity-0"
+        className="sm:hidden absolute right-1 top-1/2 -translate-y-1/2 z-20 flex size-9 items-center justify-center rounded-full border border-ink-200/80 bg-white/95 backdrop-blur-xs text-ink-700 shadow-md transition-[color,opacity] hover:text-brand-600 disabled:pointer-events-none disabled:opacity-0"
       >
         <ChevronRight className="size-4.5" />
       </button>

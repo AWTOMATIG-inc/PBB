@@ -122,7 +122,7 @@ export default async function AdminDashboardPage() {
         {/* Metric 1: Quotations */}
         <Link
           href="/dashboard/quotations"
-          className="group relative flex flex-col justify-between rounded-xl border border-ink-100 bg-white p-5 shadow-xs transition-all hover:border-brand-300 hover:shadow-md"
+          className="group relative flex flex-col justify-between rounded-xl border border-ink-100 bg-white p-5 shadow-xs transition-[border-color,box-shadow] hover:border-brand-300 hover:shadow-md"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold uppercase tracking-wider text-ink-500">
@@ -147,7 +147,7 @@ export default async function AdminDashboardPage() {
         {/* Metric 2: Catalog Products */}
         <Link
           href="/dashboard/products"
-          className="group relative flex flex-col justify-between rounded-xl border border-ink-100 bg-white p-5 shadow-xs transition-all hover:border-brand-300 hover:shadow-md"
+          className="group relative flex flex-col justify-between rounded-xl border border-ink-100 bg-white p-5 shadow-xs transition-[border-color,box-shadow] hover:border-brand-300 hover:shadow-md"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold uppercase tracking-wider text-ink-500">
@@ -172,7 +172,7 @@ export default async function AdminDashboardPage() {
         {/* Metric 3: Brands & Filters */}
         <Link
           href="/dashboard/filters"
-          className="group relative flex flex-col justify-between rounded-xl border border-ink-100 bg-white p-5 shadow-xs transition-all hover:border-brand-300 hover:shadow-md"
+          className="group relative flex flex-col justify-between rounded-xl border border-ink-100 bg-white p-5 shadow-xs transition-[border-color,box-shadow] hover:border-brand-300 hover:shadow-md"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold uppercase tracking-wider text-ink-500">
@@ -197,7 +197,7 @@ export default async function AdminDashboardPage() {
         {/* Metric 4: Clients */}
         <Link
           href="/dashboard/clients"
-          className="group relative flex flex-col justify-between rounded-xl border border-ink-100 bg-white p-5 shadow-xs transition-all hover:border-brand-300 hover:shadow-md"
+          className="group relative flex flex-col justify-between rounded-xl border border-ink-100 bg-white p-5 shadow-xs transition-[border-color,box-shadow] hover:border-brand-300 hover:shadow-md"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold uppercase tracking-wider text-ink-500">

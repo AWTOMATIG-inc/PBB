@@ -351,6 +351,7 @@ export default function ProductForm({
           id="image"
           name="image"
           type="file"
+          aria-label="Product image"
           accept="image/png,image/webp,image/jpeg"
           className="text-sm text-ink-700 file:mr-3 file:rounded-md file:border-0 file:bg-ink-100 file:px-3 file:py-2 file:text-sm file:font-medium file:text-ink-700 hover:file:bg-ink-200"
         />

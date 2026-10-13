@@ -58,11 +58,9 @@ export default function AdminSidebar({
   }, [pathname]);
 
   const toggleCollapsed = () => {
-    setCollapsed((prev) => {
-      const next = !prev;
-      localStorage.setItem("pbb_admin_sidebar_collapsed", String(next));
-      return next;
-    });
+    const next = !collapsed;
+    setCollapsed(next);
+    localStorage.setItem("pbb_admin_sidebar_collapsed", String(next));
   };
 
   return (
@@ -103,8 +101,11 @@ export default function AdminSidebar({
       {/* MOBILE DRAWER BACKDROP & OVERLAY (< md screens)                */}
       {/* ============================================================== */}
       {mobileOpen && (
-        <div
-          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs md:hidden"
+        <button
+          type="button"
+          aria-label="Close navigation menu"
+          tabIndex={-1}
+          className="fixed inset-0 z-50 cursor-default bg-black/60 backdrop-blur-xs md:hidden"
           onClick={() => setMobileOpen(false)}
         />
       )}
@@ -150,6 +151,7 @@ export default function AdminSidebar({
             type="button"
             onClick={() => setMobileOpen(false)}
             className="rounded p-1 text-ink-400 hover:bg-ink-800 hover:text-white md:hidden"
+            aria-label="Close navigation menu"
           >
             <X className="size-5" />
           </button>
